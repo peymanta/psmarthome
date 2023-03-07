@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:shome/colors.dart';
+import 'package:shome/models/status.dart';
+import 'package:shome/relay/bloc/relay_cubit.dart';
 import 'package:shome/relay/relay.dart' as relay;
 import 'package:shome/report/report.dart';
 import 'package:shome/security/security.dart';
@@ -32,6 +34,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    DeviceStatus.fromSMS();
+
+
     List page1 = [
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded, onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Outlet()))),
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded, onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Outlet()))),
