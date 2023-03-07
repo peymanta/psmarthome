@@ -62,21 +62,18 @@ class DeviceStatus {
   var relay1;
   var remote, staticRouting, resetCount, publicReport, number1, number2, number3Const, upsModem, upsTel;
   DeviceStatus.fromSMS() {
-    var sms = '''WP2UP: ON,Ra,Td
+    var sms = '''Cooler:
+11/11/11-00:06
+11/11/11-23:56
+TEMP SET:20~25
+
+WP1UP: ON,Ra,Ta
+11/11/11-16:30
+11/11/11-23:55
+
+WP1DN: ON,Ra,Td
 11/11/11-00:00
-11/11/11-23:55
-
-WP2DN: ON,Ra,Ta
-11/11/11-00:01
-11/11/11-23:55
-
-RM:A
-SR:m
-R:256
-P2000
-9120232465
-2144168346
-TFMN''';
+11/11/11-23:55''';
 
     if (sms.contains('R1')) {
       Relay relay = Relay();
@@ -288,6 +285,32 @@ TFMN''';
 
     //sms3
     ///cooler AND heater
+    if(sms.contains('Cooler')) {
+      Relay relay = Relay();
+      List<String> list = sms.split('\n');
+
+      if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
+      if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
+
+      if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
+      if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
+
+      relay.setTempMin = list[3].split(':')[1].split('~')[0];
+      relay.setTempMax = list[3].split(':')[1].split('~')[1];
+    }
+    if(sms.contains('Heater')) {
+      Relay relay = Relay();
+      List<String> list = sms.split('\n');
+
+      if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
+      if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
+
+      if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
+      if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
+
+      relay.setTempMin = list[3].split(':')[1].split('~')[0];
+      relay.setTempMax = list[3].split(':')[1].split('~')[1];
+    }
     if(sms.contains('WP1')) {
       Plug plug = Plug();
       List<String> list = sms.split('\n');
@@ -466,6 +489,7 @@ class Relay {
 
   var humStatus, humMax, humMin;
   var light, lux;
+  var tempMin, tempMax;
 
   Relay({status, relay, timer, date, clock,
         humStatus, humMax, humMIn});
@@ -485,6 +509,9 @@ class Relay {
   set setLightStatus(String status) => light = status;
   set setLux(String lux) => this.lux = lux;
 
+  set setTempMin(String temp) => tempMin = temp;
+  set setTempMax(String temp) => tempMax = temp;
+
   get Status => status;
   get RelayStatus => relay;
   get Timer => timer;
@@ -499,6 +526,9 @@ class Relay {
 
   get lightStatus => light;
   get getLux => lux;
+
+  get getTempMax => tempMax;
+  get getTempMin => tempMin;
 }
 
 class Plug {
@@ -539,4 +569,9 @@ class Plug {
   get getDownStartClock => downStartClock;
   get getDownEndDate => downEndDate;
   get getDownEndClock => downEndClock;
+}
+
+class PublicReport {
+  var clock, date, shortReport, buzzer, motionSensor, inBoxTemp, outBoxTemp, outBoxHumidity, battery;
+
 }
