@@ -48,7 +48,7 @@ compile(String sms) async{
 
 var sms = '''R1:
 OFF,Rd,Td,
-11/11/11-00:00
+11/11/11-00:01
 11/11/11-23:55
 
 R2:

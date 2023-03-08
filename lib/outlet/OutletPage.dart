@@ -9,6 +9,12 @@ import 'bloc/outlet_cubit.dart';
 OutletCubit? _cubit;
 bool timer = false, infinity = false;
 
+enum PlugNumber {
+  plug1, plug2
+}
+
+var currentPlug;
+
 var endTime;
 
 class Outlet extends StatefulWidget {
