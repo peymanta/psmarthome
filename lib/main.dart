@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -12,16 +13,33 @@ import 'package:shome/temp/temp_screen.dart';
 import 'package:shome/ups/ups.dart';
 
 import 'HomeScreens.dart';
+import 'compiling_sms.dart';
 import 'outlet/OutletPage.dart';
 import 'models/home_screen_items.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 bool securityState = true;
-void main() {
+late DeviceStatus deviceStatus;
+late Box deviceBox;
+void main() async{
+
+  
+  Hive
+    ..init (Directory.current.path)
+    ..registerAdapter(DeviceStatusAdapter())
+  ..registerAdapter(RelayAdapter())
+  ..registerAdapter(PlugAdapter())
+  ..registerAdapter(PublicReportAdapter());
+
+  deviceBox = await Hive.openBox('deviceInfo');
+
   runApp(MaterialApp(
     home: MyApp(),
     debugShowCheckedModeBanner: false,
     scrollBehavior: MyCustomScrollBehavior(),
   ));
+
 }
 
 class MyApp extends StatefulWidget {
@@ -33,9 +51,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) {
-    DeviceStatus.fromSMS();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    deviceStatus = deviceBox.get('info') ?? DeviceStatus();
+    // await box.put('a', 'hello');
+    //
 
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     List page1 = [
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded, onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Outlet()))),

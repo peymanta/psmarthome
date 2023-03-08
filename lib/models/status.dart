@@ -1,3 +1,9 @@
+import 'package:hive/hive.dart';
+
+import '../main.dart';
+
+part 'status.g.dart';
+
 //R1:
 // OFF,Rd,Td,
 // 11/11/11-00:00
@@ -30,7 +36,7 @@
 // 11/11/11-01:20
 // LU35
 
-//Cooler:
+// Cooler:
 // 11/11/11-00:06
 // 11/11/11-23:56
 // TEMP SET:20~25
@@ -42,8 +48,8 @@
 // WP1DN: ON,Ra,Td
 // 11/11/11-00:00
 // 11/11/11-23:55
-
-//WP2UP: ON,Ra,Td
+//
+// WP2UP: ON,Ra,Td
 // 11/11/11-00:00
 // 11/11/11-23:55
 //
@@ -58,498 +64,71 @@
 // 9120232465
 // 2144168346
 // TFMN
-compilePublicReport(String sms) {
-  PublicReport model = new PublicReport();
-  List<String> lines = sms.split('\n');
 
-  model.setClock = lines[0].split(' ')[1];
-  model.setDate = lines[0].split(' ')[0];
-  model.setShortReport = lines[1].contains('A') ? 'active' : 'deactive';
-  model.setBuzzer = lines[2].contains('A') ? 'active' : 'deactive';
-  model.setMotionSensor = lines[3].contains('A') ? 'alarm' : 'normal';
-  model.setInboxTemp = lines[4].substring(3);
-  model.setOutBoxTemp = lines[5].substring(3).split(',')[0];
-  model.setTemp = lines[5].substring(3).split(',')[1];
-  model.setOutBoxHumidity = lines[6].substring(3);
-  model.setBattery = lines[7].contains('L')? 'low' : 'normal';
-  model.setPower = lines[8].contains('N') ? 'normal' : lines[8].contains('B') ? 'burnt' : lines[8].contains('b') ? 'backup' : lines[8].contains('S') ? 'short circuit': 'short circuit in main board';
-  model.setPower5 = lines[9].contains('N') ? 'normal' : 'disconnect';
-  model.setP4Volt = lines[10].contains('N') ? 'normal' : 'abnormal';
-  model.setMicroPower = lines[11].contains('N') ? 'normal' : 'abnormal';
-  model.setPowerDiode = lines[12].contains('N') ? 'normal' : 'burnt';
-  model.setSecuritySystem = lines[13].contains('d') ? 'disconnect' : lines[13].contains('A') ? 'active' : 'deactive';
-  model.setWaterLeakagePlug1 = lines[14][2]=='n'? 'dry' : lines[14][2]=='d'? 'disconnect connector' : lines[14][2]=='y'? 'yes' : lines[14][2]=='D'? 'deactived by key' : 'no info';
-  model.setWaterLeakagePlug2 = lines[14][4]=='n'? 'dry' : lines[14][4]=='d'? 'disconnect connector' : lines[14][4]=='y'? 'yes' : lines[14][4]=='D'? 'deactived by key' : 'no info';
-  model.setDayNight = lines[15].contains('Dy') ? 'day':'night';
-  model.setCaseDoor = lines[16].contains('C') ? 'close' : 'open';
-  model.setExcuteTask = lines[17].contains('H') ? 'home' : lines[17].contains('R') ? 'resting' : 'sleep';
-  model.setPlug = lines[18].contains('C') ? 'connect' : 'disconnect';
-  model.setHeaterRest = lines[19].contains('A') ? 'active' : 'deactive';
-  model.setCoolerRest = lines[19].contains('A') ? 'active' : 'deactive';
-  model.setWirelessPlug1 = lines[20][5] == 'C' ? 'connect' : lines[20][5] == 'D' ? 'disconnect' : 'remove';
-  model.setWirelessPlug2 = lines[20][9] == 'C' ? 'connect' : lines[20][9] == 'D' ? 'disconnect' : 'remove';
-  model.setCurrentSensor1 = lines[21].substring(5, 7) == 'DA'? 'deactive' : lines[21].substring(5, 7) == 'AC'? 'active' : lines[21].substring(5, 7) == 'NO'? 'normal' : lines[21].substring(5, 7) == 'ND'? 'no device' : lines[21].substring(5, 7) == 'OF'? 'off' : 'overload';
-  model.setCurrentSensor3 = lines[21].substring(10, 12) == 'DA'? 'deactive' : lines[21].substring(10, 12) == 'AC'? 'active' : lines[21].substring(10, 12) == 'NO'? 'normal' : lines[21].substring(10, 12) == 'ND'? 'no device' : lines[21].substring(10, 12) == 'OF'? 'off' : 'overload';
-  model.setCurrentSensor6 = lines[21].substring(15) == 'DA'? 'deactive' : lines[21].substring(15) == 'AC'? 'active' : lines[21].substring(15) == 'NO'? 'normal' : lines[21].substring(15) == 'ND'? 'no device' : lines[21].substring(15) == 'OF'? 'off' : 'overload';
-  model.setView = lines[22].contains('D') ? 'deactive' : 'active';
-  model.setInboxTempFromFirstDay = lines[23].substring(3);
-  model.setOutboxTempFromFirstDay = lines[24].substring(3);
-  model.setOutboxHumidityFromFirstDay = lines[25].substring(2);
-  model.gsmSignalPower = lines[26].substring(2);
-  model.fanCount = lines[27].substring(2);
-
-  if(sms.contains('C:a')) model.setAutoCooler = 'auto-active';
-  if(sms.contains('C:d')) model.setAutoCooler = 'auto-deactive';
-  if(sms.contains('H:a')) model.setAutoHeater = 'auto-active';
-  if(sms.contains('H:d')) model.setAutoHeater = 'auto-deactive';
-  if(sms.contains('HC?')) {
-    model.setAutoCooler = 'deactive';
-    model.setAutoHeater = 'deactive';
-  }
-  if(sms.contains('HCR')) {
-    model.setAutoCooler = 'removed';
-    model.setAutoHeater = 'removed';
-  }
-  if(sms.contains('CRe')) {
-    model.setAutoCooler = 'remote';
-  }
-  if(sms.contains('HRe')) {
-    model.setAutoHeater = 'remote';
-  }
-  if(sms.contains('min')) {
-    var minRest = sms.substring(sms.indexOf('min') -3 , sms.indexOf('min')).trim();
-    model.setCoolerRest = minRest;
-    model.setHeaterRest = minRest;
-  }
-  if(sms.contains('WC:D')) model.wirelessCooler = 'deactive';
-  if(sms.contains('WC:C')) model.wirelessCooler = 'active';
-  if(sms.contains('WH:D')) model.wirelessHeater = 'deactive';
-  if(sms.contains('WH:C')) model.wirelessHeater = 'active';
-
-
-}
+@HiveType(typeId: 1)
 class DeviceStatus {
-  var relay1;
-  var remote, staticRouting, resetCount, publicReport, number1, number2, number3Const, upsModem, upsTel;
-  DeviceStatus.fromSMS() {
-    var sms = '''1210 01:04
-s:A
-U:A
-M:N
-Ti:42
-TO:27,26
-HO:26
-B:N
-12EN
-5RN
-4GN
-5MN
-D1N
-S:D
-L1n2n
-L:Ni
-d:N
-E:H
-P:C
-r:A
-WP#1:C-2:C
-CU:1:DA,3:DA,6:DA
-V:D
-Ti#38
-TO#26
-H#27
-i#16
-F:0
-C:a
-30min
-WC:C.''';
+  @HiveField(1)
+  late var  staticRouting = '';
+  @HiveField(0)
+  late var remote = '';
+  @HiveField(2)
+  late var resetCount = '';
+  @HiveField(3)
+  late var publicReport = PublicReport();
+  @HiveField(4)
+  late var number1 = '';
+  @HiveField(5)
+  late var number2 = '';
+  @HiveField(6)
+  late var number3Const = '';
+  @HiveField(7)
+  late var upsModem = '';
+  @HiveField(8)
+  late var upsTel = '';
+  @HiveField(9)
+  late var r1 = Relay();
+  @HiveField(10)
+  late var r2 = Relay();
+  @HiveField(11)
+  late var r3 = Relay();
+  @HiveField(12)
+  late var r4 = Relay();
+  @HiveField(13)
+  late var r5 = Relay();
+  @HiveField(14)
+  late var r6 = Relay();
+  @HiveField(15)
+  late var r7 = Relay();
+  @HiveField(16)
+  late var cooler = Relay();
+  @HiveField(17)
+  late var heater = Relay();
+  @HiveField(18)
+  late var plug1 = Plug();
+  @HiveField(19)
+  late var plug2 = Plug();
+  @HiveField(20)
+  late var remoteStatus = '';
+  @HiveField(21)
+  late var staticRoutingStatus = '';
 
-    if (sms.contains('R1')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
+  DeviceStatus();
 
-      if (list[1].contains('OFF')) {
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
+  set setR1(relay) => r1 = relay;
+  set setR2(relay) => r2 = relay;
+  set setR3(relay) => r3 = relay;
+  set setR4(relay) => r4 = relay;
+  set setR5(relay) => r5 = relay;
+  set setR6(relay) => r6 = relay;
+  set setR7(relay) => r7 = relay;
 
-      if (list[1].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
+  set setCooler(cooler) => this.cooler = cooler;
+  set setHeater(heater) => this.heater = heater;
+  set setPlug1(plug) => plug1 = plug;
+  set setPlug2(plug) => plug2 = plug;
 
-      if (list[1].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-      //start
-      if(list[2].split('-')[0].isNotEmpty) relay.setStartDate = list[2].split('-')[0];
-      if(list[2].split('-')[1].isNotEmpty) relay.setStartTime = list[2].split('-')[1];
-      //end
-      if(list[3].split('-')[0].isNotEmpty) relay.setEndDate = list[3].split('-')[0];
-      if(list[3].split('-')[1].isNotEmpty) relay.setEndTime = list[3].split('-')[1];
-      print(list[3].split('-')[1]);
-    }
-
-    if (sms.contains('R2')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if (list[6].contains('OFF')) {
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
-
-      if (list[6].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
-
-      if (list[6].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-      //start
-      if(list[7].split('-')[0].isNotEmpty) relay.setStartDate = list[7].split('-')[0];
-      if(list[7].split('-')[1].isNotEmpty) relay.setStartTime = list[7].split('-')[1];
-      //end
-      if(list[8].split('-')[0].isNotEmpty) relay.setEndDate = list[8].split('-')[0];
-      if(list[8].split('-')[1].isNotEmpty) relay.setEndTime = list[8].split('-')[1];
-      print(list[6]);
-    }
-
-    if (sms.contains('R5')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if (list[11].contains('OFF')) {
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
-
-      if (list[11].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
-
-      if (list[11].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-      //start
-      if(list[12].split('-')[0].isNotEmpty) relay.setStartDate = list[12].split('-')[0];
-      if(list[12].split('-')[1].isNotEmpty) relay.setStartTime = list[12].split('-')[1];
-      //end
-      if(list[13].split('-')[0].isNotEmpty) relay.setEndDate = list[13].split('-')[0];
-      if(list[13].split('-')[1].isNotEmpty) relay.setEndTime = list[13].split('-')[1];
-      print(list[6]);
-    }
-
-    //sms 2
-    if (sms.contains('R3')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if (list[1].contains('OFF')) {
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
-
-      if (list[1].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
-
-      if (list[1].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-
-      if (list[1].contains('HU')) {
-        if(list[1].contains('HU d')) {
-        relay.setHumidityStatus = 'deactive';
-      } else {
-        relay.setHumidityStatus = 'active';
-      }
-
-        var setVal = list[4].split(':')[1];
-        var min = setVal.split('~')[0];
-        var max = setVal.split('~')[1];
-
-        relay.setHumidityMax = max;
-        relay.setHumidityMin = min;
-    }
-
-      //start
-      if(list[2].split('-')[0].isNotEmpty) relay.setStartDate = list[2].split('-')[0];
-      if(list[2].split('-')[1].isNotEmpty) relay.setStartTime = list[2].split('-')[1];
-      //end
-      if(list[3].split('-')[0].isNotEmpty) relay.setEndDate = list[3].split('-')[0];
-      if(list[3].split('-')[1].isNotEmpty) relay.setEndTime = list[3].split('-')[1];
-      print(list[6]);
-    }
-
-    if (sms.contains('R6')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if (list[7].contains('OF')) { //OF is correct
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
-
-      if (list[7].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
-
-      if (list[7].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-      //start
-      if(list[8].split('-')[0].isNotEmpty) relay.setStartDate = list[8].split('-')[0];
-      if(list[8].split('-')[1].isNotEmpty) relay.setStartTime = list[8].split('-')[1];
-      //end
-      if(list[9].split('-')[0].isNotEmpty) relay.setEndDate = list[9].split('-')[0];
-      if(list[9].split('-')[1].isNotEmpty) relay.setEndTime = list[9].split('-')[1];
-
-    }
-
-    if (sms.contains('R7')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if (list[12].contains('OF')) { //OF is correct
-        relay.setStatus = 'OFF';
-      } else {
-        relay.setStatus = 'ON';
-      }
-
-      if (list[12].contains('Rd')) {
-        relay.setRelayStatus = 'deactive';
-      } else {
-        relay.setRelayStatus = 'active';
-      }
-
-      if (list[12].contains('Td')) {
-        relay.setTimerStatus = 'deactive';
-      } else {
-        relay.setTimerStatus = 'active';
-      }
-
-      if (list[12].contains('LU')) {
-        if (list[12].contains('LU d')) {
-          relay.setLightStatus = 'deactive';
-        } else {
-          relay.setLightStatus = 'active';
-        }
-
-        // print(list[15].substring(2, list[15].length));
-        relay.setLux = list[15].substring(2, list[15].length);
-      }
-      //start
-      if(list[13].split('-')[0].isNotEmpty) relay.setStartDate = list[13].split('-')[0];
-      if(list[13].split('-')[1].isNotEmpty) relay.setStartTime = list[13].split('-')[1];
-      //end
-      if(list[14].split('-')[0].isNotEmpty) relay.setEndDate = list[14].split('-')[0];
-      if(list[14].split('-')[1].isNotEmpty) relay.setEndTime = list[14].split('-')[1];
-
-    }
-
-    //sms3
-    ///cooler AND heater
-    if(sms.contains('Cooler')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
-      if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
-
-      if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
-      if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
-
-      relay.setTempMin = list[3].split(':')[1].split('~')[0];
-      relay.setTempMax = list[3].split(':')[1].split('~')[1];
-    }
-    if(sms.contains('Heater')) {
-      Relay relay = Relay();
-      List<String> list = sms.split('\n');
-
-      if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
-      if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
-
-      if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
-      if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
-
-      relay.setTempMin = list[3].split(':')[1].split('~')[0];
-      relay.setTempMax = list[3].split(':')[1].split('~')[1];
-    }
-    if(sms.contains('WP1')) {
-      Plug plug = Plug();
-      List<String> list = sms.split('\n');
-
-      if (list[5].contains('ON')) {
-        plug.setUPStatus = 'ON';
-      } else {
-        plug.setUPStatus = 'OFF';
-      }
-      //down
-      if (list[9].contains('ON')) {
-        plug.setDownStatus = 'ON';
-      } else {
-        plug.setDownStatus = 'OFF';
-      }
-
-      if (list[5].contains('Rd')) {
-        plug.setUPRelayStatus = 'deactive';
-      } else {
-        plug.setUPRelayStatus = 'active';
-      }
-      //down
-      if (list[9].contains('Rd')) {
-        plug.setDownRelayStatus = 'deactive';
-      } else {
-        plug.setDownRelayStatus = 'active';
-      }
-
-      if (list[5].contains('Td')) {
-        plug.setUPTimerStatus = 'deactive';
-      } else {
-        plug.setUPTimerStatus = 'active';
-      }
-      //down
-      if (list[9].contains('Td')) {
-        plug.setDownTimerStatus = 'deactive';
-      } else {
-        plug.setDownTimerStatus = 'active';
-      }
-      //startUP
-      if(list[6].split('-')[0].isNotEmpty) plug.setUPStartDate = list[6].split('-')[0];
-      if(list[6].split('-')[1].isNotEmpty) plug.setUPStartClock = list[6].split('-')[1];
-      //startDown
-      if(list[10].split('-')[0].isNotEmpty) plug.setDownStartDate = list[10].split('-')[0];
-      if(list[10].split('-')[1].isNotEmpty) plug.setDownStartClock = list[10].split('-')[1];
-      //endUP
-      if(list[7].split('-')[0].isNotEmpty) plug.setUPEndDate = list[7].split('-')[0];
-      if(list[7].split('-')[1].isNotEmpty) plug.setUPEndClock = list[7].split('-')[1];
-      //endDown
-      if(list[11].split('-')[0].isNotEmpty) plug.setUPEndDate = list[11].split('-')[0];
-      if(list[11].split('-')[1].isNotEmpty) plug.setUPEndClock = list[11].split('-')[1];
-
-    }
-
-    //sms4
-    if(sms.contains('WP2')) {
-      Plug plug = Plug();
-      List<String> list = sms.split('\n');
-
-      if (list[0].contains('ON')) {
-        plug.setUPStatus = 'ON';
-      } else {
-        plug.setUPStatus = 'OFF';
-      }
-      //down
-      if (list[4].contains('ON')) {
-        plug.setDownStatus = 'ON';
-      } else {
-        plug.setDownStatus = 'OFF';
-      }
-
-      if (list[0].contains('Rd')) {
-        plug.setUPRelayStatus = 'deactive';
-      } else {
-        plug.setUPRelayStatus = 'active';
-      }
-      //down
-      if (list[4].contains('Rd')) {
-        plug.setDownRelayStatus = 'deactive';
-      } else {
-        plug.setDownRelayStatus = 'active';
-      }
-
-      if (list[0].contains('Td')) {
-        plug.setUPTimerStatus = 'deactive';
-      } else {
-        plug.setUPTimerStatus = 'active';
-      }
-      //down
-      if (list[4].contains('Td')) {
-        plug.setDownTimerStatus = 'deactive';
-      } else {
-        plug.setDownTimerStatus = 'active';
-      }
-      //startUP
-      if(list[1].split('-')[0].isNotEmpty) plug.setUPStartDate = list[1].split('-')[0];
-      if(list[1].split('-')[1].isNotEmpty) plug.setUPStartClock = list[1].split('-')[1];
-      //startDown
-      if(list[5].split('-')[0].isNotEmpty) plug.setDownStartDate = list[5].split('-')[0];
-      if(list[5].split('-')[1].isNotEmpty) plug.setDownStartClock = list[5].split('-')[1];
-      //endUP
-      if(list[2].split('-')[0].isNotEmpty) plug.setUPEndDate = list[2].split('-')[0];
-      if(list[2].split('-')[1].isNotEmpty) plug.setUPEndClock = list[2].split('-')[1];
-      //endDown
-      if(list[6].split('-')[0].isNotEmpty) plug.setUPEndDate = list[6].split('-')[0];
-      if(list[6].split('-')[1].isNotEmpty) plug.setUPEndClock = list[6].split('-')[1];
-
-    }
-    if(sms.contains('RM')) {
-      if(sms.contains('RM:A')) {
-        setRemoteStatus = 'active';
-      } else {
-        setRemoteStatus = 'deactive';
-      }
-    }
-    if(sms.contains('SR')){
-      if(sms.contains('SR:H')) {
-        setStaticRouting = 'hub';
-      } else {
-        setStaticRouting = 'main';
-      }
-//reset counts
-      if(sms.split('\n')[10].contains('R')) {
-        var resetCounts = sms.split('\n')[10].split(':')[1];
-        setResetCount = resetCounts;
-      }
-      //public report
-      if(sms.contains('PR OF')) {
-        setPublicReport = 'off';
-      } else {
-        setPublicReport = sms.split('\n')[11].substring(1);
-      }
-
-      setNumber2 = sms.split('\n')[12];
-      setNumber3Const = sms.split('\n')[13];
-
-      //ups
-      if(sms.split('\n')[14].substring(0,2).contains('TF')){
-        setUpsTelStatus = 'off';
-      } else {
-        setUpsTelStatus = 'on';
-      }
-      if(sms.split('\n')[14].substring(2,4).contains('MN')){
-        setUpsModemStatus = 'on';
-      } else {
-        setUpsModemStatus = 'off';
-      }
-    }
-    compilePublicReport(sms);
-  }
+  set setStaticRoutingStatus(status) => staticRoutingStatus = status;
+  set setRemote(remote) => remoteStatus = remote;
 
   set setRemoteStatus(remote) => this.remote = remote;
   set setStaticRouting(sr) => staticRouting = sr;
@@ -561,26 +140,63 @@ WC:C.''';
   set setUpsModemStatus(status) => upsModem = status;
   set setUpsTelStatus(status) => upsTel = status;
 
-  get getRemoteStatus => remote;
-  get getStaticRouting => staticRouting;
-  get getResetCount => resetCount;
-  get getPublicReport => publicReport;
-  get getNumber1 => number1;
-  get getNumber2 => number2;
-  get getNumber3Const => number3Const;
-  get getUPSModemStatus => upsModem;
-  get getUPSTelStatus => upsTel;
+  Relay get getR1 => r1 ?? Relay();
+  Relay get getR2 => r2 ?? Relay();
+  Relay get getR3 => r3 ?? Relay();
+  Relay get getR4 => r4 ?? Relay();
+  Relay get getR5 => r5 ?? Relay();
+  Relay get getR6 => r6 ?? Relay();
+  Relay get getR7 => r7 ?? Relay();
+  Relay get getCooler => cooler ?? Relay();
+  Relay get getHeater => heater ?? Relay();
+  Plug get getPLug1 => plug1 ?? Plug();
+  Plug get getPlug2 => plug2 ?? Plug();
+  get getRemote => remoteStatus ?? '';
+  get getStaticRoutingStatus => staticRoutingStatus ?? '';
+
+  get getRemoteStatus => remote?? '';
+  get getStaticRouting => staticRouting?? '';
+  get getResetCount => resetCount?? '';
+  PublicReport get getPublicReport => publicReport ?? PublicReport();
+  get getNumber1 => number1?? '';
+  get getNumber2 => number2?? '';
+  get getNumber3Const => number3Const?? '';
+  get getUPSModemStatus => upsModem?? '';
+  get getUPSTelStatus => upsTel?? '';
 }
 
 
 
-
+@HiveType(typeId: 2)
 class Relay {
-  var status, relay, timer, startDate, startClock, endDate, endClock;
-
-  var humStatus, humMax, humMin;
-  var light, lux;
-  var tempMin, tempMax;
+  @HiveField(0)
+  var status = '';
+  @HiveField(1)
+  var relay = '';
+  @HiveField(2)
+  var timer = '';
+  @HiveField(3)
+  var startDate = '';
+  @HiveField(4)
+  var startClock = '';
+  @HiveField(5)
+  var endDate = '';
+  @HiveField(6)
+  var endClock = '';
+  @HiveField(7)
+  var humStatus = '';
+  @HiveField(8)
+  var humMax = '';
+  @HiveField(9)
+  var humMin = '';
+  @HiveField(10)
+  var light = '';
+  @HiveField(11)
+  var lux = '';
+  @HiveField(12)
+  var tempMin = '';
+  @HiveField(13)
+  var tempMax = '';
 
   Relay({status, relay, timer, date, clock,
         humStatus, humMax, humMIn});
@@ -622,10 +238,38 @@ class Relay {
   get getTempMin => tempMin;
 }
 
+@HiveType(typeId: 3)
 class Plug {
-  late bool up;
-  var upStatus, upRelayStatus, upTimerStatus, upStartDate, upStartClock, upEndDate, upEndClock;
-  var downStatus, downRelayStatus, downTimerStatus, downStartDate, downStartClock, downEndDate, downEndClock;
+  @HiveField(1)
+  late bool up = true;
+  @HiveField(2)
+  var upStatus = '';
+  @HiveField(3)
+  var upRelayStatus = '';
+  @HiveField(4)
+  var upTimerStatus = '';
+  @HiveField(5)
+  var upStartDate = '';
+  @HiveField(6)
+  var upStartClock = '';
+  @HiveField(7)
+  var upEndDate = '';
+  @HiveField(8)
+  var upEndClock = '';
+  @HiveField(9)
+  var downStatus = '';
+  @HiveField(10)
+  var downRelayStatus = '';
+  @HiveField(11)
+  var downTimerStatus = '';
+  @HiveField(12)
+  var downStartDate = '';
+  @HiveField(13)
+  var downStartClock = '';
+  @HiveField(14)
+  var downEndDate = '';
+  @HiveField(15)
+  var downEndClock = '';
 
   Plug();
   
@@ -662,12 +306,90 @@ class Plug {
   get getDownEndClock => downEndClock;
 }
 
+@HiveType(typeId: 4)
 class PublicReport {
-  var clock, date, shortReport, buzzer, motionSensor, inBoxTemp, outBoxTemp, outBoxHumidity, battery,
-  power, power5, p4volt, microPower, powerDiode, securitySystem, waterLeakagePlug1, waterLeakagePlug2, daynight, caseDoor, excuteTask, plug,
-  heaterRest, coolerRest, wirelessPlug1, wirelessPlug2, currentSensor1, currentSensor3, currentSensor6, view, activeTasks, deactiveTasks,
-  inBoxTempFromFirstDay, outBoxTempFromFirstDay, outBoxHumidityFromFirstDay, gsmSignalPower, fanCount,
-  autoCooler, autoHeater, wirelessCooler, wirelessHeater, temp;
+  @HiveField(1)
+  var clock = '';
+  @HiveField(2)
+  var date = '';
+  @HiveField(3)
+  var shortReport = '';
+  @HiveField(4)
+  var buzzer = '';
+  @HiveField(5)
+  var motionSensor = '';
+  @HiveField(6)
+  var inBoxTemp = '';
+  @HiveField(7)
+  var outBoxTemp = '';
+  @HiveField(8)
+  var outBoxHumidity = '';
+  @HiveField(9)
+  var battery = '';
+  @HiveField(10)
+  var power = '';
+  @HiveField(11)
+  var power5 = '';
+  @HiveField(12)
+  var p4volt = '';
+  @HiveField(13)
+  var microPower = '';
+  @HiveField(14)
+  var powerDiode = '';
+  @HiveField(15)
+  var securitySystem = '';
+  @HiveField(16)
+  var waterLeakagePlug1 = '';
+  @HiveField(17)
+  var waterLeakagePlug2 = '';
+  @HiveField(18)
+  var daynight = '';
+  @HiveField(19)
+  var caseDoor = '';
+  @HiveField(20)
+  var excuteTask = '';
+  @HiveField(21)
+  var plug = '';
+  @HiveField(22)
+  var heaterRest = '';
+  @HiveField(23)
+  var coolerRest = '';
+  @HiveField(24)
+  var wirelessPlug1 = '';
+  @HiveField(25)
+  var wirelessPlug2 = '';
+  @HiveField(26)
+  var currentSensor1 = '';
+  @HiveField(27)
+  var currentSensor3 = '';
+  @HiveField(28)
+  var currentSensor6 = '';
+  @HiveField(29)
+  var view = '';
+  @HiveField(30)
+  var activeTasks = '';
+  @HiveField(31)
+  var deactiveTasks = '';
+  @HiveField(32)
+  var inBoxTempFromFirstDay = '';
+  @HiveField(33)
+  var outBoxTempFromFirstDay = '';
+  @HiveField(34)
+  var outBoxHumidityFromFirstDay = '';
+  @HiveField(35)
+  var gsmSignalPower = '';
+  @HiveField(36)
+  var fanCount = '';
+  @HiveField(37)
+  var autoCooler = '';
+  @HiveField(38)
+  var autoHeater = '';
+  @HiveField(39)
+  var wirelessCooler = '';
+  @HiveField(40)
+  var wirelessHeater = '';
+  @HiveField(41)
+  var  temp = '';
 
   PublicReport();
 
