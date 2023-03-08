@@ -166,77 +166,145 @@ class DeviceStatus {
 }
 
 
-
 @HiveType(typeId: 2)
-class Relay {
-  @HiveField(0)
-  var status = '';
+class Relay extends HiveObject {
+  Relay();
+  // your fields and methods here
   @HiveField(1)
-  var relay = '';
+  var status = '';
   @HiveField(2)
-  var timer = '';
+  var relay = '';
   @HiveField(3)
-  var startDate = '';
+  var timer = '';
   @HiveField(4)
-  var startClock = '';
+  var startDate = '';
   @HiveField(5)
-  var endDate = '';
+  var startClock = '';
   @HiveField(6)
-  var endClock = '';
+  var endDate = '';
   @HiveField(7)
-  var humStatus = '';
+  var endClock = '';
   @HiveField(8)
-  var humMax = '';
+  var humStatus = '';
   @HiveField(9)
-  var humMin = '';
+  var humMax = '';
   @HiveField(10)
-  var light = '';
+  var humMin = '';
   @HiveField(11)
-  var lux = '';
+  var light = '';
   @HiveField(12)
-  var tempMin = '';
+  var lux = '';
   @HiveField(13)
+  var tempMin = '';
+  @HiveField(14)
   var tempMax = '';
-
-  Relay({status, relay, timer, date, clock,
-        humStatus, humMax, humMIn});
-
-  set setStatus(String status) => this.status = status;
-  set setRelayStatus(String status) => relay = status;
-  set setTimerStatus(String status) => timer = status;
-  set setStartDate(String date) => startDate = date;
-  set setStartTime(String time) => startClock = time;
-  set setEndDate(String date) => endDate = date;
-  set setEndTime(String time) => endClock = time;
-
-  set setHumidityStatus(String status) => humStatus = status;
-  set setHumidityMax(String max) => humMax = max;
-  set setHumidityMin(String min) => humMin = min;
-
-  set setLightStatus(String status) => light = status;
-  set setLux(String lux) => this.lux = lux;
-
-  set setTempMin(String temp) => tempMin = temp;
-  set setTempMax(String temp) => tempMax = temp;
-
-  get Status => status;
-  get RelayStatus => relay;
-  get Timer => timer;
-  get getStartDate => startDate;
-  get getStartClock => startClock;
-  get getEndDate => endDate;
-  get getEndClock => endClock;
-
-  get humidityStatus => humStatus;
-  get humidityMax => humMax;
-  get humidityMin => humMin;
-
-  get lightStatus => light;
-  get getLux => lux;
-
-  get getTempMax => tempMax;
-  get getTempMin => tempMin;
+  @override
+  void adaptToHive(Map<String, dynamic> fields) {
+    status = fields[1] as String;
+    relay = fields[2] as String;
+    timer = fields[3] as String;
+    startDate = fields[4] as String;
+    startClock = fields[5] as String;
+    endDate = fields[6] as String;
+    endClock = fields[7] as String;
+    humStatus = fields[8] as String;
+    humMax = fields[9] as String;
+    humMin = fields[10] as String;
+    light = fields[11] as String;
+    lux = fields[12] as String;
+    tempMin = fields[13] as String;
+    tempMax = fields[14] as String;
+  }
+  @override
+  Map<String, dynamic> adaptFromHive() {
+    return {
+      '1': status,
+      '2': relay,
+      '3': timer,
+      '4': startDate,
+      '5': startClock,
+      '6': endDate,
+      '7': endClock,
+      '8': humStatus,
+      '9': humMax,
+      '10': humMin,
+      '11': light,
+      '12': lux,
+      '13': tempMin,
+      '14': tempMax
+    };
+  }
 }
+// @HiveType(typeId: 2)
+// class Relay {
+//   @HiveField(1)
+//   var status = '';
+//   @HiveField(2)
+//   var relay = '';
+//   @HiveField(3)
+//   var timer = '';
+//   @HiveField(4)
+//   var startDate = '';
+//   @HiveField(5)
+//   var startClock = '';
+//   @HiveField(6)
+//   var endDate = '';
+//   @HiveField(7)
+//   var endClock = '';
+//   @HiveField(8)
+//   var humStatus = '';
+//   @HiveField(9)
+//   var humMax = '';
+//   @HiveField(10)
+//   var humMin = '';
+//   @HiveField(11)
+//   var light = '';
+//   @HiveField(12)
+//   var lux = '';
+//   @HiveField(13)
+//   var tempMin = '';
+//   @HiveField(14)
+//   var tempMax = '';
+//
+//   Relay({status, relay, timer, date, clock,
+//         humStatus, humMax, humMIn});
+//
+//   set setStatus(String statusw) => this.status = statusw;
+//   set setRelayStatus(String status) => relay = status;
+//   set setTimerStatus(String status) => timer = status;
+//   set setStartDate(String date) => startDate = date;
+//   set setStartTime(String time) => startClock = time;
+//   set setEndDate(String date) => endDate = date;
+//   set setEndTime(String time) => endClock = time;
+//
+//   set setHumidityStatus(String status) => humStatus = status;
+//   set setHumidityMax(String max) => humMax = max;
+//   set setHumidityMin(String min) => humMin = min;
+//
+//   set setLightStatus(String status) => light = status;
+//   set setLux(String lux) => this.lux = lux;
+//
+//   set setTempMin(String temp) => tempMin = temp;
+//   set setTempMax(String temp) => tempMax = temp;
+//
+//   get Status => status;
+//   get RelayStatus => relay;
+//   get Timer => timer;
+//   get getStartDate => startDate;
+//   get getStartClock => startClock;
+//   get getEndDate => endDate;
+//   get getEndClock => endClock;
+//
+//   get humidityStatus => humStatus;
+//   get humidityMax => humMax;
+//   get humidityMin => humMin;
+//
+//   get lightStatus => light;
+//   get getLux => lux;
+//
+//   get getTempMax => tempMax;
+//   get getTempMin => tempMin;
+// }
 
 @HiveType(typeId: 3)
 class Plug {

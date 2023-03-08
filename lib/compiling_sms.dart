@@ -1,38 +1,42 @@
 import 'main.dart';
 import 'models/status.dart';
 
+
+sendSMS(sms) {
+  print('simulation sending sms: $sms');
+}
 compile(String sms) async{
-//   var sms = '''1210 01:04
-// s:A
-// U:A
-// M:N
-// Ti:42
-// TO:27,26
-// HO:26
-// B:N
-// 12EN
-// 5RN
-// 4GN
-// 5MN
-// D1N
-// S:D
-// L1n2n
-// L:Ni
-// d:N
-// E:H
-// P:C
-// r:A
-// WP#1:C-2:C
-// CU:1:DA,3:DA,6:DA
-// V:D
-// Ti#38
-// TO#26
-// H#27
-// i#16
-// F:0
-// C:a
-// 30min
-// WC:C.''';
+  var sms = '''1210 01:04
+s:A
+U:A
+M:N
+Ti:42
+TO:27,26
+HO:26
+B:N
+12EN
+5RN
+4GN
+5MN
+D1N
+S:D
+L1n2n
+L:Ni
+d:N
+E:H
+P:C
+r:A
+WP#1:C-2:C
+CU:1:DA,3:DA,6:DA
+V:D
+Ti#38
+TO#26
+H#27
+i#16
+F:0
+C:a
+30min
+WC:C.''';
 // var sms = '''Cooler:
 // 11/11/11-00:06
 // 11/11/11-23:56
@@ -46,20 +50,20 @@ compile(String sms) async{
 // 11/11/11-00:00
 // 11/11/11-23:55''';
 
-var sms = '''R1:
-OFF,Rd,Td,
-11/11/11-00:01
-11/11/11-23:55
-
-R2:
-ON ,Rd,Td
-96/01/01-00:00
-96/01/01-00:00
-
-R5:
-OFF,Rd,Td
-96/01/01-00:00
-96/01/01-00:00''';
+// var sms = '''R1:
+// OFF,Rd,Td,
+// 11/11/11-00:01
+// 11/11/11-23:55
+//
+// R2:
+// ON ,Rd,Td
+// 96/01/01-00:00
+// 96/01/01-00:00
+//
+// R5:
+// OFF,Rd,Td
+// 96/01/01-00:00
+// 96/01/01-00:00''';
 
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);
@@ -149,28 +153,28 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[1].contains('OFF')) {
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[1].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[1].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
     //start
-    if(list[2].split('-')[0].isNotEmpty) relay.setStartDate = list[2].split('-')[0];
-    if(list[2].split('-')[1].isNotEmpty) relay.setStartTime = list[2].split('-')[1];
+    if(list[2].split('-')[0].isNotEmpty) relay.startDate = list[2].split('-')[0];
+    if(list[2].split('-')[1].isNotEmpty) relay.startClock = list[2].split('-')[1];
     //end
-    if(list[3].split('-')[0].isNotEmpty) relay.setEndDate = list[3].split('-')[0];
-    if(list[3].split('-')[1].isNotEmpty) relay.setEndTime = list[3].split('-')[1];
+    if(list[3].split('-')[0].isNotEmpty) relay.endDate = list[3].split('-')[0];
+    if(list[3].split('-')[1].isNotEmpty) relay.endClock = list[3].split('-')[1];
 
     ///saving data
     deviceStatus.setR1 = relay;
@@ -181,28 +185,28 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[6].contains('OFF')) {
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[6].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[6].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
     //start
-    if(list[7].split('-')[0].isNotEmpty) relay.setStartDate = list[7].split('-')[0];
-    if(list[7].split('-')[1].isNotEmpty) relay.setStartTime = list[7].split('-')[1];
+    if(list[7].split('-')[0].isNotEmpty) relay.startDate = list[7].split('-')[0];
+    if(list[7].split('-')[1].isNotEmpty) relay.startClock = list[7].split('-')[1];
     //end
-    if(list[8].split('-')[0].isNotEmpty) relay.setEndDate = list[8].split('-')[0];
-    if(list[8].split('-')[1].isNotEmpty) relay.setEndTime = list[8].split('-')[1];
+    if(list[8].split('-')[0].isNotEmpty) relay.endDate = list[8].split('-')[0];
+    if(list[8].split('-')[1].isNotEmpty) relay.endClock = list[8].split('-')[1];
 
     ///saving data
     deviceStatus.setR2 = relay;
@@ -213,28 +217,28 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[11].contains('OFF')) {
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[11].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[11].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
     //start
-    if(list[12].split('-')[0].isNotEmpty) relay.setStartDate = list[12].split('-')[0];
-    if(list[12].split('-')[1].isNotEmpty) relay.setStartTime = list[12].split('-')[1];
+    if(list[12].split('-')[0].isNotEmpty) relay.startDate = list[12].split('-')[0];
+    if(list[12].split('-')[1].isNotEmpty) relay.startClock = list[12].split('-')[1];
     //end
-    if(list[13].split('-')[0].isNotEmpty) relay.setEndDate = list[13].split('-')[0];
-    if(list[13].split('-')[1].isNotEmpty) relay.setEndTime = list[13].split('-')[1];
+    if(list[13].split('-')[0].isNotEmpty) relay.endDate = list[13].split('-')[0];
+    if(list[13].split('-')[1].isNotEmpty) relay.endClock = list[13].split('-')[1];
 
     ///saving data
     deviceStatus.setR5 = relay;
@@ -246,44 +250,44 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[1].contains('OFF')) {
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[1].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[1].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
 
     if (list[1].contains('HU')) {
       if(list[1].contains('HU d')) {
-        relay.setHumidityStatus = 'deactive';
+        relay.humStatus = 'deactive';
       } else {
-        relay.setHumidityStatus = 'active';
+        relay.humStatus = 'active';
       }
 
       var setVal = list[4].split(':')[1];
       var min = setVal.split('~')[0];
       var max = setVal.split('~')[1];
 
-      relay.setHumidityMax = max;
-      relay.setHumidityMin = min;
+      relay.humMax = max;
+      relay.humMin = min;
     }
 
     //start
-    if(list[2].split('-')[0].isNotEmpty) relay.setStartDate = list[2].split('-')[0];
-    if(list[2].split('-')[1].isNotEmpty) relay.setStartTime = list[2].split('-')[1];
+    if(list[2].split('-')[0].isNotEmpty) relay.startDate = list[2].split('-')[0];
+    if(list[2].split('-')[1].isNotEmpty) relay.startClock = list[2].split('-')[1];
     //end
-    if(list[3].split('-')[0].isNotEmpty) relay.setEndDate = list[3].split('-')[0];
-    if(list[3].split('-')[1].isNotEmpty) relay.setEndTime = list[3].split('-')[1];
+    if(list[3].split('-')[0].isNotEmpty) relay.endDate = list[3].split('-')[0];
+    if(list[3].split('-')[1].isNotEmpty) relay.endClock = list[3].split('-')[1];
 
     ///saving data
     deviceStatus.setR3 = relay;
@@ -294,28 +298,28 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[7].contains('OF')) { //OF is correct
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[7].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[7].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
     //start
-    if(list[8].split('-')[0].isNotEmpty) relay.setStartDate = list[8].split('-')[0];
-    if(list[8].split('-')[1].isNotEmpty) relay.setStartTime = list[8].split('-')[1];
+    if(list[8].split('-')[0].isNotEmpty) relay.startDate = list[8].split('-')[0];
+    if(list[8].split('-')[1].isNotEmpty) relay.startClock = list[8].split('-')[1];
     //end
-    if(list[9].split('-')[0].isNotEmpty) relay.setEndDate = list[9].split('-')[0];
-    if(list[9].split('-')[1].isNotEmpty) relay.setEndTime = list[9].split('-')[1];
+    if(list[9].split('-')[0].isNotEmpty) relay.endDate = list[9].split('-')[0];
+    if(list[9].split('-')[1].isNotEmpty) relay.endClock = list[9].split('-')[1];
 
     ///saving data
     deviceStatus.setR6 = relay;
@@ -326,39 +330,39 @@ compileSms(sms) {
     List<String> list = sms.split('\n');
 
     if (list[12].contains('OF')) { //OF is correct
-      relay.setStatus = 'OFF';
+      relay.status = 'OFF';
     } else {
-      relay.setStatus = 'ON';
+      relay.status = 'ON';
     }
 
     if (list[12].contains('Rd')) {
-      relay.setRelayStatus = 'deactive';
+      relay.relay = 'deactive';
     } else {
-      relay.setRelayStatus = 'active';
+      relay.relay = 'active';
     }
 
     if (list[12].contains('Td')) {
-      relay.setTimerStatus = 'deactive';
+      relay.timer = 'deactive';
     } else {
-      relay.setTimerStatus = 'active';
+      relay.timer = 'active';
     }
 
     if (list[12].contains('LU')) {
       if (list[12].contains('LU d')) {
-        relay.setLightStatus = 'deactive';
+        relay.light = 'deactive';
       } else {
-        relay.setLightStatus = 'active';
+        relay.light = 'active';
       }
 
       // print(list[15].substring(2, list[15].length));
-      relay.setLux = list[15].substring(2, list[15].length);
+      relay.lux = list[15].substring(2, list[15].length);
     }
     //start
-    if(list[13].split('-')[0].isNotEmpty) relay.setStartDate = list[13].split('-')[0];
-    if(list[13].split('-')[1].isNotEmpty) relay.setStartTime = list[13].split('-')[1];
+    if(list[13].split('-')[0].isNotEmpty) relay.startDate = list[13].split('-')[0];
+    if(list[13].split('-')[1].isNotEmpty) relay.startClock = list[13].split('-')[1];
     //end
-    if(list[14].split('-')[0].isNotEmpty) relay.setEndDate = list[14].split('-')[0];
-    if(list[14].split('-')[1].isNotEmpty) relay.setEndTime = list[14].split('-')[1];
+    if(list[14].split('-')[0].isNotEmpty) relay.endDate = list[14].split('-')[0];
+    if(list[14].split('-')[1].isNotEmpty) relay.endClock = list[14].split('-')[1];
 
     ///saving data
     deviceStatus.setR7 = relay;
@@ -370,14 +374,14 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
-    if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
+    if(list[1].split('-')[0].isNotEmpty) relay.startDate = list[1].split('-')[0];
+    if(list[1].split('-')[1].isNotEmpty) relay.startClock = list[1].split('-')[1];
 
-    if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
-    if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
+    if(list[2].split('-')[0].isNotEmpty) relay.endDate = list[2].split('-')[0];
+    if(list[2].split('-')[1].isNotEmpty) relay.endClock = list[2].split('-')[1];
 
-    relay.setTempMin = list[3].split(':')[1].split('~')[0];
-    relay.setTempMax = list[3].split(':')[1].split('~')[1];
+    relay.tempMin = list[3].split(':')[1].split('~')[0];
+    relay.tempMax = list[3].split(':')[1].split('~')[1];
 
     ///saving data
     deviceStatus.setCooler = relay;
@@ -386,14 +390,14 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if(list[1].split('-')[0].isNotEmpty) relay.setStartDate = list[1].split('-')[0];
-    if(list[1].split('-')[1].isNotEmpty) relay.setStartTime = list[1].split('-')[1];
+    if(list[1].split('-')[0].isNotEmpty) relay.startDate = list[1].split('-')[0];
+    if(list[1].split('-')[1].isNotEmpty) relay.startClock = list[1].split('-')[1];
 
-    if(list[2].split('-')[0].isNotEmpty) relay.setEndDate = list[2].split('-')[0];
-    if(list[2].split('-')[1].isNotEmpty) relay.setEndTime = list[2].split('-')[1];
+    if(list[2].split('-')[0].isNotEmpty) relay.endDate = list[2].split('-')[0];
+    if(list[2].split('-')[1].isNotEmpty) relay.endClock = list[2].split('-')[1];
 
-    relay.setTempMin = list[3].split(':')[1].split('~')[0];
-    relay.setTempMax = list[3].split(':')[1].split('~')[1];
+    relay.tempMin = list[3].split(':')[1].split('~')[0];
+    relay.tempMax = list[3].split(':')[1].split('~')[1];
 
     ///saving data
     deviceStatus.setHeater = relay;

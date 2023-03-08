@@ -59,6 +59,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // compile('sms');
+    ss() async{
+      deviceStatus = await deviceBox.get('info');
+      print(deviceStatus.getR1.status);
+    }
+    ss();
     List page1 = [
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
           onPressed: () {

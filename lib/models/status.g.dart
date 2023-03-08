@@ -112,55 +112,54 @@ class RelayAdapter extends TypeAdapter<Relay> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Relay(
-      status: fields[0] as dynamic,
-      relay: fields[1] as dynamic,
-      timer: fields[2] as dynamic,
-      humStatus: fields[7] as dynamic,
-      humMax: fields[8] as dynamic,
-    )
-      ..startDate = fields[3] as String
-      ..startClock = fields[4] as String
-      ..endDate = fields[5] as String
-      ..endClock = fields[6] as String
-      ..humMin = fields[9] as String
-      ..light = fields[10] as String
-      ..lux = fields[11] as String
-      ..tempMin = fields[12] as String
-      ..tempMax = fields[13] as String;
+    return Relay()
+      ..status = fields[1] as String
+      ..relay = fields[2] as String
+      ..timer = fields[3] as String
+      ..startDate = fields[4] as String
+      ..startClock = fields[5] as String
+      ..endDate = fields[6] as String
+      ..endClock = fields[7] as String
+      ..humStatus = fields[8] as String
+      ..humMax = fields[9] as String
+      ..humMin = fields[10] as String
+      ..light = fields[11] as String
+      ..lux = fields[12] as String
+      ..tempMin = fields[13] as String
+      ..tempMax = fields[14] as String;
   }
 
   @override
   void write(BinaryWriter writer, Relay obj) {
     writer
       ..writeByte(14)
-      ..writeByte(0)
-      ..write(obj.status)
       ..writeByte(1)
-      ..write(obj.relay)
+      ..write(obj.status)
       ..writeByte(2)
-      ..write(obj.timer)
+      ..write(obj.relay)
       ..writeByte(3)
-      ..write(obj.startDate)
+      ..write(obj.timer)
       ..writeByte(4)
-      ..write(obj.startClock)
+      ..write(obj.startDate)
       ..writeByte(5)
-      ..write(obj.endDate)
+      ..write(obj.startClock)
       ..writeByte(6)
-      ..write(obj.endClock)
+      ..write(obj.endDate)
       ..writeByte(7)
-      ..write(obj.humStatus)
+      ..write(obj.endClock)
       ..writeByte(8)
-      ..write(obj.humMax)
+      ..write(obj.humStatus)
       ..writeByte(9)
-      ..write(obj.humMin)
+      ..write(obj.humMax)
       ..writeByte(10)
-      ..write(obj.light)
+      ..write(obj.humMin)
       ..writeByte(11)
-      ..write(obj.lux)
+      ..write(obj.light)
       ..writeByte(12)
-      ..write(obj.tempMin)
+      ..write(obj.lux)
       ..writeByte(13)
+      ..write(obj.tempMin)
+      ..writeByte(14)
       ..write(obj.tempMax);
   }
 
