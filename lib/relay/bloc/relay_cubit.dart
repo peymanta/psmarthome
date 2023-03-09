@@ -29,8 +29,8 @@ class RelayCubit extends Cubit<RelayState> {
       timer = deviceStatus.getR1.timer == 'active' ? true : false;
       sensorState = deviceStatus.getPublicReport.currentSensor1;
 
-      start = Jalali.now();
-      end = Jalali.now();
+      startTime = Jalali.now();
+      endTime = Jalali.now();
     }
     else if (currentPage == Page.Relay6) {
       relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
@@ -40,8 +40,8 @@ class RelayCubit extends Cubit<RelayState> {
       timer = deviceStatus.getR6.timer == 'active' ? true : false;
       sensorState = deviceStatus.getPublicReport.currentSensor6;
 
-      start = Jalali.now();
-      end = Jalali.now();
+      startTime = Jalali.now();
+      endTime = Jalali.now();
     }
     else if (currentPage == Page.Relay3) {
       relayStatus = deviceStatus.getR3.relay == 'active' ? true : false;
@@ -51,16 +51,20 @@ class RelayCubit extends Cubit<RelayState> {
           : false;
       timer = deviceStatus.getR3.timer == 'active' ? true : false;
       sensorState = deviceStatus.getPublicReport.currentSensor3;
+      humidity = deviceStatus.getR3.humStatus == 'active' ? true : false;
 
-      start = Jalali.now();
-      end = Jalali.now();
-      // print()
-    //   endMin = int.parse(deviceStatus.getR3.humMin).toDouble();
-    //   sv = 0;
-    //   ev = 0;
-    // startHum = KnobController(minimum: int.parse(deviceStatus.getR3.humMin).toDouble(), maximum: int.parse(deviceStatus.getR3.humMax).toDouble(), initial: double.parse(deviceStatus.getR3.humMin));
-    // endHum = KnobController(minimum: endMin!, maximum: int.parse(deviceStatus.getR3.humMax).toDouble(), initial: endMin!);
+      startTime = Jalali.now();
+      endTime = Jalali.now();
+    }
+    else if (currentPage == Page.Relay7) {
+      relayStatus = deviceStatus.getR7.relay == 'active' ? true : false;
+      sw = deviceStatus.getR7.status == 'ON' ? true : false;
+      timer = deviceStatus.getR7.timer == 'active' ? true : false;
 
+      // humidity = deviceStatus.getR3.humStatus == 'active' ? true : false;
+
+      startTime = Jalali.now();
+      endTime = Jalali.now();
     }
   }
 
@@ -86,10 +90,10 @@ class RelayCubit extends Cubit<RelayState> {
           '6:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
     }else if (currentPage == Page.Relay3) {
       model.Relay newRelayState = deviceStatus.getR3;
-      relayTimerSensor(newRelayState, '3', currentSensor: deviceStatus.getPublicReport.currentSensor3);
+      relayTimerSensor(deviceStatus.getR3, '3', currentSensor: deviceStatus.getPublicReport.currentSensor3);
 
       sendSMS(
-          '3:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
+          '3:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity! ? 'a' : 'd'}#');
     }
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
@@ -107,15 +111,15 @@ class RelayCubit extends Cubit<RelayState> {
      newRelayState.timer = timer == false ? 'deactive' : 'active';
      if (timer!) {//(statusOfRelay == Status.timer) {
       //in r1 else = timer
-      newRelayState.startClock = '${start!.hour}:${start!.minute}';
-      newRelayState.endClock = '${end!.hour}:${end!.minute}';
+      newRelayState.startClock = '${startTime!.hour}:${startTime!.minute}';
+      newRelayState.endClock = '${endTime!.hour}:${endTime!.minute}';
       if (infinity) {
         //set infinity loop for timer
         newRelayState.startDate = '11/11/11';
         newRelayState.endDate = '11/11/11';
 //sms send
         sendSMS(
-            '$relay:111111,${start!.hour.toString().padLeft(2, '0')}${start!.minute.toString().padLeft(2, '0')}-111111,${end!.hour.toString().padLeft(2, '0')}${end!.minute.toString().padLeft(2, '0')}#');
+            '$relay:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#');
       } else {
         newRelayState.startDate =
             '${startdate!.year.toString().substring(2)}/${startdate!.month}/${startdate!.day}';
@@ -123,7 +127,7 @@ class RelayCubit extends Cubit<RelayState> {
             '${enddate!.year.toString().substring(2)}/${enddate!.month}/${enddate!.day}';
 //sms send
         sendSMS(
-            '$relay:${newRelayState.startDate.replaceAll('/', '')},${start!.hour.toString().padLeft(2, '0')}${start!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${end!.hour.toString().padLeft(2, '0')}${end!.minute.toString().padLeft(2, '0')}#');
+            '$relay:${newRelayState.startDate.replaceAll('/', '')},${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#');
       }
 
       ///set timer status
@@ -136,6 +140,7 @@ class RelayCubit extends Cubit<RelayState> {
         sensorState = currentSensor;
         sendSMS(sensor! ? '$relay:CA#' : '$relay:CD#');
       }
+
     // }
 
     if (relay == '1') {
@@ -145,6 +150,13 @@ class RelayCubit extends Cubit<RelayState> {
       deviceStatus.setR6 = newRelayState;
       deviceStatus.getPublicReport.currentSensor6 = currentSensor;
     }else if (relay == '3') {
+      newRelayState.humStatus = humidity! ? 'active' : 'deactive';
+      if(humidity!) {
+        newRelayState.humMin = sv.toString();
+        newRelayState.humMax = ev.toString();
+        sendSMS('h-min:$sv,max:$ev#'); //run operation if humidity is active
+         }
+
       deviceStatus.setR3 = newRelayState;
       deviceStatus.getPublicReport.currentSensor3 = currentSensor;
     }
@@ -183,6 +195,11 @@ class RelayCubit extends Cubit<RelayState> {
     emit(RelayInitial());
   }
 
+  humidityStatus() {
+    humidity = !humidity!;
+    emit(RelayInitial());
+  }
+
   loop() {
     infinity = !infinity;
     emit(RelayInitial());
@@ -195,20 +212,4 @@ class RelayCubit extends Cubit<RelayState> {
       selectedEndDate = '';
     }
   }
-// humStartChanging(value) {
-//   sv = value.roundToDouble();
-//   endMin = (value + 4.0);
-//
-//   if (ev! < endMin!) ev = value.roundToDouble();
-//   endHum = KnobController(minimum: endMin!, maximum: double.parse(deviceStatus.getR3.humMax), initial: endMin!);
-//   emit(RelayInitial());
-// }
-//   humEndChanging(value) {
-//     endHum!.addOnValueChangedListener((p) {
-//         ev = p.roundToDouble();
-//         emit(RelayInitial());
-//     });
-//
-//     emit(RelayInitial());
-//   }
 }

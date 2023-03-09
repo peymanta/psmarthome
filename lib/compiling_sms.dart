@@ -67,9 +67,20 @@ compile(String sms) async{
 
 var sms = '''R3:
 OFF,Rd,Td,HU d
-01/12/10-05:00
-01/12/10-05:10
-HUM SET:15~70''';
+11/11/11-10:00
+11/11/11-23:57
+HUM SET:15~70
+
+R6:
+OF,Rd,Td
+11/11/11-18:15
+11/11/11-23:55
+
+R7:
+OF,Rd,Td,LU d
+11/11/11-00:01
+11/11/11-01:20
+LU35''';
 
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);

@@ -63,11 +63,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    compile('sms');
+    // compile('sms');
     ss() async{
       deviceStatus = await deviceBox.get('info');
+      print(deviceStatus.getR3.humStatus);
       print(deviceStatus.getR3.humMin);
-      print(deviceStatus.getR3.humMax);
     }
     ss();
     List page1 = [

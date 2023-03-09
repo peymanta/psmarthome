@@ -16,15 +16,15 @@ Status? statusOfRelay = Status.sw;
 bool infinity = false;
 bool? relayStatus;
 
-Jalali? start;
-Jalali? end;
+Jalali? startTime;
+Jalali? endTime;
 
 date.Jalali? startdate;
 date.Jalali? enddate;
-String selectedStartDate='';
-String selectedEndDate='';
+String selectedStartDate = '';
+String selectedEndDate = '';
 
-bool? sw, sensor, timer;
+bool? sw, sensor, timer, humidity, light;
 
 String? sensorState;
 
@@ -33,11 +33,15 @@ String _4image = 'assets/icons/question.png';
 enum Page { Relay1, Relay2, Relay3, Relay4, Relay5, Relay6, Relay7 }
 
 Page? currentPage;
-///hum vars
-double? endMin, sv, ev;
-KnobController? startHum;
-KnobController? endHum;
 
+///hum vars
+double? endMin;
+int? sv, ev;
+KnobController? start; ///start also using for light
+KnobController? end;
+
+
+late String pageNumber;
 
 class Relay extends StatefulWidget {
   const Relay({Key? key}) : super(key: key);
@@ -54,6 +58,19 @@ class _RelayState extends State<Relay> {
     _cubit = RelayCubit();
 
     _cubit!.initRelay();
+    pageNumber = currentPage == Page.Relay1
+        ? '1'
+        : currentPage == Page.Relay2
+        ? '2'
+        : currentPage == Page.Relay3
+        ? '3'
+        : currentPage == Page.Relay4
+        ? '4'
+        : currentPage == Page.Relay5
+        ? '5'
+        : currentPage == Page.Relay6
+        ? '6'
+        : '7';
   }
 
   @override
@@ -62,30 +79,19 @@ class _RelayState extends State<Relay> {
       bloc: _cubit,
       builder: (context, state) {
         if (state is RelayInitial) {
-          return  Scaffold(
-              backgroundColor: NeumorphicColors.background,
-              appBar: AppBar(
-                  backgroundColor: NeumorphicColors.background,
-                  shadowColor: Colors.transparent,
-                  title: Text(
-                    currentPage == Page.Relay1
-                        ? '1'
-                        : currentPage == Page.Relay2
-                            ? '2'
-                            : currentPage == Page.Relay3
-                                ? '3'
-                                : currentPage == Page.Relay4
-                                    ? '4'
-                                    : currentPage == Page.Relay5
-                                        ? '5'
-                                        : currentPage == Page.Relay6
-                                            ? '6'
-                                            : '7',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  iconTheme: IconThemeData(color: Colors.black)),
-              body:Directionality(
-        textDirection: TextDirection.rtl,child: Container(
+          return Scaffold(
+            backgroundColor: NeumorphicColors.background,
+            appBar: AppBar(
+                backgroundColor: NeumorphicColors.background,
+                shadowColor: Colors.transparent,
+                title: Text(
+                  pageNumber,
+                  style: TextStyle(color: Colors.black),
+                ),
+                iconTheme: IconThemeData(color: Colors.black)),
+            body: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Container(
                 color: NeumorphicColors.background,
                 padding: EdgeInsets.all(20),
                 child: currentPage == Page.Relay3
@@ -93,7 +99,7 @@ class _RelayState extends State<Relay> {
                     : currentPage == Page.Relay4
                         ? Relay4()
                         : currentPage == Page.Relay7
-                            ? Relay7()
+                            ? Relays()
                             : Relays(),
               ),
             ),
@@ -638,35 +644,50 @@ Widget Relay7() {
 }
 
 Widget Relays() {
-  if(currentPage == Page.Relay3) {
-  endMin = double.parse(deviceStatus.getR3.humMin);
-  sv = double.parse(deviceStatus.getR3.humMin);
-  ev = double.parse(deviceStatus.getR3.humMin);
-  startHum = KnobController(minimum: double.parse(deviceStatus.getR3.humMin), maximum: double.parse(deviceStatus.getR3.humMax), initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
-  endHum = KnobController(minimum: double.parse(deviceStatus.getR3.humMin), maximum: double.parse(deviceStatus.getR3.humMax),initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
-}
+  if (currentPage == Page.Relay3) {
+    endMin = 0;
+    sv = int.parse(deviceStatus.getR3.humMin);
+    ev = int.parse(deviceStatus.getR3.humMax);
+    start = KnobController(
+        minimum: 5, //0
+        maximum: 95, //70
+        initial:
+            endMin!.clamp(double.parse(deviceStatus.getR3.humMin), 95));
+    end = KnobController(
+        minimum: 9, //0 endmin+4 or 4
+        maximum: 95, //70
+        initial:
+            endMin!.clamp(double.parse(deviceStatus.getR3.humMax), 95));
+  }
+  else if(currentPage == Page.Relay7) {
+    sv = int.parse(deviceStatus.getR7.lux);
+    start = KnobController(
+        minimum: 10, //0
+        maximum: 90, //40
+        initial: double.parse(deviceStatus.getR7.lux));
+  }
   return StatefulBuilder(builder: (context, setState) {
-if(currentPage == Page.Relay3) {
-  startHum!.addOnValueChangedListener((double value) {
-    setState(() {
-      sv = value.roundToDouble();
-      endMin = (value + 4.0) <= 70 ? (value + 4.0) : 70;
+    if (currentPage == Page.Relay3) {
+      start!.addOnValueChangedListener((double value) {
+        setState(() {
+          sv = value.toInt();
+          endMin = (value + 4.0) <= 95 ? (value + 4.0) : 95;
 
-      ev = endMin!.roundToDouble(); //value.roundToDouble();
-    });
-    endHum = KnobController(minimum: endMin!,
-        maximum: double.parse(deviceStatus.getR3.humMax),
-        initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
-  });
+          ev = endMin!.toInt(); //value.roundToDouble();
+        });
+        end = KnobController(
+            minimum: endMin!,
+            maximum: double.parse(deviceStatus.getR3.humMax),
+            initial: endMin!
+                .clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
+      });
 
-  // start = KnobController(minimum: 0, maximum: 30);
-
-  endHum!.addOnValueChangedListener((p) {
-    setState(() {
-      ev = p.roundToDouble();
-    });
-  });
-}
+      end!.addOnValueChangedListener((p) {
+        setState(() {
+          ev = p.toInt();
+        });
+      });
+    }
     return ListView(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
@@ -709,16 +730,16 @@ if(currentPage == Page.Relay3) {
                 value: Status.timer),
           ),
         ),
+
         ///humidity only visible when relay 3 opened
         Visibility(
-            visible: currentPage == Page.Relay3,
-            child:
-            ListTile(
+            visible: currentPage == Page.Relay3 || currentPage == Page.Relay7,
+            child: ListTile(
               onTap: () => _cubit!.changeMode(Status.act),
               title: Container(
                 height: 50,
                 alignment: Alignment.centerLeft,
-                child: Text('Humidity'),
+                child: Text(currentPage == Page.Relay3 ? 'Humidity' : 'Light'),
               ),
               leading: SizedBox(
                 width: 100,
@@ -726,33 +747,37 @@ if(currentPage == Page.Relay3) {
                 child: NeumorphicRadio(
                     onChanged: (v) => _cubit!.changeMode(v!),
                     style: NeumorphicRadioStyle(
-                        selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
+                        selectedColor: blue,
+                        boxShape: NeumorphicBoxShape.circle()),
                     groupValue: statusOfRelay,
                     value: Status.act),
               ),
             )),
 
         ///current sensor only visible when relay 1 or 3 or 6 opened
-    Visibility(
-    visible: currentPage == Page.Relay1 ||currentPage == Page.Relay3 || currentPage == Page.Relay6,child:
-    ListTile(
-          onTap: () => _cubit!.changeMode(Status.sensor),
-          title: Container(
-            height: 80,
-            alignment: Alignment.centerLeft,
-            child: Text('Current sensor'),
-          ),
-          leading: SizedBox(
-            width: 100,
-            height: 100,
-            child: NeumorphicRadio(
-                onChanged: (v) => _cubit!.changeMode(v!),
-                style: NeumorphicRadioStyle(
-                    selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
-                groupValue: statusOfRelay,
-                value: Status.sensor),
-          ),
-        )),
+        Visibility(
+            visible: currentPage == Page.Relay1 ||
+                currentPage == Page.Relay3 ||
+                currentPage == Page.Relay6,
+            child: ListTile(
+              onTap: () => _cubit!.changeMode(Status.sensor),
+              title: Container(
+                height: 80,
+                alignment: Alignment.centerLeft,
+                child: Text('Current sensor'),
+              ),
+              leading: SizedBox(
+                width: 100,
+                height: 100,
+                child: NeumorphicRadio(
+                    onChanged: (v) => _cubit!.changeMode(v!),
+                    style: NeumorphicRadioStyle(
+                        selectedColor: blue,
+                        boxShape: NeumorphicBoxShape.circle()),
+                    groupValue: statusOfRelay,
+                    value: Status.sensor),
+              ),
+            )),
 
         SizedBox(height: 30),
         Padding(
@@ -773,6 +798,7 @@ if(currentPage == Page.Relay3) {
             ),
           ),
         ),
+
         ///timer
         AnimatedOpacity(
           opacity: statusOfRelay != Status.timer ? 0 : 1,
@@ -786,10 +812,10 @@ if(currentPage == Page.Relay3) {
               child: Column(
                 children: [
                   listItemSwitch(
-                      'Timer',
-                          () => _cubit!.timerChangeStatus(),
-                      timer!),
-                  SizedBox(height: 20,),
+                      'Timer', () => _cubit!.timerChangeStatus(), timer!),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -802,7 +828,7 @@ if(currentPage == Page.Relay3) {
                                 is24HourMode: true,
                                 isForce2Digits: true,
                                 onTimeChange: (DateTime time) {
-                                  end = Jalali.fromDateTime(time);
+                                  endTime = Jalali.fromDateTime(time);
                                 },
                                 time: DateTime.now(),
                               ),
@@ -820,7 +846,7 @@ if(currentPage == Page.Relay3) {
                                 is24HourMode: true,
                                 isForce2Digits: true,
                                 onTimeChange: (DateTime time) {
-                                  start = Jalali.fromDateTime(time);
+                                  startTime = Jalali.fromDateTime(time);
                                 },
                                 time: DateTime.now(),
                               ),
@@ -830,13 +856,16 @@ if(currentPage == Page.Relay3) {
                       )
                     ],
                   ),
+
                   ///selected dates
                   SizedBox(height: 5),
                   Container(
-                      alignment: Alignment.centerRight, child: Text(selectedStartDate)),
+                      alignment: Alignment.centerRight,
+                      child: Text(selectedStartDate)),
                   SizedBox(height: 5),
                   Container(
-                      alignment: Alignment.centerRight, child: Text(selectedEndDate)),
+                      alignment: Alignment.centerRight,
+                      child: Text(selectedEndDate)),
                   SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(10),
@@ -852,7 +881,8 @@ if(currentPage == Page.Relay3) {
                                     initialDate: date.Jalali.now(),
                                     firstDate: date.Jalali.now(),
                                     lastDate: date.Jalali(3099));
-                                setState(()=>selectedEndDate = 'تاریخ پایان انتخاب شده: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                setState(() => selectedEndDate =
+                                    'تاریخ پایان انتخاب شده: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
                               },
                               child: Center(
                                 child: const Text(
@@ -890,7 +920,8 @@ if(currentPage == Page.Relay3) {
                                     initialDate: date.Jalali.now(),
                                     firstDate: date.Jalali.now(),
                                     lastDate: date.Jalali(3099));
-                                setState(()=> selectedStartDate = 'تاریخ شروع انتخاب شده: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                setState(() => selectedStartDate =
+                                    'تاریخ شروع انتخاب شده: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
                               },
                               child: Center(
                                 child: const Text(
@@ -909,136 +940,40 @@ if(currentPage == Page.Relay3) {
           ),
         ),
 
-        ///only visible when relay 1 or 6 opened
-        Padding(
-            padding: const EdgeInsets.only(bottom: 18.0),
-            child: AnimatedOpacity(
-                opacity: statusOfRelay != Status.sensor ? 0 : 1,
-                duration: Duration(milliseconds: 600),
-                child: AnimatedContainer(
-                  margin: EdgeInsets.only(bottom: 30),
-                  duration: Duration(milliseconds: 600),
-                  height: statusOfRelay != Status.sensor ? 0.01 : 100,
-                  child: Column(
-                    children: [
-                      listItemSwitch(
-                          'Sensor status',
-                              () => _cubit!.currentSensor(),
-                          sensor!),
-                      listItemText('Status', sensorState),
-                    ],
-
-                  ),))),
-
-        AnimatedOpacity(
-            opacity: statusOfRelay != Status.act ? 0 : 1,
+        ///only visible when relay 1 or 6 or 3 opened
+        currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ? AnimatedOpacity(
+            opacity: statusOfRelay != Status.sensor ? 0 : 1,
             duration: Duration(milliseconds: 600),
             child: AnimatedContainer(
-                height: statusOfRelay != Status.act ? 0.01 : 350,
-                curve: Curves.linear,
-                duration: Duration(milliseconds: 200),
-                child: AspectRatio(
-                    aspectRatio: 18.5 / 9,
-                    child: Column(children: [
-                      divider(),
-                      Center(
-                          child: Text('Set Humidity',
-                              style: TextStyle(fontSize: 15),
-                              textDirection: TextDirection.ltr)),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: SizedBox(
-                                    width: 150,
-                                    height: 150,
-                                    child: Knob(
-                                      controller: endHum,
-                                      style: KnobStyle(
-                                        labelStyle: const TextStyle(
-                                            color: Colors.transparent),
-                                        controlStyle: const ControlStyle(
-                                            tickStyle: ControlTickStyle(
-                                                color: Colors.transparent),
-                                            glowColor: Colors.transparent,
-                                            backgroundColor: Color(0xffdde6e8),
-                                            shadowColor: Color(0xffd4d6dd)),
-                                        pointerStyle: PointerStyle(color: blue),
-                                        minorTickStyle: const MinorTickStyle(
-                                            color: Color(0xffaaadba),
-                                            length: 6),
-                                        majorTickStyle: const MajorTickStyle(
-                                            color: Color(0xffaaadba),
-                                            length: 6),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(ev.toString()),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: SizedBox(
-                                    width: 150,
-                                    height: 150,
-                                    child: Knob(
-                                      controller: startHum,
-                                      style: KnobStyle(
-                                        labelStyle: TextStyle(
-                                            color: Colors.transparent),
-                                        controlStyle: ControlStyle(
-                                            tickStyle: ControlTickStyle(
-                                                color: Colors.transparent),
-                                            glowColor: Colors.transparent,
-                                            backgroundColor: Color(0xffdde6e8),
-                                            shadowColor: Color(0xffd4d6dd)),
-                                        pointerStyle: PointerStyle(color: blue),
-                                        minorTickStyle: MinorTickStyle(
-                                            color: Color(0xffaaadba),
-                                            length: 6),
-                                        majorTickStyle: MajorTickStyle(
-                                            color: Color(0xffaaadba),
-                                            length: 6),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(sv.toString())
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                          child: SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: NeumorphicButton(
-                                onPressed: () {},
-                                style: NeumorphicStyle(
-                                    boxShape: NeumorphicBoxShape.circle()),
-                              ))),
-                    ])))),
+              margin: EdgeInsets.only(bottom: 30),
+              duration: Duration(milliseconds: 600),
+              height: statusOfRelay != Status.sensor ? 0.01 : 120,
+              child: Column(
+                children: [
+                  listItemSwitch(
+                      'Sensor status', () => _cubit!.currentSensor(), sensor!),
+                  listItemText('Status', sensorState),
+                ],
+              ),
+            )) : Container(),
+
+         AnimatedOpacity(
+                opacity: statusOfRelay != Status.act ? 0 : 1,
+                duration: Duration(milliseconds: 600),
+                child: AnimatedContainer(
+                    height: statusOfRelay != Status.act ? 0.01 : 400,
+                    curve: Curves.linear,
+                    duration: Duration(milliseconds: 200),
+                    child: currentPage == Page.Relay3
+                        ? relay3humidity() : Column(
+                      children: [
+                        listItemSwitch(
+                            'Light status', () => _cubit!.currentSensor(), sensor!),
+                      ],
+                    )
+    )
+    )
+            ,
 
         Center(
           child: NeumorphicButton(
@@ -1053,10 +988,9 @@ if(currentPage == Page.Relay3) {
         divider(),
 
         listItemSwitch(
-            'Switch ${currentPage == Page.Relay1 ? '1' : currentPage == Page.Relay2 ? '2' : currentPage == Page.Relay5 ? '5' : '6'}',
+            'Switch $pageNumber',
             () => _cubit!.switchMode(),
             sw!),
-
       ],
     );
   });
@@ -1146,7 +1080,108 @@ Widget Relay4() {
   );
 }
 
+Widget relay3humidity() {
+  return Column(children: [
+    listItemSwitch('Humidity status',
+            () => _cubit!.humidityStatus(), humidity!),
+    SizedBox(height: 20,),
+    Center(
+        child: Text('Set Humidity',
+            style: TextStyle(fontSize: 15),
+            textDirection: TextDirection.ltr)),
+    SizedBox(
+      height: 30,
+    ),
+    Row(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Knob(
+                    controller: end,
+                    style: KnobStyle(
+                      labelStyle: const TextStyle(
+                          color: Colors.transparent),
+                      controlStyle: const ControlStyle(
+                          tickStyle: ControlTickStyle(
+                              color: Colors.transparent),
+                          glowColor: Colors.transparent,
+                          backgroundColor: Color(0xffdde6e8),
+                          shadowColor: Color(0xffd4d6dd)),
+                      pointerStyle: PointerStyle(color: blue),
+                      minorTickStyle: const MinorTickStyle(
+                          color: Color(0xffaaadba),
+                          length: 6),
+                      majorTickStyle: const MajorTickStyle(
+                          color: Color(0xffaaadba),
+                          length: 6),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(ev.toString()),
+            ],
+          ),
+        ),
+        Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: Knob(
+                      controller: start,
+                      style: KnobStyle(
+                        labelStyle: TextStyle(
+                            color: Colors.transparent),
+                        controlStyle: ControlStyle(
+                            tickStyle: ControlTickStyle(
+                                color: Colors.transparent),
+                            glowColor: Colors.transparent,
+                            backgroundColor: Color(0xffdde6e8),
+                            shadowColor: Color(0xffd4d6dd)),
+                        pointerStyle: PointerStyle(color: blue),
+                        minorTickStyle: MinorTickStyle(
+                            color: Color(0xffaaadba),
+                            length: 6),
+                        majorTickStyle: MajorTickStyle(
+                            color: Color(0xffaaadba),
+                            length: 6),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(sv.toString())
+              ],
+            )
+        ),
+      ],
+    ),
+    SizedBox(
+      height: 10,
+    ),
+    Center(
+        child: SizedBox(
+            width: 50,
+            height: 50,
+            child: NeumorphicButton(
+              onPressed: () {},
+              style: NeumorphicStyle(
+                  boxShape: NeumorphicBoxShape.circle()),
+            ))),
+  ]);
+}
 ////////////////////
-
-
-
