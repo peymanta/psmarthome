@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
     // compile('sms');
     ss() async{
       deviceStatus = await deviceBox.get('info');
-      print(deviceStatus.getR1.status);
+      print(deviceStatus.getPublicReport.currentSensor1);
     }
     ss();
     List page1 = [

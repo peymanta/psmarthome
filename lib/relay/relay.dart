@@ -25,6 +25,8 @@ String selectedEndDate='';
 
 bool? sw, sensor, timer;
 
+String? sensorState;
+
 String _4image = 'assets/icons/question.png';
 
 enum Page { Relay1, Relay2, Relay3, Relay4, Relay5, Relay6, Relay7 }
@@ -867,7 +869,7 @@ Widget Relays() {
                           'Sensor status',
                               () => _cubit!.currentSensor(),
                           sensor!),
-                      listItemText('Status', deviceStatus.getPublicReport.currentSensor1),
+                      listItemText('Status', sensorState),
                     ],
 
                   ),))),
