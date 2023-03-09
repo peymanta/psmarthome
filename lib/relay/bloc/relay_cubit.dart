@@ -22,6 +22,15 @@ class RelayCubit extends Cubit<RelayState> {
       relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
       sw = deviceStatus.getR1.status == 'ON' ? true : false;
       sensor = deviceStatus.getPublicReport.currentSensor1 == 'AC' ? true : false;
+      timer = deviceStatus.getR1.timer == 'active' ? true : false;
+
+      start = Jalali.now();
+      end = Jalali.now();
+    } else if (currentPage == Page.Relay6) {
+      relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
+      sw = deviceStatus.getR6.status == 'ON' ? true : false;
+      sensor = deviceStatus.getPublicReport.currentSensor6 == 'AC' ? true : false;
+      timer = deviceStatus.getR6.timer == 'active' ? true : false;
 
       start = Jalali.now();
       end = Jalali.now();
@@ -32,18 +41,17 @@ class RelayCubit extends Cubit<RelayState> {
     statusOfRelay = status;
     emit(RelayInitial());
   }
-
+///submit changes of relay
   changeStatus() async {
+    ///for relay 1
     if (currentPage == Page.Relay1) {
       model.Relay newRelayState = deviceStatus.getR1;
-//relay
+    ///relay status
       if (statusOfRelay == Status.sw) {
         newRelayState.relay = relayStatus == false ? 'deactive' : 'active';
-
         deviceStatus.setR1 = newRelayState;
-
         sendSMS(relayStatus == false? '1:off#' : '1:on#');
-      }
+      } ///timer status
       else if (statusOfRelay == Status.timer) {
         //in r1 else = timer
         newRelayState.startClock = '${start!.hour}:${start!.minute}';
@@ -59,15 +67,16 @@ class RelayCubit extends Cubit<RelayState> {
 //sms send
           sendSMS('1:${newRelayState.startDate.replaceAll('/', '')},${start!.hour.toString().padLeft(2, '0')}${start!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${end!.hour.toString().padLeft(2, '0')}${end!.minute.toString().padLeft(2, '0')}#');
         }
-        print(newRelayState.startDate);
-        print(newRelayState.endDate);
+
+        ///set timer status
+        deviceStatus.getR1.timer = timer == false ? 'deactive' : 'active';
       }
-      else {//sensor
+      else { ///sensor
         deviceStatus.getPublicReport.currentSensor1 = sensor! ? 'active' : 'deactive';
         sendSMS(sensor! ? '1:CA#' : '1:CD#');
       }
-      //current sensor
 
+        sendSMS('1:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
     }
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
@@ -91,6 +100,10 @@ class RelayCubit extends Cubit<RelayState> {
   }
   currentSensor() {
     sensor = !sensor!;
+    emit(RelayInitial());
+  }
+  timerChangeStatus() {
+    timer = !timer!;
     emit(RelayInitial());
   }
 

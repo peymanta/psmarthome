@@ -23,7 +23,7 @@ date.Jalali? enddate;
 String selectedStartDate='';
 String selectedEndDate='';
 
-bool? sw, sensor;
+bool? sw, sensor, timer;
 
 String _4image = 'assets/icons/question.png';
 
@@ -715,18 +715,23 @@ Widget Relays() {
             ),
           ),
         ),
-        //timer
+        ///timer
         AnimatedOpacity(
           opacity: statusOfRelay != Status.timer ? 0 : 1,
           duration: Duration(milliseconds: 600),
           child: AnimatedContainer(
-            height: statusOfRelay != Status.timer ? 0.01 : 420,
+            height: statusOfRelay != Status.timer ? 0.01 : 480,
             curve: Curves.linear,
             duration: Duration(milliseconds: 200),
             child: AspectRatio(
               aspectRatio: 18.5 / 9,
               child: Column(
                 children: [
+                  listItemSwitch(
+                      'Timer',
+                          () => _cubit!.timerChangeStatus(),
+                      timer!),
+                  SizedBox(height: 20,),
                   Row(
                     children: [
                       Expanded(
