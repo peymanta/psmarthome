@@ -61,7 +61,7 @@ class RelayCubit extends Cubit<RelayState> {
       sw = deviceStatus.getR7.status == 'ON' ? true : false;
       timer = deviceStatus.getR7.timer == 'active' ? true : false;
 
-      // humidity = deviceStatus.getR3.humStatus == 'active' ? true : false;
+      light = deviceStatus.getR7.light == 'active' ? true : false;
 
       startTime = Jalali.now();
       endTime = Jalali.now();
@@ -94,6 +94,12 @@ class RelayCubit extends Cubit<RelayState> {
 
       sendSMS(
           '3:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity! ? 'a' : 'd'}#');
+    }else if (currentPage == Page.Relay7) {
+      model.Relay newRelayState = deviceStatus.getR7;
+      relayTimerSensor(deviceStatus.getR7, '7');
+
+      sendSMS(
+          '7:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light! ? 'a' : 'd'}#');
     }
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
@@ -159,6 +165,14 @@ class RelayCubit extends Cubit<RelayState> {
 
       deviceStatus.setR3 = newRelayState;
       deviceStatus.getPublicReport.currentSensor3 = currentSensor;
+    }else if (relay == '7') {
+      newRelayState.light = light! ? 'active' : 'deactive';
+      if(light!) {
+        newRelayState.lux = sv.toString();
+        sendSMS('lux:$sv#'); //run operation if light is active
+         }
+
+      deviceStatus.setR7 = newRelayState;
     }
   }
 
@@ -197,6 +211,11 @@ class RelayCubit extends Cubit<RelayState> {
 
   humidityStatus() {
     humidity = !humidity!;
+    emit(RelayInitial());
+  }
+
+  lightStatus() {
+    light = !light!;
     emit(RelayInitial());
   }
 

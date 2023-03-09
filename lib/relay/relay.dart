@@ -687,6 +687,12 @@ Widget Relays() {
           ev = p.toInt();
         });
       });
+    } else if(currentPage == Page.Relay7) {
+      start!.addOnValueChangedListener((p) {
+        setState(() {
+          sv = p.toInt();
+        });
+      });
     }
     return ListView(
       shrinkWrap: true,
@@ -965,12 +971,48 @@ Widget Relays() {
                     curve: Curves.linear,
                     duration: Duration(milliseconds: 200),
                     child: currentPage == Page.Relay3
-                        ? relay3humidity() : Column(
+                        ? relay3humidity() : currentPage == Page.Relay7 ? Column(
                       children: [
                         listItemSwitch(
-                            'Light status', () => _cubit!.currentSensor(), sensor!),
+                            'Light status', () => _cubit!.lightStatus(), light!),
+                        SizedBox(height: 30),
+                        Text('Set light'),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: SizedBox(
+                              width: 150,
+                              height: 150,
+                              child: Knob(
+                                controller: start,
+                                style: KnobStyle(
+                                  labelStyle: const TextStyle(
+                                      color: Colors.transparent),
+                                  controlStyle: const ControlStyle(
+                                      tickStyle: ControlTickStyle(
+                                          color: Colors.transparent),
+                                      glowColor: Colors.transparent,
+                                      backgroundColor: Color(0xffdde6e8),
+                                      shadowColor: Color(0xffd4d6dd)),
+                                  pointerStyle: PointerStyle(color: blue),
+                                  minorTickStyle: const MinorTickStyle(
+                                      color: Color(0xffaaadba),
+                                      length: 6),
+                                  majorTickStyle: const MajorTickStyle(
+                                      color: Color(0xffaaadba),
+                                      length: 6),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(sv.toString()),
                       ],
-                    )
+                    ) : Container()
     )
     )
             ,
