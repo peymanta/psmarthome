@@ -66,6 +66,22 @@ class RelayCubit extends Cubit<RelayState> {
       startTime = Jalali.now();
       endTime = Jalali.now();
     }
+    else if (currentPage == Page.Relay2) {
+      relayStatus = deviceStatus.getR2.relay == 'active' ? true : false;
+      sw = deviceStatus.getR2.status == 'ON' ? true : false;
+      timer = deviceStatus.getR2.timer == 'active' ? true : false;
+
+      startTime = Jalali.now();
+      endTime = Jalali.now();
+    }
+    else if (currentPage == Page.Relay5) {
+      relayStatus = deviceStatus.getR5.relay == 'active' ? true : false;
+      sw = deviceStatus.getR5.status == 'ON' ? true : false;
+      timer = deviceStatus.getR5.timer == 'active' ? true : false;
+
+      startTime = Jalali.now();
+      endTime = Jalali.now();
+    }
   }
 
   changeMode(Status status) {
@@ -100,6 +116,20 @@ class RelayCubit extends Cubit<RelayState> {
 
       sendSMS(
           '7:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light! ? 'a' : 'd'}#');
+    }
+    else if (currentPage == Page.Relay2) {
+      model.Relay newRelayState = deviceStatus.getR2;
+      relayTimerSensor(deviceStatus.getR2, '2');
+
+      sendSMS(
+          '2:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
+    }
+    else if (currentPage == Page.Relay5) {
+      model.Relay newRelayState = deviceStatus.getR5;
+      relayTimerSensor(deviceStatus.getR5, '5');
+
+      sendSMS(
+          '5:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
     }
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
@@ -173,6 +203,10 @@ class RelayCubit extends Cubit<RelayState> {
          }
 
       deviceStatus.setR7 = newRelayState;
+    } else if (relay == '2') {
+      deviceStatus.setR2 = newRelayState;
+    } else if (relay == '5') {
+      deviceStatus.setR2 = newRelayState;
     }
   }
 
@@ -187,6 +221,15 @@ class RelayCubit extends Cubit<RelayState> {
       newRelayState.status = sw == true ? 'ON' : 'OFF';
     } else if (currentPage == Page.Relay3) {
       model.Relay newRelayState = deviceStatus.getR3;
+      newRelayState.status = sw == true ? 'ON' : 'OFF';
+    }else if (currentPage == Page.Relay7) {
+      model.Relay newRelayState = deviceStatus.getR7;
+      newRelayState.status = sw == true ? 'ON' : 'OFF';
+    }else if (currentPage == Page.Relay2) {
+      model.Relay newRelayState = deviceStatus.getR2;
+      newRelayState.status = sw == true ? 'ON' : 'OFF';
+    }else if (currentPage == Page.Relay5) {
+      model.Relay newRelayState = deviceStatus.getR5;
       newRelayState.status = sw == true ? 'ON' : 'OFF';
     }
 
