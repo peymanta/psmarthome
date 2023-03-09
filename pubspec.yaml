@@ -53,6 +53,7 @@ dependencies:
   shamsi_date: ^1.0.1
   persian_datetime_picker: ^2.5.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:knob_widget/knob_widget.dart';
 import 'package:meta/meta.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:shome/compiling_sms.dart';
@@ -11,7 +12,8 @@ part 'relay_state.dart';
 enum Status {
   sw,
   timer,
-  sensor //sensor for r3 = humidity
+  sensor, //sensor for r3 = humidity
+  act
 }
 
 class RelayCubit extends Cubit<RelayState> {
@@ -29,7 +31,8 @@ class RelayCubit extends Cubit<RelayState> {
 
       start = Jalali.now();
       end = Jalali.now();
-    } else if (currentPage == Page.Relay6) {
+    }
+    else if (currentPage == Page.Relay6) {
       relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
       sw = deviceStatus.getR6.status == 'ON' ? true : false;
       sensor =
@@ -39,6 +42,25 @@ class RelayCubit extends Cubit<RelayState> {
 
       start = Jalali.now();
       end = Jalali.now();
+    }
+    else if (currentPage == Page.Relay3) {
+      relayStatus = deviceStatus.getR3.relay == 'active' ? true : false;
+      sw = deviceStatus.getR3.status == 'ON' ? true : false;
+      sensor = deviceStatus.getPublicReport.currentSensor3 == 'active'
+          ? true
+          : false;
+      timer = deviceStatus.getR3.timer == 'active' ? true : false;
+      sensorState = deviceStatus.getPublicReport.currentSensor3;
+
+      start = Jalali.now();
+      end = Jalali.now();
+      // print()
+    //   endMin = int.parse(deviceStatus.getR3.humMin).toDouble();
+    //   sv = 0;
+    //   ev = 0;
+    // startHum = KnobController(minimum: int.parse(deviceStatus.getR3.humMin).toDouble(), maximum: int.parse(deviceStatus.getR3.humMax).toDouble(), initial: double.parse(deviceStatus.getR3.humMin));
+    // endHum = KnobController(minimum: endMin!, maximum: int.parse(deviceStatus.getR3.humMax).toDouble(), initial: endMin!);
+
     }
   }
 
@@ -62,6 +84,12 @@ class RelayCubit extends Cubit<RelayState> {
 
       sendSMS(
           '6:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
+    }else if (currentPage == Page.Relay3) {
+      model.Relay newRelayState = deviceStatus.getR3;
+      relayTimerSensor(newRelayState, '3', currentSensor: deviceStatus.getPublicReport.currentSensor3);
+
+      sendSMS(
+          '3:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
     }
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
@@ -116,6 +144,9 @@ class RelayCubit extends Cubit<RelayState> {
     } else if (relay == '6') {
       deviceStatus.setR6 = newRelayState;
       deviceStatus.getPublicReport.currentSensor6 = currentSensor;
+    }else if (relay == '3') {
+      deviceStatus.setR3 = newRelayState;
+      deviceStatus.getPublicReport.currentSensor3 = currentSensor;
     }
   }
 
@@ -127,6 +158,9 @@ class RelayCubit extends Cubit<RelayState> {
       newRelayState.status = sw == true ? 'ON' : 'OFF';
     } else if (currentPage == Page.Relay6) {
       model.Relay newRelayState = deviceStatus.getR6;
+      newRelayState.status = sw == true ? 'ON' : 'OFF';
+    } else if (currentPage == Page.Relay3) {
+      model.Relay newRelayState = deviceStatus.getR3;
       newRelayState.status = sw == true ? 'ON' : 'OFF';
     }
 
@@ -161,4 +195,20 @@ class RelayCubit extends Cubit<RelayState> {
       selectedEndDate = '';
     }
   }
+// humStartChanging(value) {
+//   sv = value.roundToDouble();
+//   endMin = (value + 4.0);
+//
+//   if (ev! < endMin!) ev = value.roundToDouble();
+//   endHum = KnobController(minimum: endMin!, maximum: double.parse(deviceStatus.getR3.humMax), initial: endMin!);
+//   emit(RelayInitial());
+// }
+//   humEndChanging(value) {
+//     endHum!.addOnValueChangedListener((p) {
+//         ev = p.roundToDouble();
+//         emit(RelayInitial());
+//     });
+//
+//     emit(RelayInitial());
+//   }
 }

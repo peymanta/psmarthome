@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
 import 'package:shome/models/status.dart';
 import 'package:shome/relay/bloc/relay_cubit.dart';
@@ -13,18 +14,21 @@ import 'package:shome/temp/temp_screen.dart';
 import 'package:shome/ups/ups.dart';
 
 import 'HomeScreens.dart';
+import 'a.dart';
 import 'compiling_sms.dart';
 import 'outlet/OutletPage.dart';
 import 'models/home_screen_items.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 bool securityState = true;
 late DeviceStatus deviceStatus;
 late Box deviceBox;
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Hive
-    ..init(Directory.current.path)
+    ..init((await getApplicationDocumentsDirectory()).path)
     ..registerAdapter(DeviceStatusAdapter())
     ..registerAdapter(RelayAdapter())
     ..registerAdapter(PlugAdapter())
@@ -59,13 +63,21 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // compile('sms');
+    compile('sms');
     ss() async{
       deviceStatus = await deviceBox.get('info');
-      print(deviceStatus.getPublicReport.currentSensor1);
+      print(deviceStatus.getR3.humMin);
+      print(deviceStatus.getR3.humMax);
     }
     ss();
     List page1 = [
+      // HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
+      //     onPressed: () {
+      //   currentPlug = PlugNumber.plug1;
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => DualPotentiometer()));
+      // }),
+
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
           onPressed: () {
         currentPlug = PlugNumber.plug1;

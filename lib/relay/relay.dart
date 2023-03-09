@@ -6,6 +6,7 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import 'package:shome/colors.dart';
 import 'package:shome/outlet/OutletPage.dart';
 
+import '../a.dart' as a;
 import '../main.dart';
 import 'bloc/relay_cubit.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -32,6 +33,11 @@ String _4image = 'assets/icons/question.png';
 enum Page { Relay1, Relay2, Relay3, Relay4, Relay5, Relay6, Relay7 }
 
 Page? currentPage;
+///hum vars
+double? endMin, sv, ev;
+KnobController? startHum;
+KnobController? endHum;
+
 
 class Relay extends StatefulWidget {
   const Relay({Key? key}) : super(key: key);
@@ -56,9 +62,7 @@ class _RelayState extends State<Relay> {
       bloc: _cubit,
       builder: (context, state) {
         if (state is RelayInitial) {
-          return Directionality(
-            textDirection: TextDirection.rtl,
-            child: Scaffold(
+          return  Scaffold(
               backgroundColor: NeumorphicColors.background,
               appBar: AppBar(
                   backgroundColor: NeumorphicColors.background,
@@ -80,11 +84,12 @@ class _RelayState extends State<Relay> {
                     style: TextStyle(color: Colors.black),
                   ),
                   iconTheme: IconThemeData(color: Colors.black)),
-              body: Container(
+              body:Directionality(
+        textDirection: TextDirection.rtl,child: Container(
                 color: NeumorphicColors.background,
                 padding: EdgeInsets.all(20),
                 child: currentPage == Page.Relay3
-                    ? Relay3()
+                    ? Relays()
                     : currentPage == Page.Relay4
                         ? Relay4()
                         : currentPage == Page.Relay7
@@ -633,7 +638,35 @@ Widget Relay7() {
 }
 
 Widget Relays() {
+  if(currentPage == Page.Relay3) {
+  endMin = double.parse(deviceStatus.getR3.humMin);
+  sv = double.parse(deviceStatus.getR3.humMin);
+  ev = double.parse(deviceStatus.getR3.humMin);
+  startHum = KnobController(minimum: double.parse(deviceStatus.getR3.humMin), maximum: double.parse(deviceStatus.getR3.humMax), initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
+  endHum = KnobController(minimum: double.parse(deviceStatus.getR3.humMin), maximum: double.parse(deviceStatus.getR3.humMax),initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
+}
   return StatefulBuilder(builder: (context, setState) {
+if(currentPage == Page.Relay3) {
+  startHum!.addOnValueChangedListener((double value) {
+    setState(() {
+      sv = value.roundToDouble();
+      endMin = (value + 4.0) <= 70 ? (value + 4.0) : 70;
+
+      ev = endMin!.roundToDouble(); //value.roundToDouble();
+    });
+    endHum = KnobController(minimum: endMin!,
+        maximum: double.parse(deviceStatus.getR3.humMax),
+        initial: endMin!.clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
+  });
+
+  // start = KnobController(minimum: 0, maximum: 30);
+
+  endHum!.addOnValueChangedListener((p) {
+    setState(() {
+      ev = p.roundToDouble();
+    });
+  });
+}
     return ListView(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
@@ -676,9 +709,32 @@ Widget Relays() {
                 value: Status.timer),
           ),
         ),
-    ///only visible when relay 1 or 6 opened
+        ///humidity only visible when relay 3 opened
+        Visibility(
+            visible: currentPage == Page.Relay3,
+            child:
+            ListTile(
+              onTap: () => _cubit!.changeMode(Status.act),
+              title: Container(
+                height: 50,
+                alignment: Alignment.centerLeft,
+                child: Text('Humidity'),
+              ),
+              leading: SizedBox(
+                width: 100,
+                height: 100,
+                child: NeumorphicRadio(
+                    onChanged: (v) => _cubit!.changeMode(v!),
+                    style: NeumorphicRadioStyle(
+                        selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
+                    groupValue: statusOfRelay,
+                    value: Status.act),
+              ),
+            )),
+
+        ///current sensor only visible when relay 1 or 3 or 6 opened
     Visibility(
-    visible: currentPage == Page.Relay1 || currentPage == Page.Relay6,child:
+    visible: currentPage == Page.Relay1 ||currentPage == Page.Relay3 || currentPage == Page.Relay6,child:
     ListTile(
           onTap: () => _cubit!.changeMode(Status.sensor),
           title: Container(
@@ -874,6 +930,116 @@ Widget Relays() {
 
                   ),))),
 
+        AnimatedOpacity(
+            opacity: statusOfRelay != Status.act ? 0 : 1,
+            duration: Duration(milliseconds: 600),
+            child: AnimatedContainer(
+                height: statusOfRelay != Status.act ? 0.01 : 350,
+                curve: Curves.linear,
+                duration: Duration(milliseconds: 200),
+                child: AspectRatio(
+                    aspectRatio: 18.5 / 9,
+                    child: Column(children: [
+                      divider(),
+                      Center(
+                          child: Text('Set Humidity',
+                              style: TextStyle(fontSize: 15),
+                              textDirection: TextDirection.ltr)),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 150,
+                                    child: Knob(
+                                      controller: endHum,
+                                      style: KnobStyle(
+                                        labelStyle: const TextStyle(
+                                            color: Colors.transparent),
+                                        controlStyle: const ControlStyle(
+                                            tickStyle: ControlTickStyle(
+                                                color: Colors.transparent),
+                                            glowColor: Colors.transparent,
+                                            backgroundColor: Color(0xffdde6e8),
+                                            shadowColor: Color(0xffd4d6dd)),
+                                        pointerStyle: PointerStyle(color: blue),
+                                        minorTickStyle: const MinorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                        majorTickStyle: const MajorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(ev.toString()),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 150,
+                                    child: Knob(
+                                      controller: startHum,
+                                      style: KnobStyle(
+                                        labelStyle: TextStyle(
+                                            color: Colors.transparent),
+                                        controlStyle: ControlStyle(
+                                            tickStyle: ControlTickStyle(
+                                                color: Colors.transparent),
+                                            glowColor: Colors.transparent,
+                                            backgroundColor: Color(0xffdde6e8),
+                                            shadowColor: Color(0xffd4d6dd)),
+                                        pointerStyle: PointerStyle(color: blue),
+                                        minorTickStyle: MinorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                        majorTickStyle: MajorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(sv.toString())
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                          child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: NeumorphicButton(
+                                onPressed: () {},
+                                style: NeumorphicStyle(
+                                    boxShape: NeumorphicBoxShape.circle()),
+                              ))),
+                    ])))),
+
         Center(
           child: NeumorphicButton(
             onPressed: () => _cubit!.changeStatus(),
@@ -889,7 +1055,8 @@ Widget Relays() {
         listItemSwitch(
             'Switch ${currentPage == Page.Relay1 ? '1' : currentPage == Page.Relay2 ? '2' : currentPage == Page.Relay5 ? '5' : '6'}',
             () => _cubit!.switchMode(),
-            sw!)
+            sw!),
+
       ],
     );
   });
@@ -978,3 +1145,8 @@ Widget Relay4() {
     ],
   );
 }
+
+////////////////////
+
+
+
