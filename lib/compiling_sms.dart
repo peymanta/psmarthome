@@ -4,39 +4,42 @@ import 'models/status.dart';
 
 sendSMS(sms) {
   print('simulation sending sms: $sms');
+
+  showMessage('operation completed');
 }
 compile(String sms) async{
-//   var sms = '''1210 01:04
-// s:A
-// U:A
-// M:N
-// Ti:42
-// TO:27,26
-// HO:26
-// B:N
-// 12EN
-// 5RN
-// 4GN
-// 5MN
-// D1N
-// S:D
-// L1n2n
-// L:Ni
-// d:N
-// E:H
-// P:C
-// r:A
-// WP#1:C-2:C
-// CU:1:DA,3:DA,6:DA
-// V:D
-// Ti#38
-// TO#26
-// H#27
-// i#16
-// F:0
-// C:a
-// 30min
-// WC:C.''';
+  var sms = '''1210 01:04
+s:A
+U:A
+M:N
+Ti:42
+TO:27,26
+HO:26
+B:N
+12EN
+5RN
+4GN
+5MN
+D1N
+S:D
+L1n2n
+L:Ni
+d:N
+E:H
+P:C
+r:A
+WP#1:C-2:C
+CU:1:DA,3:DA,6:DA
+V:D
+Ti#38
+TO#26
+H#27
+i#16
+F:0
+C:a
+30min
+WC:C.''';
+
 // var sms = '''Cooler:
 // 11/11/11-00:06
 // 11/11/11-23:56
@@ -65,22 +68,22 @@ compile(String sms) async{
 // 96/01/01-00:00
 // 96/01/01-00:00''';
 
-var sms = '''R3:
-OFF,Rd,Td,HU d
-11/11/11-10:00
-11/11/11-23:57
-HUM SET:15~70
-
-R6:
-OF,Rd,Td
-11/11/11-18:15
-11/11/11-23:55
-
-R7:
-OF,Rd,Td,LU d
-11/11/11-00:01
-11/11/11-01:20
-LU35''';
+// var sms = '''R3:
+// OFF,Rd,Td,HU d
+// 11/11/11-10:00
+// 11/11/11-23:57
+// HUM SET:15~70
+//
+// R6:
+// OF,Rd,Td
+// 11/11/11-18:15
+// 11/11/11-23:55
+//
+// R7:
+// OF,Rd,Td,LU d
+// 11/11/11-00:01
+// 11/11/11-01:20
+// LU35''';
 
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);

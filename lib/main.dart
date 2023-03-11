@@ -25,6 +25,8 @@ import 'package:path_provider/path_provider.dart';
 bool securityState = true;
 late DeviceStatus deviceStatus;
 late Box deviceBox;
+
+late BuildContext buildContext;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive
@@ -56,27 +58,19 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // await box.put('a', 'hello');
-    //
   }
 
   @override
   Widget build(BuildContext context) {
+    buildContext = context;
     // compile('sms');
     ss() async{
       deviceStatus = await deviceBox.get('info');
-      print(deviceStatus.getR3.humStatus);
-      print(deviceStatus.getR3.humMin);
+      print(deviceStatus.getPLug1.getUPStatus);
+      // print(deviceStatus.getPLug1.getDownStatus);
     }
     ss();
     List page1 = [
-      // HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
-      //     onPressed: () {
-      //   currentPlug = PlugNumber.plug1;
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => DualPotentiometer()));
-      // }),
 
       HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
           onPressed: () {
@@ -208,4 +202,8 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.mouse,
         // etc.
       };
+}
+
+showMessage(msg) {
+  ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(content: Text(msg)));
 }

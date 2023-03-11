@@ -398,7 +398,7 @@ Widget actulator(cubit, context, {bool cooler= true}) {
           alignment: Alignment.centerLeft,
           child: Text('Hub'),
         ),
-        leading: NeumorphicSwitch(value: !timer),
+        leading: NeumorphicSwitch(value: !false),
       ),
       SizedBox(height: 10,),
       ListTile(
