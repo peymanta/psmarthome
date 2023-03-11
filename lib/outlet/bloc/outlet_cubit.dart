@@ -176,5 +176,7 @@ print('wwqq'+plug.getDownEndClock.split(':')[0]);
       deviceStatus.publicReport.waterLeakagePlug2 = waterLeakPlug! ? 'yes' : 'deactived by key';
     }
     deviceBox.put('info', deviceStatus);
+
+    emit(OutletInitial());
   }
 }

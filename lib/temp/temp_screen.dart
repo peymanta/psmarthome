@@ -285,64 +285,70 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                     width: 150,
                     height: 150,
                     child: Knob(
-                      controller: start,
+                      controller: end,
                       style: KnobStyle(
-                        labelStyle: TextStyle(color: Colors.transparent),
-                        controlStyle: ControlStyle(
-                            tickStyle:
-                                ControlTickStyle(color: Colors.transparent),
+                        labelStyle: const TextStyle(
+                            color: Colors.transparent),
+                        controlStyle: const ControlStyle(
+                            tickStyle: ControlTickStyle(
+                                color: Colors.transparent),
                             glowColor: Colors.transparent,
                             backgroundColor: Color(0xffdde6e8),
                             shadowColor: Color(0xffd4d6dd)),
                         pointerStyle: PointerStyle(color: blue),
-                        minorTickStyle:
-                            MinorTickStyle(color: Color(0xffaaadba), length: 6),
-                        majorTickStyle:
-                            MajorTickStyle(color: Color(0xffaaadba), length: 6),
+                        minorTickStyle: const MinorTickStyle(
+                            color: Color(0xffaaadba),
+                            length: 6),
+                        majorTickStyle: const MajorTickStyle(
+                            color: Color(0xffaaadba),
+                            length: 6),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(sv.toString())
+                Text(ev.toString()),
               ],
             ),
           ),
           Expanded(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: Knob(
-                      controller: end,
-                      style: KnobStyle(
-                        labelStyle: TextStyle(color: Colors.transparent),
-                        controlStyle: ControlStyle(
-                            tickStyle:
-                                ControlTickStyle(color: Colors.transparent),
-                            glowColor: Colors.transparent,
-                            backgroundColor: Color(0xffdde6e8),
-                            shadowColor: Color(0xffd4d6dd)),
-                        pointerStyle: PointerStyle(color: blue),
-                        minorTickStyle:
-                            MinorTickStyle(color: Color(0xffaaadba), length: 6),
-                        majorTickStyle:
-                            MajorTickStyle(color: Color(0xffaaadba), length: 6),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: Knob(
+                        controller: start,
+                        style: KnobStyle(
+                          labelStyle: TextStyle(
+                              color: Colors.transparent),
+                          controlStyle: ControlStyle(
+                              tickStyle: ControlTickStyle(
+                                  color: Colors.transparent),
+                              glowColor: Colors.transparent,
+                              backgroundColor: Color(0xffdde6e8),
+                              shadowColor: Color(0xffd4d6dd)),
+                          pointerStyle: PointerStyle(color: blue),
+                          minorTickStyle: MinorTickStyle(
+                              color: Color(0xffaaadba),
+                              length: 6),
+                          majorTickStyle: MajorTickStyle(
+                              color: Color(0xffaaadba),
+                              length: 6),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(ev.toString())
-              ],
-            ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(sv.toString())
+                ],
+              )
           ),
         ],
       ),

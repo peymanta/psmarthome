@@ -136,7 +136,7 @@ class _OutletState extends State<Outlet> {
                       ),
                       divider(),
                       ListTile(
-                        onTap: () => ,
+                        onTap: () => _cubit!.waterLeakageStatus(),
                         title: Container(
                           alignment: Alignment.centerLeft,
                           child: Text('Water leak detector'),
