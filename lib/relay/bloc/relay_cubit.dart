@@ -231,6 +231,9 @@ class RelayCubit extends Cubit<RelayState> {
     }else if (currentPage == Page.Relay5) {
       model.Relay newRelayState = deviceStatus.getR5;
       newRelayState.status = sw == true ? 'ON' : 'OFF';
+    }else if (currentPage == Page.Relay4) {
+      model.Relay newRelayState = deviceStatus.getR4;
+      newRelayState.status = sw == true ? 'ON' : 'OFF';
     }
 
     await deviceBox.put('info', deviceStatus);
@@ -273,5 +276,9 @@ class RelayCubit extends Cubit<RelayState> {
       selectedStartDate = '';
       selectedEndDate = '';
     }
+  }
+  
+  relay4Switch() {
+    sendSMS('4:on#');
   }
 }

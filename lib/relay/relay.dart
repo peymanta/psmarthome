@@ -644,6 +644,11 @@ Widget Relay7() {
 }
 
 Widget Relays() {
+  double rheight = currentPage == Page.Relay2 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
+  : currentPage == Page.Relay3 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 950 : 0)
+  : currentPage == Page.Relay5 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 760 : 0)
+  : currentPage == Page.Relay6 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 450 : 870 : 0)
+  :(sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 540 : 890 : 0);
   if (currentPage == Page.Relay3) {
     endMin = 0;
     sv = int.parse(deviceStatus.getR3.humMin);
@@ -664,7 +669,7 @@ Widget Relays() {
     start = KnobController(
         minimum: 1,
         maximum: 50,
-        initial: double.parse(deviceStatus.getR7.lux));
+        initial: double.parse(deviceStatus.getR7.lux).clamp(1, 50));
   }
   return StatefulBuilder(builder: (context, setState) {
     if (currentPage == Page.Relay3) {
@@ -698,336 +703,349 @@ Widget Relays() {
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       children: [
-        ListTile(
-          onTap: () => _cubit!.changeMode(Status.sw),
-          title: Container(
-            alignment: Alignment.centerLeft,
-            child: Text('Switch'),
-          ),
-          leading: SizedBox(
-            width: 100,
-            height: 100,
-            child: NeumorphicRadio(
-                onChanged: (v) => _cubit!.changeMode(v!),
-                style: NeumorphicRadioStyle(
-                    selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
-                groupValue: statusOfRelay,
-                value: Status.sw),
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        ListTile(
-          onTap: () => _cubit!.changeMode(Status.timer),
-          title: Container(
-            height: 50,
-            alignment: Alignment.centerLeft,
-            child: Text('Timer'),
-          ),
-          leading: SizedBox(
-            width: 100,
-            height: 100,
-            child: NeumorphicRadio(
-                onChanged: (v) => _cubit!.changeMode(v!),
-                style: NeumorphicRadioStyle(
-                    selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
-                groupValue: statusOfRelay,
-                value: Status.timer),
-          ),
-        ),
-
-        ///humidity only visible when relay 3 opened
-        Visibility(
-            visible: currentPage == Page.Relay3 || currentPage == Page.Relay7,
-            child: ListTile(
-              onTap: () => _cubit!.changeMode(Status.act),
-              title: Container(
-                height: 50,
-                alignment: Alignment.centerLeft,
-                child: Text(currentPage == Page.Relay3 ? 'Humidity' : 'Light'),
-              ),
-              leading: SizedBox(
-                width: 100,
-                height: 100,
-                child: NeumorphicRadio(
-                    onChanged: (v) => _cubit!.changeMode(v!),
-                    style: NeumorphicRadioStyle(
-                        selectedColor: blue,
-                        boxShape: NeumorphicBoxShape.circle()),
-                    groupValue: statusOfRelay,
-                    value: Status.act),
-              ),
-            )),
-
-        ///current sensor only visible when relay 1 or 3 or 6 opened
-        Visibility(
-            visible: currentPage == Page.Relay1 ||
-                currentPage == Page.Relay3 ||
-                currentPage == Page.Relay6,
-            child: ListTile(
-              onTap: () => _cubit!.changeMode(Status.sensor),
-              title: Container(
-                height: 80,
-                alignment: Alignment.centerLeft,
-                child: Text('Current sensor'),
-              ),
-              leading: SizedBox(
-                width: 100,
-                height: 100,
-                child: NeumorphicRadio(
-                    onChanged: (v) => _cubit!.changeMode(v!),
-                    style: NeumorphicRadioStyle(
-                        selectedColor: blue,
-                        boxShape: NeumorphicBoxShape.circle()),
-                    groupValue: statusOfRelay,
-                    value: Status.sensor),
-              ),
-            )),
-
-        SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 18.0),
-          child: AnimatedOpacity(
-            opacity: statusOfRelay != Status.sw ? 0 : 1,
-            duration: Duration(milliseconds: 600),
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 600),
-              height: statusOfRelay != Status.sw ? 0.01 : 50,
-              child: ListTile(
-                onTap: () => _cubit!.relay(),
-                title: Align(
-                    alignment: Alignment.centerLeft, child: Text('Status')),
-                leading: NeumorphicSwitch(
-                    onChanged: (v) => _cubit!.relay(), value: relayStatus!),
-              ),
-            ),
-          ),
-        ),
-
-        ///timer
         AnimatedOpacity(
-          opacity: statusOfRelay != Status.timer ? 0 : 1,
+          opacity: sw! ? 1 : 0,
           duration: Duration(milliseconds: 600),
           child: AnimatedContainer(
-            height: statusOfRelay != Status.timer ? 0.01 : 480,
-            curve: Curves.linear,
-            duration: Duration(milliseconds: 200),
-            child: AspectRatio(
-              aspectRatio: 18.5 / 9,
-              child: Column(
-                children: [
-                  listItemSwitch(
-                      'Timer', () => _cubit!.timerChangeStatus(), timer!),
-                  SizedBox(
-                    height: 20,
+            height: rheight,
+            duration: Duration(milliseconds: 600),
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () => _cubit!.changeMode(Status.sw),
+                  title: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Switch'),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text('ساعت پایان'),
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: TimePickerSpinner(
-                                is24HourMode: true,
-                                isForce2Digits: true,
-                                onTimeChange: (DateTime time) {
-                                  endTime = Jalali.fromDateTime(time);
-                                },
-                                time: DateTime.now(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text('ساعت شروع'),
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: TimePickerSpinner(
-                                is24HourMode: true,
-                                isForce2Digits: true,
-                                onTimeChange: (DateTime time) {
-                                  startTime = Jalali.fromDateTime(time);
-                                },
-                                time: DateTime.now(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                  leading: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: NeumorphicRadio(
+                        onChanged: (v) => _cubit!.changeMode(v!),
+                        style: NeumorphicRadioStyle(
+                            selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
+                        groupValue: statusOfRelay,
+                        value: Status.sw),
                   ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ListTile(
+                  onTap: () => _cubit!.changeMode(Status.timer),
+                  title: Container(
+                    height: 50,
+                    alignment: Alignment.centerLeft,
+                    child: Text('Timer'),
+                  ),
+                  leading: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: NeumorphicRadio(
+                        onChanged: (v) => _cubit!.changeMode(v!),
+                        style: NeumorphicRadioStyle(
+                            selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
+                        groupValue: statusOfRelay,
+                        value: Status.timer),
+                  ),
+                ),
 
-                  ///selected dates
-                  SizedBox(height: 5),
-                  Container(
-                      alignment: Alignment.centerRight,
-                      child: Text(selectedStartDate)),
-                  SizedBox(height: 5),
-                  Container(
-                      alignment: Alignment.centerRight,
-                      child: Text(selectedEndDate)),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: NeumorphicButton(
-                              padding: EdgeInsets.all(15),
-                              onPressed: () async {
-                                enddate = await date.showPersianDatePicker(
-                                    context: context,
-                                    initialDate: date.Jalali.now(),
-                                    firstDate: date.Jalali.now(),
-                                    lastDate: date.Jalali(3099));
-                                setState(() => selectedEndDate =
-                                    'تاریخ پایان انتخاب شده: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                              },
-                              child: Center(
-                                child: const Text(
-                                  'انتخاب تاریخ پایان',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                            child: Center(
-                                child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: NeumorphicButton(
-                                      onPressed: () {},
-                                      style: NeumorphicStyle(
-                                          boxShape:
-                                              NeumorphicBoxShape.circle()),
-                                    )))),
-                        Expanded(
-                            child: Center(
-                          child: NeumorphicCheckbox(
-                            value: infinity,
-                            onChanged: (value) => _cubit!.loop(),
-                          ),
-                        )),
-                        Expanded(
-                          child: Center(
-                            child: NeumorphicButton(
-                              padding: EdgeInsets.all(15),
-                              onPressed: () async {
-                                startdate = await date.showPersianDatePicker(
-                                    context: context,
-                                    initialDate: date.Jalali.now(),
-                                    firstDate: date.Jalali.now(),
-                                    lastDate: date.Jalali(3099));
-                                setState(() => selectedStartDate =
-                                    'تاریخ شروع انتخاب شده: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
-                              },
-                              child: Center(
-                                child: const Text(
-                                  'انتخاب تاریخ شروع',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                ///humidity only visible when relay 3 opened
+                Visibility(
+                    visible: currentPage == Page.Relay3 || currentPage == Page.Relay7,
+                    child: ListTile(
+                      onTap: () => _cubit!.changeMode(Status.act),
+                      title: Container(
+                        height: 50,
+                        alignment: Alignment.centerLeft,
+                        child: Text(currentPage == Page.Relay3 ? 'Humidity' : 'Light'),
+                      ),
+                      leading: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: NeumorphicRadio(
+                            onChanged: (v) => _cubit!.changeMode(v!),
+                            style: NeumorphicRadioStyle(
+                                selectedColor: blue,
+                                boxShape: NeumorphicBoxShape.circle()),
+                            groupValue: statusOfRelay,
+                            value: Status.act),
+                      ),
+                    )),
+
+                ///current sensor only visible when relay 1 or 3 or 6 opened
+                Visibility(
+                    visible: currentPage == Page.Relay1 ||
+                        currentPage == Page.Relay3 ||
+                        currentPage == Page.Relay6,
+                    child: ListTile(
+                      onTap: () => _cubit!.changeMode(Status.sensor),
+                      title: Container(
+                        height: 80,
+                        alignment: Alignment.centerLeft,
+                        child: Text('Current sensor'),
+                      ),
+                      leading: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: NeumorphicRadio(
+                            onChanged: (v) => _cubit!.changeMode(v!),
+                            style: NeumorphicRadioStyle(
+                                selectedColor: blue,
+                                boxShape: NeumorphicBoxShape.circle()),
+                            groupValue: statusOfRelay,
+                            value: Status.sensor),
+                      ),
+                    )),
+
+                SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 18.0),
+                  child: AnimatedOpacity(
+                    opacity: statusOfRelay != Status.sw ? 0 : 1,
+                    duration: Duration(milliseconds: 600),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 600),
+                      height: statusOfRelay != Status.sw ? 0.01 : 50,
+                      child: ListTile(
+                        onTap: () => _cubit!.relay(),
+                        title: Align(
+                            alignment: Alignment.centerLeft, child: Text('Status')),
+                        leading: NeumorphicSwitch(
+                            onChanged: (v) => _cubit!.relay(), value: relayStatus!),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
+                ),
 
-        ///only visible when relay 1 or 6 or 3 opened
-        currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ? AnimatedOpacity(
-            opacity: statusOfRelay != Status.sensor ? 0 : 1,
-            duration: Duration(milliseconds: 600),
-            child: AnimatedContainer(
-              margin: EdgeInsets.only(bottom: 30),
-              duration: Duration(milliseconds: 600),
-              height: statusOfRelay != Status.sensor ? 0.01 : 120,
-              child: Column(
-                children: [
-                  listItemSwitch(
-                      'Sensor status', () => _cubit!.currentSensor(), sensor!),
-                  listItemText('Status', sensorState),
-                ],
-              ),
-            )) : Container(),
-
-         AnimatedOpacity(
-                opacity: statusOfRelay != Status.act ? 0 : 1,
-                duration: Duration(milliseconds: 600),
-                child: AnimatedContainer(
-                    height: statusOfRelay != Status.act ? 0.01 : 400,
+                ///timer
+                AnimatedOpacity(
+                  opacity: statusOfRelay != Status.timer ? 0 : 1,
+                  duration: Duration(milliseconds: 600),
+                  child: AnimatedContainer(
+                    height: statusOfRelay != Status.timer ? 0.01 : 480,
                     curve: Curves.linear,
                     duration: Duration(milliseconds: 200),
-                    child: currentPage == Page.Relay3
-                        ? relay3humidity() : currentPage == Page.Relay7 ? Column(
-                      children: [
-                        listItemSwitch(
-                            'Light status', () => _cubit!.lightStatus(), light!),
-                        SizedBox(height: 30),
-                        Text('Set light'),
-                        SizedBox(height: 20),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: Knob(
-                                controller: start,
-                                style: KnobStyle(
-                                  labelStyle: const TextStyle(
-                                      color: Colors.transparent),
-                                  controlStyle: const ControlStyle(
-                                      tickStyle: ControlTickStyle(
-                                          color: Colors.transparent),
-                                      glowColor: Colors.transparent,
-                                      backgroundColor: Color(0xffdde6e8),
-                                      shadowColor: Color(0xffd4d6dd)),
-                                  pointerStyle: PointerStyle(color: blue),
-                                  minorTickStyle: const MinorTickStyle(
-                                      color: Color(0xffaaadba),
-                                      length: 6),
-                                  majorTickStyle: const MajorTickStyle(
-                                      color: Color(0xffaaadba),
-                                      length: 6),
+                    child: AspectRatio(
+                      aspectRatio: 18.5 / 9,
+                      child: Column(
+                        children: [
+                          listItemSwitch(
+                              'Timer', () => _cubit!.timerChangeStatus(), timer!),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text('ساعت پایان'),
+                                    Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: TimePickerSpinner(
+                                        is24HourMode: true,
+                                        isForce2Digits: true,
+                                        onTimeChange: (DateTime time) {
+                                          endTime = Jalali.fromDateTime(time);
+                                        },
+                                        time: DateTime.now(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text('ساعت شروع'),
+                                    Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: TimePickerSpinner(
+                                        is24HourMode: true,
+                                        isForce2Digits: true,
+                                        onTimeChange: (DateTime time) {
+                                          startTime = Jalali.fromDateTime(time);
+                                        },
+                                        time: DateTime.now(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+
+                          ///selected dates
+                          SizedBox(height: 5),
+                          Container(
+                              alignment: Alignment.centerRight,
+                              child: Text(selectedStartDate)),
+                          SizedBox(height: 5),
+                          Container(
+                              alignment: Alignment.centerRight,
+                              child: Text(selectedEndDate)),
+                          SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Center(
+                                    child: NeumorphicButton(
+                                      padding: EdgeInsets.all(15),
+                                      onPressed: () async {
+                                        enddate = await date.showPersianDatePicker(
+                                            context: context,
+                                            initialDate: date.Jalali.now(),
+                                            firstDate: date.Jalali.now(),
+                                            lastDate: date.Jalali(3099));
+                                        setState(() => selectedEndDate =
+                                            'تاریخ پایان انتخاب شده: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                      },
+                                      child: Center(
+                                        child: const Text(
+                                          'انتخاب تاریخ پایان',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                    child: Center(
+                                        child: SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                            child: NeumorphicButton(
+                                              onPressed: () {},
+                                              style: NeumorphicStyle(
+                                                  boxShape:
+                                                      NeumorphicBoxShape.circle()),
+                                            )))),
+                                Expanded(
+                                    child: Center(
+                                  child: NeumorphicCheckbox(
+                                    value: infinity,
+                                    onChanged: (value) => _cubit!.loop(),
+                                  ),
+                                )),
+                                Expanded(
+                                  child: Center(
+                                    child: NeumorphicButton(
+                                      padding: EdgeInsets.all(15),
+                                      onPressed: () async {
+                                        startdate = await date.showPersianDatePicker(
+                                            context: context,
+                                            initialDate: date.Jalali.now(),
+                                            firstDate: date.Jalali.now(),
+                                            lastDate: date.Jalali(3099));
+                                        setState(() => selectedStartDate =
+                                            'تاریخ شروع انتخاب شده: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                      },
+                                      child: Center(
+                                        child: const Text(
+                                          'انتخاب تاریخ شروع',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(sv.toString()),
-                      ],
-                    ) : Container()
-    )
-    )
-            ,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
-        Center(
-          child: NeumorphicButton(
-            onPressed: () => _cubit!.changeStatus(),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Text('ثبت تغییرات'),
+                ///only visible when relay 1 or 6 or 3 opened
+                currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ? AnimatedOpacity(
+                    opacity: statusOfRelay != Status.sensor ? 0 : 1,
+                    duration: Duration(milliseconds: 600),
+                    child: AnimatedContainer(
+                      margin: EdgeInsets.only(bottom: 30),
+                      duration: Duration(milliseconds: 600),
+                      height: statusOfRelay != Status.sensor ? 0.01 : 120,
+                      child: Column(
+                        children: [
+                          listItemSwitch(
+                              'Sensor status', () => _cubit!.currentSensor(), sensor!),
+                          listItemText('Status', sensorState),
+                        ],
+                      ),
+                    )) : Container(),
+
+                 AnimatedOpacity(
+                        opacity: statusOfRelay != Status.act ? 0 : 1,
+                        duration: Duration(milliseconds: 600),
+                        child: AnimatedContainer(
+                            height: statusOfRelay != Status.act ? 0.01 : 400,
+                            curve: Curves.linear,
+                            duration: Duration(milliseconds: 200),
+                            child: currentPage == Page.Relay3
+                                ? relay3humidity() : currentPage == Page.Relay7 ? Column(
+                              children: [
+                                listItemSwitch(
+                                    'Light status', () => _cubit!.lightStatus(), light!),
+                                SizedBox(height: 30),
+                                Text('Set light'),
+                                SizedBox(height: 20),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: SizedBox(
+                                      width: 150,
+                                      height: 150,
+                                      child: Knob(
+                                        controller: start,
+                                        style: KnobStyle(
+                                          labelStyle: const TextStyle(
+                                              color: Colors.transparent),
+                                          controlStyle: const ControlStyle(
+                                              tickStyle: ControlTickStyle(
+                                                  color: Colors.transparent),
+                                              glowColor: Colors.transparent,
+                                              backgroundColor: Color(0xffdde6e8),
+                                              shadowColor: Color(0xffd4d6dd)),
+                                          pointerStyle: PointerStyle(color: blue),
+                                          minorTickStyle: const MinorTickStyle(
+                                              color: Color(0xffaaadba),
+                                              length: 6),
+                                          majorTickStyle: const MajorTickStyle(
+                                              color: Color(0xffaaadba),
+                                              length: 6),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(sv.toString()),
+                              ],
+                            ) : Container()
+    )
+    ),
+                Center(
+                  child: NeumorphicButton(
+                    onPressed: () => _cubit!.changeStatus(),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text('ثبت تغییرات'),
+                    ),
+                  ),
+                ),
+
+                divider(),
+              ],
             ),
           ),
-        ),
+        )
+            ,
 
-        divider(),
+
 
         listItemSwitch(
             'Switch $pageNumber',
@@ -1079,7 +1097,8 @@ Widget Relay4() {
                   width: 100,
                   height: 100,
                   child: NeumorphicButton(
-                      onPressed: () {},
+                      onPressed: () => _cubit!.relay4Switch(),
+                      child: Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
                       style: NeumorphicStyle(
                           boxShape: NeumorphicBoxShape.circle(),
                           shape: NeumorphicShape.convex)),

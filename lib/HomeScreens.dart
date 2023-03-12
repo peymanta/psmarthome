@@ -15,7 +15,7 @@ Widget homePage(List items) {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: (MediaQuery.of(context).size.width /
-                      (MediaQuery.of(context).size.height / 1.8))),
+                      (MediaQuery.of(context).size.height / 1.9))),
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return Center(

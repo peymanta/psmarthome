@@ -8,50 +8,50 @@ sendSMS(sms) {
   showMessage('operation completed');
 }
 compile(String sms) async{
-//   var sms = '''1210 01:04
-// s:A
-// U:A
-// M:N
-// Ti:42
-// TO:27,10
-// HO:26
-// B:N
-// 12EN
-// 5RN
-// 4GN
-// 5MN
-// D1N
-// S:D
-// L1n2n
-// L:Ni
-// d:N
-// E:H
-// P:C
-// r:A
-// WP#1:C-2:C
-// CU:1:DA,3:DA,6:DA
-// V:D
-// Ti#38
-// TO#26
-// H#27
-// i#16
-// F:0
-// C:a
-// 30min
-// WC:C.''';
+  var sms = '''1210 01:04
+s:A
+U:A
+M:N
+Ti:42
+TO:27,10
+HO:26
+B:N
+12EN
+5RN
+4GN
+5MN
+D1N
+S:A
+L1n2n
+L:Ni
+d:N
+E:H
+P:C
+r:A
+WP#1:C-2:C
+CU:1:DA,3:DA,6:DA
+V:D
+Ti#38
+TO#26
+H#27
+i#16
+F:0
+C:a
+30min
+WC:C.''';
 
-var sms = '''Cooler:
-11/11/11-00:06
-11/11/11-23:56
-TEMP SET:20~25
-
-WP1UP: ON,Ra,Ta
-11/11/11-16:30
-11/11/11-23:55
-
-WP1DN: ON,Ra,Td
-11/11/11-00:00
-11/11/11-23:55''';
+// var sms = '''Cooler:
+// 11/11/11-00:06
+// 11/11/11-23:56
+// TEMP SET:20~25
+//
+// WP1UP: ON,Ra,Ta
+// 11/11/11-16:30
+// 11/11/11-23:55
+//
+// WP1DN: ON,Ra,Td
+// 11/11/11-00:00
+// 11/11/11-23:55''';
 
 // var sms = '''R1:
 // OFF,Rd,Td,
@@ -114,6 +114,10 @@ compilePublicReport(String sms) {
   model.setMicroPower = lines[11].contains('N') ? 'normal' : 'abnormal';
   model.setPowerDiode = lines[12].contains('N') ? 'normal' : 'burnt';
   model.setSecuritySystem = lines[13].contains('d') ? 'disconnect' : lines[13].contains('A') ? 'active' : 'deactive';
+  if(lines[13].contains('A')) { ///setting pir values
+    constants.put('pir1', 'active');
+    constants.put('pir2', 'active');
+  }
   model.setWaterLeakagePlug1 = lines[14][2]=='n'? 'dry' : lines[14][2]=='d'? 'disconnect connector' : lines[14][2]=='y'? 'yes' : lines[14][2]=='D'? 'deactived by key' : 'no info';
   model.setWaterLeakagePlug2 = lines[14][4]=='n'? 'dry' : lines[14][4]=='d'? 'disconnect connector' : lines[14][4]=='y'? 'yes' : lines[14][4]=='D'? 'deactived by key' : 'no info';
   model.setDayNight = lines[15].contains('Dy') ? 'day':'night';

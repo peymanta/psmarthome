@@ -15,7 +15,6 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../compiling_sms.dart';
 import '../main.dart';
 import '../models/status.dart';
-import 'bloc/heater_cubit.dart';
 import 'bloc/temp_cubit.dart';
 
 TempCubit? _cubit;

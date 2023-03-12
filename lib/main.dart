@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
 import 'package:shome/models/status.dart';
+import 'package:shome/pages.dart';
 import 'package:shome/relay/bloc/relay_cubit.dart';
 import 'package:shome/relay/relay.dart' as relay;
 import 'package:shome/report/report.dart';
@@ -15,6 +17,7 @@ import 'package:shome/ups/ups.dart';
 
 import 'HomeScreens.dart';
 import 'a.dart';
+import 'bloc/main_cubit.dart';
 import 'compiling_sms.dart';
 import 'outlet/OutletPage.dart';
 import 'models/home_screen_items.dart';
@@ -27,6 +30,8 @@ late DeviceStatus deviceStatus;
 late Box deviceBox, tempBox, constants;
 
 late BuildContext buildContext;
+late MainCubit mainController;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive
@@ -62,145 +67,49 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    mainController = MainCubit();
   }
 
   @override
   Widget build(BuildContext context) {
     buildContext = context;
     // compile('sms');
-    ss() async{
+    ss() async {
       deviceStatus = await deviceBox.get('info');
-      print(constants.values);
+      print(constants.get('pir2'));
 
       // print(deviceStatus.getPLug1.getDownStatus);
     }
+
     ss();
-    List page1 = [
-
-      HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
-          onPressed: () {
-        currentPlug = PlugNumber.plug1;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Outlet()));
-      }),
-      HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
-          onPressed: () {
-        currentPlug = PlugNumber.plug2;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Outlet()));
-      }),
-      HomeItem('assets/icons/cooler.png',
-          icon: Icons.wifi_rounded,
-          onPressed: () {
-        isCooler = true;
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CoolerScreen()));
-          }),
-      HomeItem('assets/icons/heater.png',
-          icon: Icons.wifi_rounded,
-          imageWidth: 110.0,
-          imageHeight: 110.0,
-          onPressed: () {
-        isCooler = false;
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HeaterScreen()));
-          }),
-      // HomeItem('assets/icons/shield-inactive.png', iconEnabled: false),
-      HomeItem(
-          securityState
-              ? 'assets/icons/shield-active.png'
-              : 'assets/icons/shield-inactive.png',
-          iconEnabled: false,
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Security()))),
-      HomeItem('assets/icons/report.png',
-          icon: Icons.analytics_outlined,
-          notificationEnabled: true,
-          msgLength: 30,
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Report()))),
-      HomeItem('assets/icons/camera1.png',
-          icon: Icons.shield_rounded,
-          imageWidth: 200.0,
-          imageHeight: 200.0, onPressed: () {
-        relay.currentPage = relay.Page.Relay1;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/question.png', iconEnabled: false, onPressed: () {
-        relay.currentPage = relay.Page.Relay4;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-    ];
-
-    List page2 = [
-      HomeItem('assets/icons/question.png',
-          bottomImage: 'assets/icons/question.png',
-          icon: Icons.access_time_rounded,
-          isBottomImageLeft: true, onPressed: () {
-        relay.currentPage = relay.Page.Relay2;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/question.png',
-          bottomImage: 'assets/icons/bottomImage1.png',
-          icon: Icons.water_drop, onPressed: () {
-        relay.currentPage = relay.Page.Relay3;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/question.png', icon: Icons.access_time_rounded,
-          onPressed: () {
-        relay.currentPage = relay.Page.Relay5;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/question.png',
-          bottomImage: 'assets/icons/bottomImage1.png',
-          iconEnabled: false, onPressed: () {
-        relay.currentPage = relay.Page.Relay6;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/question.png',
-          bottomImage: 'assets/icons/bottomImage2.png',
-          icon: Icons.shield_rounded, onPressed: () {
-        relay.currentPage = relay.Page.Relay7;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => relay.Relay()));
-      }),
-      HomeItem('assets/icons/ups.png',
-          bottomImage: 'assets/icons/bottomImage3.png',
-          iconEnabled: false,
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => UPS()))),
-      HomeItem('assets/icons/setting.png',
-          iconEnabled: false,
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Settings()))),
-    ];
 
     return Scaffold(
         appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: background,
-          title: Container(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'خانه هوشمند',
-                style: TextStyle(color: Colors.black),
-              )),
-        ),
-        body: PageView(
-          children: [
-            Center(
-              child: homePage(page1),
-            ),
-            Center(
-              child: homePage(page2),
-            )
-          ],
+            shadowColor: Colors.transparent,
+            backgroundColor: background,
+            title: Container(
+                alignment: Alignment.centerRight,
+                child: Text('خانه هوشمند',
+                    style: TextStyle(color: Colors.black)))),
+        body: BlocBuilder<MainCubit, MainState>(
+          bloc: mainController,
+          builder: (context, state) {
+            getPages(); //get pages with updated details
+            if (state is MainInitial) {
+              return PageView(
+                children: [
+                  Center(
+                    child: homePage(page1),
+                  ),
+                  Center(
+                    child: homePage(page2),
+                  )
+                ],
+              );
+            } else {
+              return Container();
+            }
+          },
         ));
   }
 }
