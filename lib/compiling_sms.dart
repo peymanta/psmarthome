@@ -13,7 +13,7 @@ s:A
 U:A
 M:N
 Ti:42
-TO:27,26
+TO:27,10
 HO:26
 B:N
 12EN

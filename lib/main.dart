@@ -24,7 +24,7 @@ import 'package:path_provider/path_provider.dart';
 
 bool securityState = true;
 late DeviceStatus deviceStatus;
-late Box deviceBox;
+late Box deviceBox, tempBox, constants;
 
 late BuildContext buildContext;
 void main() async {
@@ -34,10 +34,14 @@ void main() async {
     ..registerAdapter(DeviceStatusAdapter())
     ..registerAdapter(RelayAdapter())
     ..registerAdapter(PlugAdapter())
-    ..registerAdapter(PublicReportAdapter());
+    ..registerAdapter(PublicReportAdapter())
+    ..registerAdapter(ChartDataAdapter());
 
   deviceBox = await Hive.openBox('deviceInfo');
   deviceStatus = deviceBox.get('info') ?? DeviceStatus();
+
+  tempBox = await Hive.openBox('temp');
+  constants = await Hive.openBox('const');
 
   runApp(MaterialApp(
     home: MyApp(),
@@ -66,7 +70,8 @@ class _MyAppState extends State<MyApp> {
     // compile('sms');
     ss() async{
       deviceStatus = await deviceBox.get('info');
-      print(deviceStatus.getPLug1.getUPStatus);
+      print(constants.values);
+
       // print(deviceStatus.getPLug1.getDownStatus);
     }
     ss();
@@ -86,8 +91,11 @@ class _MyAppState extends State<MyApp> {
       }),
       HomeItem('assets/icons/cooler.png',
           icon: Icons.wifi_rounded,
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CoolerScreen()))),
+          onPressed: () {
+        isCooler = true;
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CoolerScreen()));
+          }),
       HomeItem('assets/icons/heater.png',
           icon: Icons.wifi_rounded,
           imageWidth: 110.0,

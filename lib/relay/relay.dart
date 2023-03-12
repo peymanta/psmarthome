@@ -650,20 +650,20 @@ Widget Relays() {
     ev = int.parse(deviceStatus.getR3.humMax);
     start = KnobController(
         minimum: 5, //0
-        maximum: 95, //70
+        maximum: 95, //95
         initial:
             endMin!.clamp(double.parse(deviceStatus.getR3.humMin), 95));
     end = KnobController(
-        minimum: 9, //0 endmin+4 or 4
-        maximum: 95, //70
+        minimum: 9, //5 endmin+4 or 9
+        maximum: 95, //95
         initial:
             endMin!.clamp(double.parse(deviceStatus.getR3.humMax), 95));
   }
   else if(currentPage == Page.Relay7) {
     sv = int.parse(deviceStatus.getR7.lux);
     start = KnobController(
-        minimum: 10, //0
-        maximum: 90, //40
+        minimum: 1,
+        maximum: 50,
         initial: double.parse(deviceStatus.getR7.lux));
   }
   return StatefulBuilder(builder: (context, setState) {
@@ -671,7 +671,7 @@ Widget Relays() {
       start!.addOnValueChangedListener((double value) {
         setState(() {
           sv = value.toInt();
-          endMin = (value + 4.0) <= 95 ? (value + 4.0) : 95;
+          endMin = (value + 5.0) <= 95 ? (value + 5.0) : 95;
 
           ev = endMin!.toInt(); //value.roundToDouble();
         });

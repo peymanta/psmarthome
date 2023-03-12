@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../main.dart';
 
@@ -466,7 +467,10 @@ class PublicReport {
   set setShortReport(shortReport) => this.shortReport = shortReport;
   set setMotionSensor(motionSensor) => this.motionSensor = motionSensor;
   set setBuzzer(buzzer) => this.buzzer = buzzer;
-  set setTemp(temp) => this.temp = temp;
+  set setTemp(temp) {
+    this.temp = temp;
+    tempBox.add( ChartData(Jalali.now().toString().split('/')[1] +'/' + Jalali.now().toString().split('/')[2], double.parse(temp)));
+  }
   set setInboxTemp(inBoxTemp) => this.inBoxTemp = inBoxTemp;
   set setOutBoxTemp(outBoxTemp) => this.outBoxTemp = outBoxTemp;
   set setOutBoxHumidity(outBoxHumidity) => this.outBoxHumidity = outBoxHumidity;
@@ -502,9 +506,12 @@ class PublicReport {
   set setWirelessCooler(wireless) => this.wirelessCooler = wireless;
   set setWirelessHeater(wireless) => this.wirelessHeater = wireless;
   set setView(view) => this.view = view;
-
-
-
-
-
+}
+@HiveType(typeId: 5)
+class ChartData {
+  ChartData(this.x, this.y);
+  @HiveField(1)
+  late String x;
+  @HiveField(2)
+  late double y;
 }

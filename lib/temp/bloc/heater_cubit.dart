@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:shome/main.dart';
 
+import '../../compiling_sms.dart';
 import '../temp_screen.dart';
 
 part 'heater_state.dart';
@@ -11,6 +13,7 @@ class HeaterCubit extends Cubit<HeaterState> {
 
   void status() {
     automatic = !automatic;
+
     emit(HeaterInitial());
   }
 
