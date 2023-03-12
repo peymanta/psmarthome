@@ -100,8 +100,11 @@ class _MyAppState extends State<MyApp> {
           icon: Icons.wifi_rounded,
           imageWidth: 110.0,
           imageHeight: 110.0,
-          onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => HeaterScreen()))),
+          onPressed: () {
+        isCooler = false;
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => HeaterScreen()));
+          }),
       // HomeItem('assets/icons/shield-inactive.png', iconEnabled: false),
       HomeItem(
           securityState

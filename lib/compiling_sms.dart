@@ -8,50 +8,50 @@ sendSMS(sms) {
   showMessage('operation completed');
 }
 compile(String sms) async{
-  var sms = '''1210 01:04
-s:A
-U:A
-M:N
-Ti:42
-TO:27,10
-HO:26
-B:N
-12EN
-5RN
-4GN
-5MN
-D1N
-S:D
-L1n2n
-L:Ni
-d:N
-E:H
-P:C
-r:A
-WP#1:C-2:C
-CU:1:DA,3:DA,6:DA
-V:D
-Ti#38
-TO#26
-H#27
-i#16
-F:0
-C:a
-30min
-WC:C.''';
+//   var sms = '''1210 01:04
+// s:A
+// U:A
+// M:N
+// Ti:42
+// TO:27,10
+// HO:26
+// B:N
+// 12EN
+// 5RN
+// 4GN
+// 5MN
+// D1N
+// S:D
+// L1n2n
+// L:Ni
+// d:N
+// E:H
+// P:C
+// r:A
+// WP#1:C-2:C
+// CU:1:DA,3:DA,6:DA
+// V:D
+// Ti#38
+// TO#26
+// H#27
+// i#16
+// F:0
+// C:a
+// 30min
+// WC:C.''';
 
-// var sms = '''Cooler:
-// 11/11/11-00:06
-// 11/11/11-23:56
-// TEMP SET:20~25
-//
-// WP1UP: ON,Ra,Ta
-// 11/11/11-16:30
-// 11/11/11-23:55
-//
-// WP1DN: ON,Ra,Td
-// 11/11/11-00:00
-// 11/11/11-23:55''';
+var sms = '''Cooler:
+11/11/11-00:06
+11/11/11-23:56
+TEMP SET:20~25
+
+WP1UP: ON,Ra,Ta
+11/11/11-16:30
+11/11/11-23:55
+
+WP1DN: ON,Ra,Td
+11/11/11-00:00
+11/11/11-23:55''';
 
 // var sms = '''R1:
 // OFF,Rd,Td,
@@ -400,8 +400,8 @@ compileSms(sms) {
     if(list[2].split('-')[0].isNotEmpty) relay.endDate = list[2].split('-')[0];
     if(list[2].split('-')[1].isNotEmpty) relay.endClock = list[2].split('-')[1];
 
-    relay.tempMin = list[3].split(':')[1].split('~')[0];
-    relay.tempMax = list[3].split(':')[1].split('~')[1];
+    constants.put('tempMin', list[3].split(':')[1].split('~')[0]);
+    constants.put('tempMax', list[3].split(':')[1].split('~')[1]);
 
     ///saving data
     deviceStatus.setCooler = relay;
@@ -416,8 +416,8 @@ compileSms(sms) {
     if(list[2].split('-')[0].isNotEmpty) relay.endDate = list[2].split('-')[0];
     if(list[2].split('-')[1].isNotEmpty) relay.endClock = list[2].split('-')[1];
 
-    relay.tempMin = list[3].split(':')[1].split('~')[0];
-    relay.tempMax = list[3].split(':')[1].split('~')[1];
+    constants.put('tempMin', list[3].split(':')[1].split('~')[0]);
+    constants.put('tempMax', list[3].split(':')[1].split('~')[1]);
 
     ///saving data
     deviceStatus.setHeater = relay;
