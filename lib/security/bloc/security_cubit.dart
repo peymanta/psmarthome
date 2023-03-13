@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'package:shome/security/security.dart';
 
@@ -17,7 +18,7 @@ class SecurityCubit extends Cubit<SecurityState> {
 
   }
 
-  changeSecurityState () {
+  changeSecurityState () async{
     securityState = !securityState;
 
     pir1 = securityState;
@@ -26,8 +27,10 @@ class SecurityCubit extends Cubit<SecurityState> {
     deviceStatus.getPublicReport.securitySystem = securityState ? 'active' : 'deactive';
     deviceBox.put('info', deviceStatus);
 
-    constants.put('pir1', securityState ? 'active' : 'deactive');
-    constants.put('pir2', securityState ? 'active' : 'deactive');
+    // constants.put('pir1', securityState ? 'active' : 'deactive');
+    // constants.put('pir2', securityState ? 'active' : 'deactive');
+    await Hive.box('const').put('pir1', securityState ? 'active' : 'deactive');
+    await Hive.box('const').put('pir2', securityState ? 'active' : 'deactive');
 
     sendSMS('Security ${securityState ? 'on' : 'off'}');
     emit(SecurityInitial());

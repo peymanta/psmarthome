@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shome/main.dart';
+import 'package:shome/models/status.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../colors.dart';
 import '../outlet/OutletPage.dart';
 import '../temp/temp_screen.dart';
+import 'bloc/report_cubit.dart';
 
 TooltipBehavior? _tooltip;
+ReportCubit? _cubit;
 
 class Report extends StatefulWidget {
   const Report({Key? key}) : super(key: key);
@@ -20,6 +24,7 @@ class _ReportState extends State<Report> {
     // TODO: implement initState
     super.initState();
     _tooltip = TooltipBehavior();
+    _cubit = ReportCubit();
   }
 
   @override
@@ -33,253 +38,170 @@ class _ReportState extends State<Report> {
       body: Container(
         color: background,
         padding: const EdgeInsets.all(20),
-        // child: ListView(
-        //   children: [
-        //     listItemText('Report'),
-        //     button(() {}, 'Report'),
-        //     button(() {}, 'Full Report'),
-        //     button(() {}, 'Version'),
-        //
-        //     divider(),
-        //     listItemText('Device'),
-        //     listItemText('description'),
-        //     divider(),
-        //     listItemText('Graph'),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       height: 10,
-        //     ),
-        //     SizedBox(
-        //       height: 220,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(8.0),
-        //         child: SfCartesianChart(
-        //             primaryXAxis: CategoryAxis(),
-        //             // Chart title
-        //             // title: ChartTitle(text: 'Half yearly sales analysis'),
-        //             // Enable legend
-        //             legend: Legend(isVisible: true),
-        //             // Enable tooltip
-        //             tooltipBehavior: _tooltip,
-        //             series: <LineSeries<SalesData, String>>[
-        //               LineSeries<SalesData, String>(
-        //                   dataSource: <SalesData>[
-        //                     SalesData('Jan', 99),
-        //                     SalesData('Feb', 28),
-        //                     SalesData('Mar', 88),
-        //                     SalesData('Apr', 32),
-        //                     SalesData('May', 70)
-        //                   ],
-        //                   xValueMapper: (SalesData sales, _) => sales.year,
-        //                   yValueMapper: (SalesData sales, _) => sales.sales,
-        //                   // Enable data label
-        //                   dataLabelSettings: DataLabelSettings(isVisible: true))
-        //             ]),
-        //       ),
-        //     ),
-        //
-        //     ///step charts
-        //     SfCartesianChart(
-        //         primaryXAxis: DateTimeAxis(),
-        //         series: <ChartSeries>[
-        //           // Renders step line chart
-        //           StepLineSeries<SalesData, DateTime>(
-        //               dataSource: <SalesData>[
-        //                 SalesData('Jan', 99),
-        //                 SalesData('Feb', 0),
-        //                 SalesData('Mar', 88),
-        //                 SalesData('Apr', 45),
-        //                 SalesData('May', 70)
-        //               ],
-        //               xValueMapper: (SalesData data, _) => DateTime.now(),
-        //               yValueMapper: (SalesData data, _) => data.sales)
-        //         ]),
-        //     SfCartesianChart(
-        //         primaryXAxis: DateTimeAxis(),
-        //         series: <ChartSeries>[
-        //           // Renders step line chart
-        //           StepLineSeries<SalesData, DateTime>(
-        //               dataSource: <SalesData>[
-        //                 SalesData('Jan', 99),
-        //                 SalesData('Feb', 0),
-        //                 SalesData('Mar', 88),
-        //                 SalesData('Apr', 45),
-        //                 SalesData('May', 70)
-        //               ],
-        //               xValueMapper: (SalesData data, _) => DateTime.now(),
-        //               yValueMapper: (SalesData data, _) => data.sales)
-        //         ]),
-        //     SfCartesianChart(
-        //         primaryXAxis: DateTimeAxis(),
-        //         series: <ChartSeries>[
-        //           // Renders step line chart
-        //           StepLineSeries<SalesData, DateTime>(
-        //               dataSource: <SalesData>[
-        //                 SalesData('Jan', 99),
-        //                 SalesData('Feb', 0),
-        //                 SalesData('Mar', 88),
-        //                 SalesData('Apr', 45),
-        //                 SalesData('May', 70)
-        //               ],
-        //               xValueMapper: (SalesData data, _) => DateTime.now(),
-        //               yValueMapper: (SalesData data, _) => data.sales)
-        //         ]),
-        //   ],
-        // ),
+        child: ListView(
+          children: [
+            listItemText('Report'),
+            button(() => _cubit!.report(), 'Report'),
+            button(() => _cubit!.fullReport(), 'Full Report'),
+            button(() => _cubit!.version(), 'Version'),
+
+            divider(),
+            listItemText('Device'),
+            listItemText('description'),
+            divider(),
+            listItemText('Graph'),
+            SizedBox(
+              height: 10,
+            ),
+            listItemText('inbox temp'),
+            chart(chartsObject.inBoxTemps!),
+            listItemText('outbox temp'),
+            chart(chartsObject.outBoxTemps!),
+            listItemText('outbox humidity'),
+            chart(chartsObject.outBoxHumiditys!),
+            listItemText('fan active counts'),
+            chart(chartsObject.fanCounts!),
+            listItemText('mobile signal power'),
+            chart(chartsObject.mobileSignals!),
+            listItemText('battery voltages'),
+            chart(chartsObject.batteryVoltages!),
+            SizedBox(
+              height: 10,
+            ),
+
+            ///step charts
+            listItemText('power outage'),
+            chart(chartsObject.electricalIssuses!, isStep: true),
+            listItemText('wireless plugs/temp actulator'),
+            chart4Lines(chartsObject.onePlugs, chartsObject.twoPlugs, chartsObject.coolers, chartsObject.heaters),
+            listItemText('device resets'),
+            chart(chartsObject.deviceResets!, isStep: true),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget chart(List<ChartData> data, {isStep = false}) {
+  if (data.isNotEmpty && !isStep) {
+    print(1);
+    return SizedBox(
+      height: 220,
+      child: SfCartesianChart(
+          primaryXAxis: CategoryAxis(),
+          legend: Legend(isVisible: false),
+          tooltipBehavior: _tooltip,
+          series: <LineSeries>[
+            LineSeries(
+                dataSource: data.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                // Enable data label
+                dataLabelSettings: DataLabelSettings(isVisible: true))
+          ]),
+    );
+  } else if (data.isNotEmpty && isStep) {
+    return SizedBox(
+      height: 220,
+      child: SfCartesianChart(
+          primaryXAxis: CategoryAxis(),
+          legend: Legend(isVisible: false),
+          tooltipBehavior: _tooltip,
+          series: <StepLineSeries>[
+            StepLineSeries(
+                dataSource: data.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                // Enable data label
+                dataLabelSettings: DataLabelSettings(isVisible: true))
+          ]),
+    );
+  } else {
+    print(2);
+    return SizedBox(
+      height: 220,
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/chart.png',
+            height: 220,
+          ),
+          Positioned.fill(
+              child: Container(
+            child: Center(
+              child: Text('No Data'),
+            ),
+            color: background.withOpacity(.65),
+          ))
+        ],
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+Widget chart4Lines(List<ChartData> data1, data2, data3, data4) {
+  if (data1.isNotEmpty &&
+      data2.isNotEmpty &&
+      data3.isNotEmpty &&
+      data4.isNotEmpty) {
+    return SizedBox(
+      height: 220,
+      child: SfCartesianChart(
+          primaryXAxis: CategoryAxis(),
+          legend: Legend(isVisible: true, width: '40'),
+          tooltipBehavior: _tooltip,
+          series: <StepLineSeries>[
+            StepLineSeries(
+              name: 'plug 1',
+                dataSource: data1.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                dataLabelSettings: DataLabelSettings(isVisible: true)),
+            StepLineSeries(
+              name: 'plug 2',
+              color: yellow,
+                dataSource: data2.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                dataLabelSettings: DataLabelSettings(isVisible: true)),
+            StepLineSeries(
+              name: 'cooler',
+              color: green,
+                dataSource: data3.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                dataLabelSettings: DataLabelSettings(isVisible: true)),
+            StepLineSeries(
+              name: 'heater',
+              color: red,
+                dataSource: data4.toList(),
+                xValueMapper: (data, _) => data.x,
+                yValueMapper: (data, _) => data.y,
+                dataLabelSettings: DataLabelSettings(isVisible: true)),
+          ]),
+    );
+  } else {
+    print(2);
+    return SizedBox(
+      height: 220,
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/chart.png',
+            height: 220,
+          ),
+          Positioned.fill(
+              child: Container(
+            child: Center(
+              child: Text('No Data'),
+            ),
+            color: background.withOpacity(.65),
+          ))
+        ],
       ),
     );
   }

@@ -438,3 +438,69 @@ class ChartDataAdapter extends TypeAdapter<ChartData> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class ChartsAdapter extends TypeAdapter<Charts> {
+  @override
+  final int typeId = 6;
+
+  @override
+  Charts read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Charts()
+      ..inBoxTemps = (fields[1] as List).cast<ChartData>()
+      ..outBoxTemps = (fields[2] as List).cast<ChartData>()
+      ..outBoxHumiditys = (fields[3] as List).cast<ChartData>()
+      ..fanCounts = (fields[4] as List).cast<ChartData>()
+      ..mobileSignals = (fields[5] as List).cast<ChartData>()
+      ..batteryVoltages = (fields[6] as List).cast<ChartData>()
+      ..electricalIssuses = (fields[7] as List).cast<ChartData>()
+      ..onePlugs = (fields[8] as List).cast<ChartData>()
+      ..twoPlugs = (fields[9] as List).cast<ChartData>()
+      ..heaters = (fields[10] as List).cast<ChartData>()
+      ..coolers = (fields[11] as List).cast<ChartData>()
+      ..deviceResets = (fields[12] as List).cast<ChartData>();
+  }
+
+  @override
+  void write(BinaryWriter writer, Charts obj) {
+    writer
+      ..writeByte(12)
+      ..writeByte(1)
+      ..write(obj.inBoxTemps)
+      ..writeByte(2)
+      ..write(obj.outBoxTemps)
+      ..writeByte(3)
+      ..write(obj.outBoxHumiditys)
+      ..writeByte(4)
+      ..write(obj.fanCounts)
+      ..writeByte(5)
+      ..write(obj.mobileSignals)
+      ..writeByte(6)
+      ..write(obj.batteryVoltages)
+      ..writeByte(7)
+      ..write(obj.electricalIssuses)
+      ..writeByte(8)
+      ..write(obj.onePlugs)
+      ..writeByte(9)
+      ..write(obj.twoPlugs)
+      ..writeByte(10)
+      ..write(obj.heaters)
+      ..writeByte(11)
+      ..write(obj.coolers)
+      ..writeByte(12)
+      ..write(obj.deviceResets);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChartsAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

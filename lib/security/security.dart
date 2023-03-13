@@ -22,6 +22,7 @@ class _SecurityState extends State<Security> {
     // TODO: implement initState
     super.initState();
     _cubit = SecurityCubit();
+    _cubit!.init();
   }
 
   @override

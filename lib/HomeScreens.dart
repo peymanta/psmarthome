@@ -28,7 +28,7 @@ Widget homePage(List items) {
                           children: [
                         Center(
                           child: SizedBox(
-                            width: 250,
+                            width: 350,
                             height: 550,
                             child: Neumorphic(
                               margin: const EdgeInsets.all(20),

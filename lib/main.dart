@@ -27,7 +27,8 @@ import 'package:path_provider/path_provider.dart';
 
 bool securityState = true;
 late DeviceStatus deviceStatus;
-late Box deviceBox, tempBox, constants;
+late Charts chartsObject;
+late Box deviceBox, tempBox, constants, chartsBox;
 
 late BuildContext buildContext;
 late MainCubit mainController;
@@ -40,13 +41,17 @@ void main() async {
     ..registerAdapter(RelayAdapter())
     ..registerAdapter(PlugAdapter())
     ..registerAdapter(PublicReportAdapter())
-    ..registerAdapter(ChartDataAdapter());
+    ..registerAdapter(ChartDataAdapter())
+    ..registerAdapter(ChartsAdapter());
 
   deviceBox = await Hive.openBox('deviceInfo');
   deviceStatus = deviceBox.get('info') ?? DeviceStatus();
 
-  tempBox = await Hive.openBox('temp');
-  constants = await Hive.openBox('const');
+  tempBox = await Hive.openBox('temp'); //temp chart
+  constants = await Hive.openBox('const'); //vars
+  chartsBox = await Hive.openBox('charts'); //charts of report page
+
+  chartsObject = chartsBox.get('object') ?? Charts();
 
   runApp(MaterialApp(
     home: MyApp(),
@@ -68,6 +73,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     mainController = MainCubit();
+    mainController.init();
   }
 
   @override
@@ -76,9 +82,12 @@ class _MyAppState extends State<MyApp> {
     // compile('sms');
     ss() async {
       deviceStatus = await deviceBox.get('info');
-      print(constants.get('pir2'));
 
-      // print(deviceStatus.getPLug1.getDownStatus);
+
+      // chartsObject.inBoxTemps.add(ChartData('12/16', 30));
+      // chartsObject.inBoxTemps.add(ChartData('12/19', 50));
+      // chartsObject.inBoxTemps.add(ChartData('12/21', 10));
+      // chartsObject.inBoxTemps.add(ChartData('12/24', 31));
     }
 
     ss();

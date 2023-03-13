@@ -1,3 +1,5 @@
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+
 import 'main.dart';
 import 'models/status.dart';
 
@@ -8,37 +10,37 @@ sendSMS(sms) {
   showMessage('operation completed');
 }
 compile(String sms) async{
-  var sms = '''1210 01:04
-s:A
-U:A
-M:N
-Ti:42
-TO:27,10
-HO:26
-B:N
-12EN
-5RN
-4GN
-5MN
-D1N
-S:A
-L1n2n
-L:Ni
-d:N
-E:H
-P:C
-r:A
-WP#1:C-2:C
-CU:1:DA,3:DA,6:DA
-V:D
-Ti#38
-TO#26
-H#27
-i#16
-F:0
-C:a
-30min
-WC:C.''';
+//   var sms = '''1210 01:04
+// s:A
+// U:A
+// M:N
+// Ti:42
+// TO:27,10
+// HO:26
+// B:N
+// 12EN
+// 5RN
+// 4GN
+// 5MN
+// D1N
+// S:A
+// L1n2n
+// L:Ni
+// d:N
+// E:H
+// P:C
+// r:A
+// WP#1:C-2:C
+// CU:1:DA,3:DA,6:DA
+// V:D
+// Ti#38
+// TO#26
+// H#27
+// i#16
+// F:0
+// C:a
+// 30min
+// WC:C.''';
 
 // var sms = '''Cooler:
 // 11/11/11-00:06
@@ -85,6 +87,22 @@ WC:C.''';
 // 11/11/11-01:20
 // LU35''';
 
+var sms = '''WP2UP: ON,Ra,Td
+11/11/11-00:00
+11/11/11-23:55
+
+WP2DN: ON,Ra,Ta
+11/11/11-00:01
+11/11/11-23:55
+
+RM:A
+SR:m
+R:2
+P2000
+9120232465
+2144168346
+TFMN''';
+
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);
   } else {
@@ -104,9 +122,18 @@ compilePublicReport(String sms) {
   model.setBuzzer = lines[2].contains('A') ? 'active' : 'deactive';
   model.setMotionSensor = lines[3].contains('A') ? 'alarm' : 'normal';
   model.setInboxTemp = lines[4].substring(3);
+  //chart
+  chartsObject.inBoxTemps.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(lines[4].substring(3))));
+
   model.setOutBoxTemp = lines[5].substring(3).split(',')[0];
+  //chart
+  chartsObject.outBoxTemps.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(lines[5].substring(3).split(',')[0])));
+
   model.setTemp = lines[5].substring(3).split(',')[1];
   model.setOutBoxHumidity = lines[6].substring(3);
+  //chart
+  chartsObject.outBoxHumiditys.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(lines[6].substring(3))));
+
   model.setBattery = lines[7].contains('L')? 'low' : 'normal';
   model.setPower = lines[8].contains('N') ? 'normal' : lines[8].contains('B') ? 'burnt' : lines[8].contains('b') ? 'backup' : lines[8].contains('S') ? 'short circuit': 'short circuit in main board';
   model.setPower5 = lines[9].contains('N') ? 'normal' : 'disconnect';
@@ -127,7 +154,13 @@ compilePublicReport(String sms) {
   model.setHeaterRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setCoolerRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setWirelessPlug1 = lines[20][5] == 'C' ? 'connect' : lines[20][5] == 'D' ? 'disconnect' : 'remove';
+  //chart
+  chartsObject.onePlugs.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), (model.wirelessPlug1 == 'connect'? 1.0 : 0.0)));
+
   model.setWirelessPlug2 = lines[20][9] == 'C' ? 'connect' : lines[20][9] == 'D' ? 'disconnect' : 'remove';
+  //chart
+  chartsObject.twoPlugs.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), (model.wirelessPlug2 == 'connect'? 1.0 : 0.0)));
+
   model.setCurrentSensor1 = lines[21].substring(5, 7) == 'DA'? 'deactive' : lines[21].substring(5, 7) == 'AC'? 'active' : lines[21].substring(5, 7) == 'NO'? 'normal' : lines[21].substring(5, 7) == 'ND'? 'no device' : lines[21].substring(5, 7) == 'OF'? 'off' : 'overload';
   model.setCurrentSensor3 = lines[21].substring(10, 12) == 'DA'? 'deactive' : lines[21].substring(10, 12) == 'AC'? 'active' : lines[21].substring(10, 12) == 'NO'? 'normal' : lines[21].substring(10, 12) == 'ND'? 'no device' : lines[21].substring(10, 12) == 'OF'? 'off' : 'overload';
   model.setCurrentSensor6 = lines[21].substring(15) == 'DA'? 'deactive' : lines[21].substring(15) == 'AC'? 'active' : lines[21].substring(15) == 'NO'? 'normal' : lines[21].substring(15) == 'ND'? 'no device' : lines[21].substring(15) == 'OF'? 'off' : 'overload';
@@ -136,7 +169,13 @@ compilePublicReport(String sms) {
   model.setOutboxTempFromFirstDay = lines[24].substring(3);
   model.setOutboxHumidityFromFirstDay = lines[25].substring(2);
   model.gsmSignalPower = lines[26].substring(2);
+  //chart
+  chartsObject.mobileSignals.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(lines[26].substring(2))));
+
   model.fanCount = lines[27].substring(2);
+  //chart
+  chartsObject.fanCounts.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(lines[27].substring(2))));
+
 
   if(sms.contains('C:a')) model.setAutoCooler = 'auto-active';
   if(sms.contains('C:d')) model.setAutoCooler = 'auto-deactive';
@@ -163,11 +202,18 @@ compilePublicReport(String sms) {
   }
   if(sms.contains('WC:D')) model.wirelessCooler = 'deactive';
   if(sms.contains('WC:C')) model.wirelessCooler = 'active';
+  //chart
+  chartsObject.coolers.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), (model.wirelessCooler=='active' ? 1.0 : 0.0)));
+
   if(sms.contains('WH:D')) model.wirelessHeater = 'deactive';
   if(sms.contains('WH:C')) model.wirelessHeater = 'active';
+  print(model.wirelessHeater=='active');
+//chart
+  chartsObject.heaters.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), (model.wirelessHeater=='active' ? 1.0 : 0.0)));
 
   ///saving data
   deviceStatus.setPublicReport = model;
+  chartsBox.put('object', chartsObject);
 
 }
 
@@ -557,6 +603,11 @@ compileSms(sms) {
     if(sms.split('\n')[10].contains('R')) {
       var resetCounts = sms.split('\n')[10].split(':')[1];
       deviceStatus.setResetCount = resetCounts;
+      //chart
+      chartsObject.deviceResets.add(ChartData('12/28', 12));
+      chartsObject.deviceResets.add(ChartData('12/30', 14));
+      chartsObject.deviceResets.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(resetCounts)));
+      chartsBox.put('object', chartsObject);
     }
     //public report
     if(sms.contains('PR OF')) {

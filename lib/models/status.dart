@@ -69,7 +69,7 @@ part 'status.g.dart';
 @HiveType(typeId: 1)
 class DeviceStatus {
   @HiveField(1)
-  late var  staticRouting = '';
+  late var staticRouting = '';
   @HiveField(0)
   late var remote = '';
   @HiveField(2)
@@ -155,17 +155,16 @@ class DeviceStatus {
   get getRemote => remoteStatus ?? '';
   get getStaticRoutingStatus => staticRoutingStatus ?? '';
 
-  get getRemoteStatus => remote?? '';
-  get getStaticRouting => staticRouting?? '';
-  get getResetCount => resetCount?? '';
+  get getRemoteStatus => remote ?? '';
+  get getStaticRouting => staticRouting ?? '';
+  get getResetCount => resetCount ?? '';
   PublicReport get getPublicReport => publicReport ?? PublicReport();
-  get getNumber1 => number1?? '';
-  get getNumber2 => number2?? '';
-  get getNumber3Const => number3Const?? '';
-  get getUPSModemStatus => upsModem?? '';
-  get getUPSTelStatus => upsTel?? '';
+  get getNumber1 => number1 ?? '';
+  get getNumber2 => number2 ?? '';
+  get getNumber3Const => number3Const ?? '';
+  get getUPSModemStatus => upsModem ?? '';
+  get getUPSTelStatus => upsTel ?? '';
 }
-
 
 @HiveType(typeId: 2)
 class Relay extends HiveObject {
@@ -216,6 +215,7 @@ class Relay extends HiveObject {
     tempMin = fields[13] as String;
     tempMax = fields[14] as String;
   }
+
   @override
   Map<String, dynamic> adaptFromHive() {
     return {
@@ -341,15 +341,15 @@ class Plug {
   var downEndClock = '';
 
   Plug();
-  
+
   set setUPStatus(String status) => upStatus = status;
   set setUPRelayStatus(String relayStatus) => upRelayStatus = relayStatus;
   set setUPTimerStatus(String status) => upTimerStatus = status;
   set setUPStartDate(String startDate) => upStartDate = startDate;
   set setUPStartClock(String startClock) => upStartClock = startClock;
   set setUPEndDate(String endDate) => upEndDate = endDate;
-  set setUPEndClock(String endClock) => upEndClock = endClock;  
-  
+  set setUPEndClock(String endClock) => upEndClock = endClock;
+
   set setDownStatus(String status) => downStatus = status;
   set setDownRelayStatus(String relayStatus) => downRelayStatus = relayStatus;
   set setDownTimerStatus(String status) => downTimerStatus = status;
@@ -357,7 +357,7 @@ class Plug {
   set setDownStartClock(String startClock) => downStartClock = startClock;
   set setDownEndDate(String endDate) => downEndDate = endDate;
   set setDownEndClock(String endClock) => downEndClock = endClock;
-  
+
   get getUPStatus => upStatus;
   get getUPRelayStatus => upRelayStatus;
   get getUPTimerStatus => upTimerStatus;
@@ -365,7 +365,7 @@ class Plug {
   get getUPStartClock => upStartClock;
   get getUPEndDate => upEndDate;
   get getUPEndClock => upEndClock;
-  
+
   get getDownStatus => downStatus;
   get getDownRelayStatus => downRelayStatus;
   get getDownTimerStatus => downTimerStatus;
@@ -458,7 +458,7 @@ class PublicReport {
   @HiveField(40)
   var wirelessHeater = '';
   @HiveField(41)
-  var  temp = '';
+  var temp = '';
 
   PublicReport();
 
@@ -470,8 +470,11 @@ class PublicReport {
   set setTemp(temp) {
     this.temp = temp;
     print(Jalali.now().toString());
-    tempBox.add( ChartData(Jalali.now().month.toString() +'/' + Jalali.now().day.toString(), double.parse(temp)));
+    tempBox.add(ChartData(
+        Jalali.now().month.toString() + '/' + Jalali.now().day.toString(),
+        double.parse(temp)));
   }
+
   set setInboxTemp(inBoxTemp) => this.inBoxTemp = inBoxTemp;
   set setOutBoxTemp(outBoxTemp) => this.outBoxTemp = outBoxTemp;
   set setOutBoxHumidity(outBoxHumidity) => this.outBoxHumidity = outBoxHumidity;
@@ -482,8 +485,10 @@ class PublicReport {
   set setMicroPower(microPower) => this.microPower = microPower;
   set setPowerDiode(powerDiode) => this.powerDiode = powerDiode;
   set setSecuritySystem(securitySystem) => this.securitySystem = securitySystem;
-  set setWaterLeakagePlug1(waterLeakage) => this.waterLeakagePlug1 = waterLeakage;
-  set setWaterLeakagePlug2(waterLeakage) => this.waterLeakagePlug2 = waterLeakage;
+  set setWaterLeakagePlug1(waterLeakage) =>
+      this.waterLeakagePlug1 = waterLeakage;
+  set setWaterLeakagePlug2(waterLeakage) =>
+      this.waterLeakagePlug2 = waterLeakage;
   set setDayNight(dayNight) => this.daynight = dayNight;
   set setCaseDoor(caseDoor) => this.caseDoor = caseDoor;
   set setExcuteTask(excuteTask) => this.excuteTask = excuteTask;
@@ -498,8 +503,10 @@ class PublicReport {
   set setActiveTasks(active) => activeTasks = active;
   set setDeactiveTasks(deactive) => deactiveTasks = deactive;
   set setInboxTempFromFirstDay(inboxTemp) => inBoxTempFromFirstDay = inboxTemp;
-  set setOutboxTempFromFirstDay(outboxTemp) => outBoxHumidityFromFirstDay = outboxTemp;
-  set setOutboxHumidityFromFirstDay(outboxHum) => outBoxHumidityFromFirstDay = outboxHum;
+  set setOutboxTempFromFirstDay(outboxTemp) =>
+      outBoxHumidityFromFirstDay = outboxTemp;
+  set setOutboxHumidityFromFirstDay(outboxHum) =>
+      outBoxHumidityFromFirstDay = outboxHum;
   set setGsmSignalPower(signalPower) => gsmSignalPower = signalPower;
   set setFanCount(fanCount) => this.fanCount = fanCount;
   set setAutoCooler(autoCooler) => this.autoCooler = autoCooler;
@@ -508,6 +515,7 @@ class PublicReport {
   set setWirelessHeater(wireless) => this.wirelessHeater = wireless;
   set setView(view) => this.view = view;
 }
+
 @HiveType(typeId: 5)
 class ChartData {
   ChartData(this.x, this.y);
@@ -515,4 +523,33 @@ class ChartData {
   late String x;
   @HiveField(2)
   late double y;
+}
+
+@HiveType(typeId: 6)
+class Charts {
+  Charts();
+  @HiveField(1)
+  List<ChartData> inBoxTemps = [];
+  @HiveField(2)
+  List<ChartData> outBoxTemps = [];
+  @HiveField(3)
+  List<ChartData> outBoxHumiditys = [];
+  @HiveField(4)
+  List<ChartData> fanCounts = [];
+  @HiveField(5)
+  List<ChartData> mobileSignals = [];
+  @HiveField(6)
+  List<ChartData> batteryVoltages = [];
+  @HiveField(7)
+  List<ChartData> electricalIssuses = [];
+  @HiveField(8)
+  List<ChartData> onePlugs = [];
+  @HiveField(9)
+  List<ChartData> twoPlugs = [];
+  @HiveField(10)
+  List<ChartData> heaters = [];
+  @HiveField(11)
+  List<ChartData> coolers = [];
+  @HiveField(12)
+  List<ChartData> deviceResets = [];
 }
