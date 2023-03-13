@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:shome/colors.dart';
+import 'package:shome/main.dart';
 
 import '../outlet/OutletPage.dart';
 import 'bloc/settings_cubit.dart';
@@ -15,6 +16,9 @@ enum TaskEnum {
 
 SettingsCubit? _cubit;
 TaskEnum? task = TaskEnum.Home; //example
+bool? buzzer, view, publicReport, shortSMS, remoteControl;
+String? num1, num2, num3;
+DateTime? selectedTime;
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -29,6 +33,7 @@ class _SettingsState extends State<Settings> {
     // TODO: implement initState
     super.initState();
     _cubit = SettingsCubit();
+    _cubit!.init();
   }
   @override
   Widget build(BuildContext context) {
@@ -52,43 +57,60 @@ class _SettingsState extends State<Settings> {
                 physics: const ClampingScrollPhysics(),
                 children: [
                   listItemText('Time'),
-                  button(() {}, 'Set Time (SMS)'),
-                  button(() {}, 'Set Time (NTP)'),
+                  button(() => _cubit!.setTime(), 'Set Time (SMS)'),
+                  button(() => _cubit!.setTimeNTP(), 'Set Time (NTP)'),
                   divider(),
-                  listItemSwitch('Buzzer', () {}, true),
-                  listItemSwitch('View', () {}, false),
-                  button(() {}, 'Log'),
+                  listItemSwitch('Buzzer', () => _cubit!.setBuzzer(), buzzer!),
+                  listItemSwitch('View', () => _cubit!.setView(), view),
+                  button(() => _cubit!.setLog(), 'Log'),
                   divider(),
                   listItemText('Report'),
-                  listItemSwitch('Public Report', () {}, true),
-                  TimePickerSpinner(
-                    isForce2Digits: true,
-                    is24HourMode: true,
-                    time: DateTime.now(),
-                  ),
-                  SizedBox(height: 10),
-                  Center(
-                      child: NeumorphicButton(
-                        padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
-                        onPressed: () {},
-                        child: Text('ارسال'),
-                      )),
+                  listItemSwitch('Public Report', () => _cubit!.setPublicReport(), publicReport!),
+                  publicReport! ?  AnimatedContainer(
+                    curve: Curves.easeInOut,
+                    duration: Duration(milliseconds: 600),
+                    height: publicReport! ? 250 : 0,
+                    child: Column(
+                      children: [
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: TimePickerSpinner(
+                            isForce2Digits: true,
+                            is24HourMode: true,
+                            time: DateTime(0,0,0, int.parse(constants.get('publicreportTimer').substring(1,3)), int.parse(constants.get('publicreportTimer').substring(3))),
+                            onTimeChange: (DateTime event) {
+                              setState(() {
+                                selectedTime = event;
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Center(
+                            child: NeumorphicButton(
+                              padding: const EdgeInsets.fromLTRB(60, 10, 60, 10),
+                              onPressed: () => _cubit!.submitClock(),
+                              child: Text('ارسال'),
+                            )),
+                      ],
+                    ),
+                  ) : Container(),
                   divider(),
                   listItemText('Task'),
-                  listItemSwitch('Home', () => _cubit!.changeTask(TaskEnum.Home), task! == TaskEnum.Home),
-                  listItemSwitch('Sleep', () => _cubit!.changeTask(TaskEnum.Sleep), task! == TaskEnum.Sleep),
-                  listItemSwitch('Rest', () => _cubit!.changeTask(TaskEnum.Rest), task! == TaskEnum.Rest),
+                  listItemSwitch('Home', () => _cubit!.setHome(), task! == TaskEnum.Home),
+                  listItemSwitch('Sleep', () => _cubit!.setSleep(), task! == TaskEnum.Sleep),
+                  listItemSwitch('Rest', () => _cubit!.setResting(), task! == TaskEnum.Rest),
                   divider(),
-                  button((){}, 'Default Setting'),
-                  button((){}, 'Rest Device'),
-                  button((){}, 'Rest GSM'),
+                  button(() => _cubit!.setDefaultSetting(), 'Default Setting'),
+                  button(() => _cubit!.setResting(), 'Rest Device'),
+                  button(() => _cubit!.restGSM(), 'Rest GSM'),
                   listItemSwitch('Short SMS', () {}, true),
-                  listItemSwitch('Remote Control', () {}, true),
+                  listItemSwitch('Remote Control', () => _cubit!.setRemoteControl(), remoteControl),
                   divider(),
 
-                  listItemPhone('Phone number 1', '0912XXXXXXX'),
-                  listItemPhone('Phone number 2', '0938XXXXXXX'),
-                  listItemPhone('Phone number 3', '0920XXXXXXX'),
+                  listItemPhone('Phone number 1', num1 ?? '0912XXXXXXX', () => _cubit!.getNumber(1)),
+                  listItemPhone('Phone number 2', num2 ?? '0912XXXXXXX', () => _cubit!.getNumber(2)),
+                  listItemPhone('Phone number 3', num3 ?? '0912XXXXXXX', () => _cubit!.getNumber(3)),
 
 
                 ],
@@ -149,11 +171,11 @@ Widget listItemText(text) {
   );
 }
 
-Widget listItemPhone(subject, status) {
+Widget listItemPhone(subject, status, onPressed) {
   return Column(
     children: [
       MaterialButton(
-        onPressed: () {},
+        onPressed: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

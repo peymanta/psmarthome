@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
     // compile('sms');
     ss() async {
       deviceStatus = await deviceBox.get('info');
-
+print(constants.get('publicreportTimer').substring(1,3));
 
       // chartsObject.inBoxTemps.add(ChartData('12/16', 30));
       // chartsObject.inBoxTemps.add(ChartData('12/19', 50));

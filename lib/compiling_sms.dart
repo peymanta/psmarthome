@@ -10,37 +10,37 @@ sendSMS(sms) {
   showMessage('operation completed');
 }
 compile(String sms) async{
-//   var sms = '''1210 01:04
-// s:A
-// U:A
-// M:N
-// Ti:42
-// TO:27,10
-// HO:26
-// B:N
-// 12EN
-// 5RN
-// 4GN
-// 5MN
-// D1N
-// S:A
-// L1n2n
-// L:Ni
-// d:N
-// E:H
-// P:C
-// r:A
-// WP#1:C-2:C
-// CU:1:DA,3:DA,6:DA
-// V:D
-// Ti#38
-// TO#26
-// H#27
-// i#16
-// F:0
-// C:a
-// 30min
-// WC:C.''';
+  var sms = '''1210 01:04
+s:A
+U:A
+M:N
+Ti:42
+TO:27,10
+HO:26
+B:N
+12EN
+5RN
+4GN
+5MN
+D1N
+S:A
+L1n2n
+L:Ni
+d:N
+E:H
+P:C
+r:A
+WP#1:C-2:C
+CU:1:DA,3:DA,6:DA
+V:D
+Ti#38
+TO#26
+H#27
+i#16
+F:0
+C:a
+30min
+WC:C.''';
 
 // var sms = '''Cooler:
 // 11/11/11-00:06
@@ -87,21 +87,21 @@ compile(String sms) async{
 // 11/11/11-01:20
 // LU35''';
 
-var sms = '''WP2UP: ON,Ra,Td
-11/11/11-00:00
-11/11/11-23:55
-
-WP2DN: ON,Ra,Ta
-11/11/11-00:01
-11/11/11-23:55
-
-RM:A
-SR:m
-R:2
-P2000
-9120232465
-2144168346
-TFMN''';
+// var sms = '''WP2UP: ON,Ra,Td
+// 11/11/11-00:00
+// 11/11/11-23:55
+//
+// WP2DN: ON,Ra,Ta
+// 11/11/11-00:01
+// 11/11/11-23:55
+//
+// RM:A
+// SR:m
+// R:2
+// P2000
+// 9120232465
+// 2144168346
+// TFMN''';
 
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);
@@ -151,6 +151,9 @@ compilePublicReport(String sms) {
   model.setCaseDoor = lines[16].contains('C') ? 'close' : 'open';
   model.setExcuteTask = lines[17].contains('H') ? 'home' : lines[17].contains('R') ? 'resting' : 'sleep';
   model.setPlug = lines[18].contains('C') ? 'connect' : 'disconnect';
+  //chart
+  chartsObject.electricalIssuses.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), model.plug == 'connect'? 1 : 0));
+
   model.setHeaterRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setCoolerRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setWirelessPlug1 = lines[20][5] == 'C' ? 'connect' : lines[20][5] == 'D' ? 'disconnect' : 'remove';
@@ -210,7 +213,8 @@ compilePublicReport(String sms) {
   print(model.wirelessHeater=='active');
 //chart
   chartsObject.heaters.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), (model.wirelessHeater=='active' ? 1.0 : 0.0)));
-
+  
+  
   ///saving data
   deviceStatus.setPublicReport = model;
   chartsBox.put('object', chartsObject);
@@ -611,9 +615,11 @@ compileSms(sms) {
     }
     //public report
     if(sms.contains('PR OF')) {
-      deviceStatus.setPublicReport = 'off';
+      // deviceStatus.setPublicReport = 'off';
+      constants.put('publicreport', 'off');
     } else {
-      deviceStatus.setPublicReport = sms.split('\n')[11].substring(1);
+      // deviceStatus.setPublicReport = sms.split('\n')[11].substring(1);
+      constants.put('publicreportTimer', sms.split('\n')[11].toString());
     }
 
     deviceStatus.setNumber2 = sms.split('\n')[12];
