@@ -645,9 +645,9 @@ Widget Relay7() {
 
 Widget Relays() {
   double rheight = currentPage == Page.Relay2 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
-  : currentPage == Page.Relay3 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 950 : 0)
+  : currentPage == Page.Relay3 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 600 : 950 : 0)
   : currentPage == Page.Relay5 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 760 : 0)
-  : currentPage == Page.Relay6 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 450 : 870 : 0)
+  : currentPage == Page.Relay6 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 510 : 870 : 0)
   :(sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 540 : 890 : 0);
   if (currentPage == Page.Relay3) {
     endMin = 0;
@@ -703,6 +703,15 @@ Widget Relays() {
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       children: [
+        Directionality(
+            textDirection: TextDirection.ltr,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MaterialButton(onPressed: ()=>_cubit!.icon(), child: ListTile(leading: Icon(Icons.edit, color: primary), title: Text('Change Icon'),)),
+                currentPage == Page.Relay2 ? MaterialButton(onPressed: ()=>_cubit!.icon(is2b: true), child: ListTile(leading: Icon(Icons.edit, color: primary), title: Text('Change Icon bottom'),)) : Container(),
+              ],
+            )),
         AnimatedOpacity(
           opacity: sw! ? 1 : 0,
           duration: Duration(milliseconds: 600),
@@ -1111,7 +1120,7 @@ Widget Relay4() {
                 width: 220,
                 height: 110,
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () => _cubit!.icon(),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),

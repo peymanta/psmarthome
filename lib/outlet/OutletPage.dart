@@ -49,9 +49,6 @@ class _OutletState extends State<Outlet> {
       builder: (context, state) {
         if (state is OutletInitial) {
           return
-              // Directionality(
-              // textDirection: TextDirection.rtl,
-              // child:
               Scaffold(
             appBar: AppBar(
               backgroundColor: background,
@@ -76,7 +73,7 @@ class _OutletState extends State<Outlet> {
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerRight,
-                                  child: Text('connected'))),
+                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.getPublicReport.wirelessPlug1 : deviceStatus.getPublicReport.wirelessPlug2))),
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerLeft,

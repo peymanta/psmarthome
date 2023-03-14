@@ -73,7 +73,7 @@ void getPages() {
               buildContext,
               MaterialPageRoute(builder: (buildContext) => relay.Relay()));
         }),
-    HomeItem('assets/icons/question.png', iconEnabled: false, onPressed: () {
+    HomeItem(constants.get('IR4') ?? 'assets/icons/question.png', iconEnabled: false, onPressed: () {
       relay.currentPage = relay.Page.Relay4;
       Navigator.push(
           buildContext,
@@ -82,8 +82,8 @@ void getPages() {
   ];
 
   page2 = [
-    HomeItem('assets/icons/question.png',
-        bottomImage: 'assets/icons/question.png',
+    HomeItem(constants.get('IR2') ?? 'assets/icons/question.png',
+        bottomImage: constants.get('IR2b') ?? 'assets/icons/question.png',
         icon: Icons.access_time_rounded,
         isBottomImageLeft: true, onPressed: () {
           relay.currentPage = relay.Page.Relay2;
@@ -91,7 +91,7 @@ void getPages() {
               buildContext,
               MaterialPageRoute(builder: (buildContext) => relay.Relay()));
         }),
-    HomeItem('assets/icons/question.png',
+    HomeItem(constants.get('IR3') ?? 'assets/icons/question.png',
         bottomImage: 'assets/icons/bottomImage1.png',
         icon: Icons.water_drop, onPressed: () {
           relay.currentPage = relay.Page.Relay3;
@@ -99,14 +99,14 @@ void getPages() {
               buildContext,
               MaterialPageRoute(builder: (buildContext) => relay.Relay()));
         }),
-    HomeItem('assets/icons/question.png', icon: Icons.access_time_rounded,
+    HomeItem(constants.get('IR5') ?? 'assets/icons/question.png', icon: Icons.access_time_rounded,
         onPressed: () {
           relay.currentPage = relay.Page.Relay5;
           Navigator.push(
               buildContext,
               MaterialPageRoute(builder: (buildContext) => relay.Relay()));
         }),
-    HomeItem('assets/icons/question.png',
+    HomeItem(constants.get('IR6') ?? 'assets/icons/question.png',
         bottomImage: 'assets/icons/bottomImage1.png',
         iconEnabled: false, onPressed: () {
           relay.currentPage = relay.Page.Relay6;
@@ -114,7 +114,7 @@ void getPages() {
               buildContext,
               MaterialPageRoute(builder: (buildContext) => relay.Relay()));
         }),
-    HomeItem('assets/icons/question.png',
+    HomeItem(constants.get('IR7') ?? 'assets/icons/question.png',
         bottomImage: 'assets/icons/bottomImage2.png',
         icon: Icons.shield_rounded, onPressed: () {
           relay.currentPage = relay.Page.Relay7;

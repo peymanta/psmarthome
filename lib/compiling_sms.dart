@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import 'main.dart';
@@ -10,37 +11,37 @@ sendSMS(sms) {
   showMessage('operation completed');
 }
 compile(String sms) async{
-  var sms = '''1210 01:04
-s:A
-U:A
-M:N
-Ti:42
-TO:27,10
-HO:26
-B:N
-12EN
-5RN
-4GN
-5MN
-D1N
-S:A
-L1n2n
-L:Ni
-d:N
-E:H
-P:C
-r:A
-WP#1:C-2:C
-CU:1:DA,3:DA,6:DA
-V:D
-Ti#38
-TO#26
-H#27
-i#16
-F:0
-C:a
-30min
-WC:C.''';
+//   var sms = '''1210 01:04
+// s:A
+// U:A
+// M:N
+// Ti:42
+// TO:27,10
+// HO:26
+// B:N
+// 12EN
+// 5RN
+// 4GN
+// 5MN
+// D1N
+// S:A
+// L1n2n
+// L:Ni
+// d:N
+// E:H
+// P:C
+// r:A
+// WP#1:C-2:C
+// CU:1:DA,3:DA,6:DA
+// V:D
+// Ti#38
+// TO#26
+// H#27
+// i#16
+// F:0
+// C:a
+// 30min
+// WC:C.''';
 
 // var sms = '''Cooler:
 // 11/11/11-00:06
@@ -103,6 +104,9 @@ WC:C.''';
 // 2144168346
 // TFMN''';
 
+var sms = '''Disable the device first
+
+101/5/19 22:47:33''';
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);
   } else {
@@ -222,6 +226,8 @@ compilePublicReport(String sms) {
 }
 
 compileSms(sms) {
+  compileInteractiveSMS(sms);
+
   if (sms.contains('R1')) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
@@ -638,4 +644,342 @@ compileSms(sms) {
     }
   }
 
+}
+
+compileInteractiveSMS(String sms) {
+  print(1);
+  if(sms.contains('Security System is Active, Now!')) {
+    PublicReport model = deviceStatus.getPublicReport;
+    model.securitySystem = 'active';
+     ///setting pir values
+      constants.put('pir1', 'active');
+      constants.put('pir2', 'active');
+
+      logBox.add(sms);
+      deviceBox.put('info', deviceStatus);
+  }
+
+  if(sms.contains('Security System is Not Active')) {
+    PublicReport model = deviceStatus.getPublicReport;
+    model.securitySystem = 'deactive';
+     ///setting pir values
+      constants.put('pir1', 'deactive');
+      constants.put('pir2', 'deactive');
+
+      logBox.add(sms);
+      deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Electricity has been Connected')) {
+    PublicReport model = deviceStatus.getPublicReport;
+    model.setPlug = 'connect';
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+
+    chartsObject.electricalIssuses.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), model.plug == 'connect'? 1 : 0));
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+    logBox.add(sms);
+
+    if(sms.contains('Connect all of Power RLs')){
+      deviceStatus.getR1.status = 'ON';
+      deviceStatus.getR2.status = 'ON';
+      deviceStatus.getR3.status = 'ON';
+      deviceStatus.getR4.status = 'ON';
+      deviceStatus.getR5.status = 'ON';
+      deviceStatus.getR6.status = 'ON';
+      deviceStatus.getR7.status = 'ON';
+    } else {
+      deviceStatus.getR1.status = 'OFF';
+      deviceStatus.getR2.status = 'OFF';
+      deviceStatus.getR3.status = 'OFF';
+      deviceStatus.getR4.status = 'OFF';
+      deviceStatus.getR5.status = 'OFF';
+      deviceStatus.getR6.status = 'OFF';
+      deviceStatus.getR7.status = 'OFF';
+    }
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Electricity has been Cut Off or The Fuse is Burnt')) {
+    PublicReport model = deviceStatus.getPublicReport;
+    model.setPlug = 'disconnect';
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+
+    chartsObject.electricalIssuses.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), model.plug == 'connect'? 1 : 0));
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+
+  }
+  if(sms.contains('Water Leakage')) {
+    if(sms.contains('PLUG1')) {
+      if(sms.contains('Dry')) deviceStatus.getPublicReport.waterLeakagePlug1 = 'dry';
+      if(sms.contains('Yes')) deviceStatus.getPublicReport.waterLeakagePlug1 = 'yes';
+      if(sms.contains('Disconnect')) deviceStatus.getPublicReport.waterLeakagePlug1 = 'disconnect';
+      if(sms.contains('Deactive')) deviceStatus.getPublicReport.waterLeakagePlug1 = 'deactive';
+    } else {
+      if(sms.contains('Dry')) deviceStatus.getPublicReport.waterLeakagePlug2 = 'dry';
+      if(sms.contains('Yes')) deviceStatus.getPublicReport.waterLeakagePlug2 = 'yes';
+      if(sms.contains('Disconnect')) deviceStatus.getPublicReport.waterLeakagePlug2 = 'disconnect';
+      if(sms.contains('Deactive')) deviceStatus.getPublicReport.waterLeakagePlug2 = 'deactive';
+    }
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Case Door is OPEN')) {
+    deviceStatus.getPublicReport.setCaseDoor = 'open';
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Wireless-C/H')) {
+    if(sms.contains('Normal - Packet Loss = 0')) {
+      deviceStatus.getPublicReport.wirelessCooler = 'active';
+      deviceStatus.getPublicReport.wirelessHeater = 'active';
+    }
+    if(sms.contains('No Message Received - Packet Loss = 100')) {
+      deviceStatus.getPublicReport.wirelessCooler = 'deactive';
+      deviceStatus.getPublicReport.wirelessHeater = 'deactive';
+    }
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+
+  if(sms.contains('Wireless-PLUG 1')) {
+    if(sms.contains('Normal - Packet Loss = 0')) {
+      deviceStatus.getPublicReport.wirelessPlug1 = 'active';
+    }
+    if(sms.contains('No Message Received - Packet Loss = 100')) {
+      deviceStatus.getPublicReport.wirelessPlug1 = 'deactive';
+    }
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Wireless-PLUG 2')) {
+    if(sms.contains('Normal - Packet Loss = 0')) {
+      deviceStatus.getPublicReport.wirelessPlug2 = 'active';
+    }
+    if(sms.contains('No Message Received - Packet Loss = 100')) {
+      deviceStatus.getPublicReport.wirelessPlug2 = 'deactive';
+    }
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Version :')) {
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    dialog('version', Text(sms.split('\n')[0]), ()=>Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('LOW Battery')) {
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    ///disable relays
+    deviceStatus.getR1.status = 'OFF';
+    deviceStatus.getR2.status = 'OFF';
+    deviceStatus.getR3.status = 'OFF';
+    deviceStatus.getR4.status = 'OFF';
+    deviceStatus.getR5.status = 'OFF';
+    deviceStatus.getR6.status = 'OFF';
+    deviceStatus.getR7.status = 'OFF';
+
+    logBox.add(sms);
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('After LOW Battery')) {
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    if(sms.contains('Normal Battery Voltage and Connect all of RLs')) {
+      deviceStatus.getR1.status = 'ON';
+      deviceStatus.getR2.status = 'ON';
+      deviceStatus.getR3.status = 'ON';
+      deviceStatus.getR4.status = 'ON';
+      deviceStatus.getR5.status = 'ON';
+      deviceStatus.getR6.status = 'ON';
+      deviceStatus.getR7.status = 'ON';
+    } else {
+      deviceStatus.getR1.status = 'OFF';
+      deviceStatus.getR2.status = 'OFF';
+      deviceStatus.getR3.status = 'OFF';
+      deviceStatus.getR4.status = 'OFF';
+      deviceStatus.getR5.status = 'OFF';
+      deviceStatus.getR6.status = 'OFF';
+      deviceStatus.getR7.status = 'OFF';
+    }
+
+
+    deviceBox.put('info', deviceStatus);
+  }
+  if(sms.contains('Please Check the Time&Date')) {
+    dialog('Please check Time', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('PIR 1')) {
+    dialog('PIR 1', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('PIR 2')) {
+    dialog('PIR 2', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Charging is not Enough')) {
+    dialog('Charging', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('1N5408 is Burnt')) {
+    dialog('', Text('1N5408 is Burnt'), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+
+    logBox.add(sms);
+  }
+  if(sms.contains('LM7812CV (EX Board&FAN) is Burnt')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    deviceStatus.getPublicReport.setPower = 'backup';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('Short Circuit in the EX Board or FAN')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    deviceStatus.getPublicReport.setPower = 'short circuit';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('Short Circuit in the Main Board')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+    chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+
+    deviceStatus.getPublicReport.setPower = 'short circuit in main board';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('GSM Power has become Abnormal')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Disable the device first')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('The Last Device, Successfully Removed')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Device Successfully Added to bottom of list')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Device not Added Successfully')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Table Analyze')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('There is no Device')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('Time Out')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('The heat removal system has barely kept the temperature of the heat sink normal')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('RL6: Over Load')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    deviceStatus.getPublicReport.currentSensor6 = 'overload';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('RL1: Over Load')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    deviceStatus.getPublicReport.currentSensor1 = 'overload';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('RL3: Over Load')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    deviceStatus.getPublicReport.currentSensor3 = 'overload';
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  ///current sensor relay 1, 3, 6
+  if(sms.contains('The Device dose not Work')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+
+    deviceBox.put('info', deviceStatus);
+
+    logBox.add(sms);
+  }
+  if(sms.contains('High TEMP ')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    if(sms.contains('After High TEMP')) {
+
+      if(sms.contains('TEMP(IN) is NORMAL and Connect all of RLs Likely')) {
+        deviceStatus.getR1.status = 'ON';
+        deviceStatus.getR2.status = 'ON';
+        deviceStatus.getR3.status = 'ON';
+        deviceStatus.getR4.status = 'ON';
+        deviceStatus.getR5.status = 'ON';
+        deviceStatus.getR6.status = 'ON';
+        deviceStatus.getR7.status = 'ON';
+      } else {
+        deviceStatus.getR1.status = 'OFF';
+        deviceStatus.getR2.status = 'OFF';
+        deviceStatus.getR3.status = 'OFF';
+        deviceStatus.getR4.status = 'OFF';
+        deviceStatus.getR5.status = 'OFF';
+        deviceStatus.getR6.status = 'OFF';
+        deviceStatus.getR7.status = 'OFF';
+      }
+
+    } else{
+      if(sms.contains('Disconnect all of RLs & GSM & EX Board')) {
+        deviceStatus.getR1.status = 'OFF';
+        deviceStatus.getR2.status = 'OFF';
+        deviceStatus.getR3.status = 'OFF';
+        deviceStatus.getR4.status = 'OFF';
+        deviceStatus.getR5.status = 'OFF';
+        deviceStatus.getR6.status = 'OFF';
+        deviceStatus.getR7.status = 'OFF';
+      }
+    }deviceBox.put('info', deviceStatus);
+  }
+  // if(sms.contains('Electricity has been Cut Off or The Fuse is Burnt')) {
+  //   PublicReport model = deviceStatus.getPublicReport;
+  //   model.setPlug = 'disconnect';
+  //
+  //   String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
+  //
+  //   chartsObject.electricalIssuses.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), model.plug == 'connect'? 1 : 0));
+  //   chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+  //   logBox.add(sms);
+  //   deviceBox.put('info', deviceStatus);
+  // }
 }

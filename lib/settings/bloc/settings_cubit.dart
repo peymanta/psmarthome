@@ -27,11 +27,13 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   setTime() {
-    timeDialog();
+    // timeDialog();
+    sendSMS('Tsms');
   }
 
   setTimeNTP() {
-    timeDialog(ntp: true);
+   // timeDialog(ntp: true);
+    sendSMS('CNTP');
   }
 
   setBuzzer() {
@@ -163,7 +165,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   timeDialog({ntp = false}) {
     DateTime? time;
     dialog(
-        'Set Timer',
+        'Set Time',
         Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -195,66 +197,6 @@ class SettingsCubit extends Cubit<SettingsState> {
     });
   }
 
-  dialog(title, contents, onConfirm) {
-    showDialog(
-        context: buildContext,
-        builder: (context) => Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              elevation: 0,
-              backgroundColor: Color(0xFFDFE1E6),
-              insetPadding: EdgeInsets.all(20.0),
-              child: Container(
-                padding: EdgeInsets.all(30.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    contents,
-                    SizedBox(height: 40.0),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: MaterialButton(
-                            child: Text(
-                              'Cancel',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 20.0),
-                        Expanded(
-                          child: MaterialButton(
-                              child: Text(
-                                'Confirm',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                              onPressed: onConfirm),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ));
-  }
 
   changeTask(newTask) {
     task = newTask;

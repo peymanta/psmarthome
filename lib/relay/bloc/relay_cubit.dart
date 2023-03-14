@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:knob_widget/knob_widget.dart';
 import 'package:meta/meta.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:shome/compiling_sms.dart';
 import 'package:shome/main.dart';
 import 'package:shome/relay/relay.dart';
+import '../../icon/icon.dart';
 import '../../models/status.dart' as model;
 
 part 'relay_state.dart';
@@ -280,5 +282,25 @@ class RelayCubit extends Cubit<RelayState> {
   
   relay4Switch() {
     sendSMS('4:on#');
+  }
+
+  icon({is2b = false}){
+    if(is2b) {
+      iconKey = 'IR2b';
+    } else if(currentPage == Page.Relay2) {
+      iconKey = 'IR2';
+    }else if(currentPage == Page.Relay4) {
+      iconKey = 'IR4';
+    }else if(currentPage == Page.Relay3) {
+      iconKey = 'IR3';
+    }else if(currentPage == Page.Relay5) {
+      iconKey = 'IR5';
+    }else if(currentPage == Page.Relay6) {
+      iconKey = 'IR6';
+    }else if(currentPage == Page.Relay7) {
+      iconKey = 'IR7';
+    }
+
+    m.Navigator.push(buildContext, m.MaterialPageRoute(builder: (context) => Icon()));
   }
 }

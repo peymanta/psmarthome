@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
@@ -28,7 +30,7 @@ import 'package:path_provider/path_provider.dart';
 bool securityState = true;
 late DeviceStatus deviceStatus;
 late Charts chartsObject;
-late Box deviceBox, tempBox, constants, chartsBox;
+late Box deviceBox, tempBox, constants, chartsBox, logBox;
 
 late BuildContext buildContext;
 late MainCubit mainController;
@@ -50,6 +52,7 @@ void main() async {
   tempBox = await Hive.openBox('temp'); //temp chart
   constants = await Hive.openBox('const'); //vars
   chartsBox = await Hive.openBox('charts'); //charts of report page
+  logBox = await Hive.openBox('log'); //log of report page
 
   chartsObject = chartsBox.get('object') ?? Charts();
 
@@ -79,27 +82,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     buildContext = context;
-    // compile('sms');
-    ss() async {
-      deviceStatus = await deviceBox.get('info');
-print(constants.get('publicreportTimer').substring(1,3));
-
-      // chartsObject.inBoxTemps.add(ChartData('12/16', 30));
-      // chartsObject.inBoxTemps.add(ChartData('12/19', 50));
-      // chartsObject.inBoxTemps.add(ChartData('12/21', 10));
-      // chartsObject.inBoxTemps.add(ChartData('12/24', 31));
-    }
-
-    ss();
-
     return Scaffold(
         appBar: AppBar(
             shadowColor: Colors.transparent,
             backgroundColor: background,
-            title: Container(
-                alignment: Alignment.centerRight,
-                child: Text('خانه هوشمند',
-                    style: TextStyle(color: Colors.black)))),
+            title: Text('Smart Home',
+                style: TextStyle(color: Colors.black))),
         body: BlocBuilder<MainCubit, MainState>(
           bloc: mainController,
           builder: (context, state) {
@@ -135,4 +123,73 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
 
 showMessage(msg) {
   ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(content: Text(msg)));
+}
+
+dialog(title, contents, onConfirm, {cancellable = true, removeCancel = false}) {
+  showDialog(
+      barrierDismissible: cancellable,
+      context: buildContext,
+      builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            elevation: 0,
+            backgroundColor: Color(0xFFDFE1E6),
+            insetPadding: EdgeInsets.all(20.0),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Container(
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                     title.isNotEmpty ? Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ) : Container(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      contents,
+                      SizedBox(height: 40.0),
+                      Row(
+                        children: <Widget>[
+                          Visibility(
+                            visible: !removeCancel,
+                            child: Expanded(
+                              child: MaterialButton(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20.0),
+                          Expanded(
+                            child: MaterialButton(
+                                child: Text(
+                                  'Confirm',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                onPressed: onConfirm),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+            ),
+          ));
 }

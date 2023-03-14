@@ -553,3 +553,10 @@ class Charts {
   @HiveField(12)
   List<ChartData> deviceResets = [];
 }
+@HiveType(typeId: 7)
+class Log {
+  @HiveField(1)
+  late int id;
+  @HiveField(2)
+  late String msg;
+}

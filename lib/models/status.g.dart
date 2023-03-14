@@ -504,3 +504,39 @@ class ChartsAdapter extends TypeAdapter<Charts> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class LogAdapter extends TypeAdapter<Log> {
+  @override
+  final int typeId = 7;
+
+  @override
+  Log read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Log()
+      ..id = fields[1] as int
+      ..msg = fields[2] as String;
+  }
+
+  @override
+  void write(BinaryWriter writer, Log obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(1)
+      ..write(obj.id)
+      ..writeByte(2)
+      ..write(obj.msg);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LogAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

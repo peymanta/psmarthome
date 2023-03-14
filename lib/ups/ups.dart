@@ -6,11 +6,10 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
 import 'package:shome/ups/bloc/ups_cubit.dart';
 
-UpsCubit? _cubit;
+import '../main.dart';
+
+UpsCubit? upsCubit;
 bool? camera, modem, telephone;
-String _image1 = 'assets/icons/question.png',
-    _image2 = 'assets/icons/question.png',
-    _image3 = 'assets/icons/question.png';
 
 class UPS extends StatefulWidget {
   const UPS({Key? key}) : super(key: key);
@@ -24,8 +23,8 @@ class _UPSState extends State<UPS> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _cubit = UpsCubit();
-    _cubit!.init();
+    upsCubit = UpsCubit();
+    upsCubit!.init();
   }
 
   @override
@@ -41,52 +40,106 @@ class _UPSState extends State<UPS> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body: BlocBuilder<UpsCubit, UpsState>(
-          bloc: _cubit,
+          bloc: upsCubit,
           builder: (context, state) {
-            if (state is UpsInitial)
+            if (state is UpsInitial) {
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   color: background,
                   child: Column(children: [
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Container(
+                        height: 50,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: MaterialButton(
+                              child: Column(
+                                children: [
+                                  Icon(Icons.edit, color: primary),
+                                  Text(
+                                    'Icon 1',
+                                    style: TextStyle(color: Colors.black),
+                                  )
+                                ],
+                              ),
+                              onPressed: () => upsCubit!.icon(1),
+                            )),Expanded(
+                                child: MaterialButton(
+                              child: Column(
+                                children: [
+                                  Icon(Icons.edit, color: primary),
+                                  Text(
+                                    'Icon 2',
+                                    style: TextStyle(color: Colors.black),
+                                  )
+                                ],
+                              ),
+                              onPressed: () => upsCubit!.icon(2),
+                            )),Expanded(
+                                child: MaterialButton(
+                              child: Column(
+                                children: [
+                                  Icon(Icons.edit, color: primary),
+                                  Text(
+                                    'Icon 3',
+                                    style: TextStyle(color: Colors.black),
+                                  )
+                                ],
+                              ),
+                              onPressed: () => upsCubit!.icon(3),
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
                     Expanded(
                         child: ListTile(
-                      onTap: () => _cubit!.setTelephoneState(),
+                      onTap: () => upsCubit!.setTelephoneState(),
                       leading: NeumorphicSwitch(
                           value: telephone!,
-                          onChanged: (v) => _cubit!.setTelephoneState()),
+                          onChanged: (v) => upsCubit!.setTelephoneState()),
                       title: SizedBox(
-                          width: 100, height: 100, child: Image.asset(_image1)),
+                          width: 100,
+                          height: 100,
+                          child: Image.asset(constants.get('IUPS1') ??
+                              'assets/icons/question.png')),
                     )),
                     Expanded(
                         child: ListTile(
-                            onTap: () => _cubit!.setModemState(),
+                            onTap: () => upsCubit!.setModemState(),
                             leading: NeumorphicSwitch(
                                 value: modem!,
-                                onChanged: (v) => _cubit!.setModemState()),
+                                onChanged: (v) => upsCubit!.setModemState()),
                             title: SizedBox(
                               width: 100,
                               height: 100,
-                              child: Image.asset(_image2),
+                              child: Image.asset(constants.get('IUPS2') ??
+                                  'assets/icons/question.png'),
                             ))),
                     Expanded(
                         child: ListTile(
-                            onTap: () => _cubit!.setCameraState(),
+                            onTap: () => upsCubit!.setCameraState(),
                             leading: NeumorphicSwitch(
                               value: camera!,
-                              onChanged: (v) => _cubit!.setCameraState(),
+                              onChanged: (v) => upsCubit!.setCameraState(),
                             ),
                             title: SizedBox(
                               width: 100,
                               height: 100,
-                              child: Image.asset(_image3),
+                              child: Image.asset(constants.get('IUPS3') ??
+                                  'assets/icons/question.png'),
                             ))),
                   ]),
                 ),
               );
-            else
+            } else {
               return Container();
+            }
           },
         ));
   }
