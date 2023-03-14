@@ -48,6 +48,8 @@ print('wwqq'+plug.getDownEndClock.split(':')[0]);
     endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
     endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
     endDownTime = null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
+
+    available = constants.values.contains('plug${currentPlug==PlugNumber.plug1?'1':'2'}');
   }
 
   saveChanges(isUp, Plug plug) {
@@ -164,6 +166,27 @@ print('wwqq'+plug.getDownEndClock.split(':')[0]);
       deviceBox.put('info', deviceStatus);
       sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive! ? 'on' : 'off'}#');
     }
+    emit(OutletInitial());
+  }
+
+  addDevice() {
+    if(!constants.values.toList().contains(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
+      constants.add(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2');
+
+      sendSMS('Device,ADD,PLUG${currentPlug == PlugNumber.plug1 ? '1' : '2'}');
+    }
+    available = true;
+    emit(OutletInitial());
+  }
+  removeDevice() {
+    for (int i = 0 ; i < constants.values.length; i++) {
+      if(constants.values.toList()[i]==(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
+        constants.deleteAt(i);
+      }
+    }
+    sendSMS('Device,RMV,PLUG${currentPlug == PlugNumber.plug1 ? '1' : '2'}');
+
+    available = false;
     emit(OutletInitial());
   }
 
