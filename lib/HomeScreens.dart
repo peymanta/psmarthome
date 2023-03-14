@@ -24,14 +24,14 @@ Widget homePage(List items) {
                     height: 550,
                     child: MaterialButton(
                       onPressed: items[index].pressed,
-                      child: Stack(
-                          children: [
-                        Center(
-                          child: SizedBox(
-                            width: 350,
-                            height: 550,
+                      child: Center(
+                        child: Stack(
+                            children: [
+                          SizedBox(
+                            width: 850,
+                            height: 850,
                             child: Neumorphic(
-                              margin: const EdgeInsets.all(20),
+                              margin: const EdgeInsets.all(8),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -52,10 +52,10 @@ Widget homePage(List items) {
                                   items[index].bottomImage !=null
                                       ? Positioned(
                                           bottom: 10,
-                                          right: items[index].isBottomImageLeft == true? 0:null,
+                                          // right: 0,//items[index].isBottomImageLeft == true? 0:null,
                                           child: Image.asset(
                                             items[index].bottomImage,
-                                            width: 290,
+                                            width: 150,
                                             height: 30,
                                             // color: Color(0xff838fa3),
                                           ))
@@ -64,32 +64,32 @@ Widget homePage(List items) {
                               ),
                             ),
                           ),
-                        ),
-                        //notification
-                        items[index].isNotificationEnabled
-                            ? Positioned(
-                              top: 0,
-                              left: 0,
-                              child: Center(
-                                child: Container(
-                        width: items[index].msgLength < 100 ? 26 : 39,
-                        height: items[index].msgLength < 100 ? 26 : 39,
-                          margin: EdgeInsets.only(top: 10, left: 15),
-                          padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xffd63030),
-                                        borderRadius: BorderRadius.circular(50)),
-                                    child: Center(
-                                      child: Text(
-                                        '${items[index].msgLength}',
-                                        style: TextStyle(color: Colors.white),
+                          //notification
+                          items[index].isNotificationEnabled
+                              ? Positioned(
+                                top: 5,
+                                left: 0,
+                                child: Center(
+                                  child: Container(
+                          width: items[index].msgLength < 100 ? 26 : 39,
+                          height: items[index].msgLength < 100 ? 26 : 39,
+                            margin: EdgeInsets.only(top: 10, left: 15),
+                            padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xffd63030),
+                                          borderRadius: BorderRadius.circular(50)),
+                                      child: Center(
+                                        child: Text(
+                                          '${items[index].msgLength}',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ),
-                            )
-                            : Container(),
-                      ]),
+                                ),
+                              )
+                              : Container(),
+                        ]),
+                      ),
                     ),
                   ),
                 );

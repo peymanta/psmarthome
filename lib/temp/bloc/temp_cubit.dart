@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
@@ -20,13 +21,13 @@ infinity = deviceStatus.getCooler.startDate == '11/11/11';
       ev = int.parse(constants.get('tempMax'));
       if(deviceStatus.getCooler.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.startClock.split(':')[0]), int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
-        selectedStartDate = 'تاریخ شروع: ${deviceStatus.getCooler.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getCooler.startDate}';
+        selectedStartDate = 'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getCooler.startDate}';
       } else {
         startTime = Jalali.now();
       }
       if(deviceStatus.getCooler.endClock.contains(new RegExp(r'[0-9]'))) {
         endTime   = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.endClock.split(':')[0]),   int.parse(deviceStatus.getCooler.endClock.split(':')[1]));
-        selectedEndDate   = 'تاریخ پایان: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getCooler.endDate}';
+        selectedEndDate   = 'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getCooler.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -41,13 +42,13 @@ infinity = deviceStatus.getCooler.startDate == '11/11/11';
 
       if(deviceStatus.getHeater.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getHeater.startClock.split(':')[0]), int.parse(deviceStatus.getHeater.startClock.split(':')[1]));
-        selectedStartDate = 'تاریخ شروع: ${deviceStatus.getHeater.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getHeater.startDate}';
+        selectedStartDate = 'Selected start date: ${deviceStatus.getHeater.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getHeater.startDate}';
       } else {
         startTime = Jalali.now();
       }
       if(deviceStatus.getHeater.endClock.contains(new RegExp(r'[0-9]'))) {
         endTime   = Jalali(1234, 2, 2, int.parse(deviceStatus.getHeater.endClock.split(':')[0]),   int.parse(deviceStatus.getHeater.endClock.split(':')[1]));
-        selectedEndDate   = 'تاریخ پایان: ${deviceStatus.getHeater.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getHeater.endDate}';
+        selectedEndDate   = 'Selected end date: ${deviceStatus.getHeater.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getHeater.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -58,50 +59,87 @@ infinity = deviceStatus.getCooler.startDate == '11/11/11';
   }
 
   submitData() {
-    if(isCooler!) {
-      constants.put('tempMin', sv.toString());
-      constants.put('tempMax', ev.toString());
+    try {
+      if (isCooler!) {
+        constants.put('tempMin', sv.toString());
+        constants.put('tempMax', ev.toString());
 
-      deviceStatus.getCooler.startClock = '${startTime!.hour}:${startTime!.minute}';
-      deviceStatus.getCooler.endClock = '${endTime!.hour}:${endTime!.minute}';
-      if(infinity) {
-        deviceStatus.getCooler.startDate = '11/11/11';
-        deviceStatus.getCooler.endDate = '11/11/11';
-      } else {
-        deviceStatus.getCooler.startDate = '${startdate!.year}/${startdate!.month}/${startdate!.day}';
-        deviceStatus.getCooler.endDate = '${enddate!.year}/${enddate!.month}/${enddate!.day}';
-        ///send sms
-        var sdate = deviceStatus.getCooler.startDate.split('/')[0].padLeft(2, '0').substring(2) + deviceStatus.getCooler.startDate.split('/')[1].padLeft(2, '0') + deviceStatus.getCooler.startDate.split('/')[2].padLeft(2, '0');
-        var edate = deviceStatus.getCooler.endDate.split('/')[0].padLeft(2, '0').substring(2) + deviceStatus.getCooler.endDate.split('/')[1].padLeft(2, '0') + deviceStatus.getCooler.endDate.split('/')[2].padLeft(2, '0');
-        var sclock = deviceStatus.getCooler.startClock.split(':')[0].padLeft(2, '0') + deviceStatus.getCooler.startClock.split(':')[1].padLeft(2, '0');
-        var eclock = deviceStatus.getCooler.endClock.split(':')[0].padLeft(2, '0') + deviceStatus.getCooler.endClock.split(':')[1].padLeft(2, '0');
-        sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
-        sendSMS('T-min:$sv,max:$ev#');}
+        deviceStatus.getCooler.startClock =
+        '${startTime!.hour}:${startTime!.minute}';
+        deviceStatus.getCooler.endClock = '${endTime!.hour}:${endTime!.minute}';
+        if (infinity) {
+          deviceStatus.getCooler.startDate = '11/11/11';
+          deviceStatus.getCooler.endDate = '11/11/11';
+          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#');
+          sendSMS('T-min:$sv,max:$ev#');
+        } else {
+          deviceStatus.getCooler.startDate =
+          '${startdate!.year}/${startdate!.month}/${startdate!.day}';
+          deviceStatus.getCooler.endDate =
+          '${enddate!.year}/${enddate!.month}/${enddate!.day}';
 
-    deviceBox.put('info', deviceStatus);
+          ///send sms
+          var sdate = deviceStatus.getCooler.startDate.split('/')[0].padLeft(
+              2, '0').substring(2) +
+              deviceStatus.getCooler.startDate.split('/')[1].padLeft(2, '0') +
+              deviceStatus.getCooler.startDate.split('/')[2].padLeft(2, '0');
+          var edate = deviceStatus.getCooler.endDate.split('/')[0].padLeft(
+              2, '0').substring(2) +
+              deviceStatus.getCooler.endDate.split('/')[1].padLeft(2, '0') +
+              deviceStatus.getCooler.endDate.split('/')[2].padLeft(2, '0');
+          var sclock = deviceStatus.getCooler.startClock.split(':')[0].padLeft(
+              2, '0') +
+              deviceStatus.getCooler.startClock.split(':')[1].padLeft(2, '0');
+          var eclock = deviceStatus.getCooler.endClock.split(':')[0].padLeft(
+              2, '0') +
+              deviceStatus.getCooler.endClock.split(':')[1].padLeft(2, '0');
+          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
+          sendSMS('T-min:$sv,max:$ev#');
+        }
+
+        deviceBox.put('info', deviceStatus);
+      }
+      else {
+        constants.put('tempMin', sv.toString());
+        constants.put('tempMax', ev.toString());
+
+        deviceStatus.getHeater.startClock =
+        '${startTime!.hour}:${startTime!.minute}';
+        deviceStatus.getHeater.endClock = '${endTime!.hour}:${endTime!.minute}';
+        if (infinity) {
+          deviceStatus.getHeater.startDate = '11/11/11';
+          deviceStatus.getHeater.endDate = '11/11/11';
+          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#');
+          sendSMS('T-min:$sv,max:$ev#');
+        } else {
+          deviceStatus.getHeater.startDate =
+          '${startdate!.year}/${startdate!.month}/${startdate!.day}';
+          deviceStatus.getHeater.endDate =
+          '${enddate!.year}/${enddate!.month}/${enddate!.day}';
+
+          ///send sms
+          var sdate = deviceStatus.getHeater.startDate.split('/')[0].padLeft(
+              2, '0').substring(2) +
+              deviceStatus.getHeater.startDate.split('/')[1].padLeft(2, '0') +
+              deviceStatus.getHeater.startDate.split('/')[2].padLeft(2, '0');
+          var edate = deviceStatus.getHeater.endDate.split('/')[0].padLeft(
+              2, '0').substring(2) +
+              deviceStatus.getHeater.endDate.split('/')[1].padLeft(2, '0') +
+              deviceStatus.getHeater.endDate.split('/')[2].padLeft(2, '0');
+          var sclock = deviceStatus.getHeater.startClock.split(':')[0].padLeft(
+              2, '0') +
+              deviceStatus.getHeater.startClock.split(':')[1].padLeft(2, '0');
+          var eclock = deviceStatus.getHeater.endClock.split(':')[0].padLeft(
+              2, '0') +
+              deviceStatus.getHeater.endClock.split(':')[1].padLeft(2, '0');
+          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
+          sendSMS('T-min:$sv,max:$ev#');
+        }
+
+      }
+    } catch(c) {
+      dialog('Please set date', Text('If you activated timer, you must select start and end date'), ()=>Navigator.pop(buildContext), removeCancel: true);
     }
-    else {
-      constants.put('tempMin', sv.toString());
-      constants.put('tempMax', ev.toString());
-
-      deviceStatus.getHeater.startClock = '${startTime!.hour}:${startTime!.minute}';
-      deviceStatus.getHeater.endClock = '${endTime!.hour}:${endTime!.minute}';
-      if(infinity) {
-        deviceStatus.getHeater.startDate = '11/11/11';
-        deviceStatus.getHeater.endDate = '11/11/11';
-      } else {
-        deviceStatus.getHeater.startDate = '${startdate!.year}/${startdate!.month}/${startdate!.day}';
-        deviceStatus.getHeater.endDate = '${enddate!.year}/${enddate!.month}/${enddate!.day}';
-        ///send sms
-        var sdate = deviceStatus.getHeater.startDate.split('/')[0].padLeft(2, '0').substring(2) + deviceStatus.getHeater.startDate.split('/')[1].padLeft(2, '0') + deviceStatus.getHeater.startDate.split('/')[2].padLeft(2, '0');
-        var edate = deviceStatus.getHeater.endDate.split('/')[0].padLeft(2, '0').substring(2) + deviceStatus.getHeater.endDate.split('/')[1].padLeft(2, '0') + deviceStatus.getHeater.endDate.split('/')[2].padLeft(2, '0');
-        var sclock = deviceStatus.getHeater.startClock.split(':')[0].padLeft(2, '0') + deviceStatus.getHeater.startClock.split(':')[1].padLeft(2, '0');
-        var eclock = deviceStatus.getHeater.endClock.split(':')[0].padLeft(2, '0') + deviceStatus.getHeater.endClock.split(':')[1].padLeft(2, '0');
-        sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
-        sendSMS('T-min:$sv,max:$ev#');}
-
-    }
-
     deviceBox.put('info', deviceStatus);
     emit(TempInitial());
   }
@@ -136,7 +174,7 @@ infinity = deviceStatus.getCooler.startDate == '11/11/11';
   }
   void loop() {
     infinity = !infinity;
-    selectedStartDate = infinity ? 'حلقه تکرار' : '';
+    selectedStartDate = infinity ? 'loop' : '';
     selectedEndDate = '';
     emit(TempInitial());
   }

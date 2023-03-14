@@ -228,7 +228,7 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                     Expanded(
                       child: Column(
                         children: [
-                          Text('ساعت پایان'),
+                          Text('end time'),
                           Directionality(
                             textDirection: TextDirection.ltr,
                             child: TimePickerSpinner(
@@ -246,7 +246,7 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                     Expanded(
                       child: Column(
                         children: [
-                          Text('ساعت شروع'),
+                          Text('start time'),
                           Directionality(
                             textDirection: TextDirection.ltr,
                             child: TimePickerSpinner(
@@ -263,9 +263,9 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                     )
                   ],
                 ),SizedBox(height: 15),
-                Container(alignment: Alignment.centerRight, child: Text(selectedStartDate)),
+                Container(alignment: Alignment.centerLeft, child: Text(selectedStartDate)),
                 SizedBox(height: 10,),
-                Container(alignment: Alignment.centerRight, child: Text(selectedEndDate)),
+                Container(alignment: Alignment.centerLeft, child: Text(selectedEndDate)),
 
                 SizedBox(height: 15),
 
@@ -284,11 +284,11 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                                   firstDate: date.Jalali.now(),
                                   lastDate: date.Jalali(3099));
                               setState(() => selectedEndDate =
-                              'تاریخ پایان انتخاب شده: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                              'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
                             },
                             child: Center(
                               child: const Text(
-                                'انتخاب تاریخ پایان',
+                                'select end date',
                               ),
                             ),
                           ),
@@ -323,11 +323,11 @@ Widget actulator(cubit, context, {bool cooler= true}) {
                                   firstDate: date.Jalali.now(),
                                   lastDate: date.Jalali(3099));
                               setState(() => selectedStartDate =
-                              'تاریخ شروع انتخاب شده: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
                             },
                             child: Center(
                               child: const Text(
-                                'انتخاب تاریخ شروع',
+                                'select start date',
                               ),
                             ),
                           ),

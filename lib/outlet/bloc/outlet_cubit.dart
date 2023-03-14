@@ -53,60 +53,95 @@ print('wwqq'+plug.getDownEndClock.split(':')[0]);
   }
 
   saveChanges(isUp, Plug plug) {
-    if (isUp) {
-      if(upActive!) {
-        plug.setUPRelayStatus = plugUP! ? 'active' : 'deactive';
-        plug.setUPTimerStatus = timerUP ? 'active' : 'deactive';
+try {
+  if (isUp) {
+    if (upActive!) {
+      plug.setUPRelayStatus = plugUP! ? 'active' : 'deactive';
+      plug.setUPTimerStatus = timerUP ? 'active' : 'deactive';
 
-        if (timerUP) {
-          plug.setUPStartClock =
-              '${startUpTime!.hour.toString().padLeft(2, '0')}:${startUpTime!.minute.toString().padLeft(2, '0')}';
-          plug.setUPEndClock =
-              '${endUpTime!.hour.toString().padLeft(2, '0')}:${endUpTime!.minute.toString().padLeft(2, '0')}';
-          plug.setUPStartDate = !infinityUp
-              ? '${startUpDate!.year}/${startUpDate!.month}/${startUpDate!.day}'
-              : '11/11/11';
-          plug.setUPEndDate = !infinityUp
-              ? '${endUpDate!.year}/${endUpDate!.month}/${endUpDate!.day}'
-              : '11/11/11';
+      if (timerUP) {
+        plug.setUPStartClock =
+        '${startUpTime!.hour.toString().padLeft(2, '0')}:${startUpTime!.minute
+            .toString().padLeft(2, '0')}';
+        plug.setUPEndClock =
+        '${endUpTime!.hour.toString().padLeft(2, '0')}:${endUpTime!.minute
+            .toString().padLeft(2, '0')}';
+        plug.setUPStartDate = !infinityUp
+            ? '${startUpDate!.year}/${startUpDate!.month}/${startUpDate!.day}'
+            : '11/11/11';
+        plug.setUPEndDate = !infinityUp
+            ? '${endUpDate!.year}/${endUpDate!.month}/${endUpDate!.day}'
+            : '11/11/11';
 
-          sendSMS(
-              'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${infinityUp ? '111111' : startUpDate!.year.toString().substring(2) + startUpDate!.month.toString() + startUpDate!.day.toString()},${startUpTime!.hour.toString().padLeft(2, '0') + startUpTime!.minute.toString().padLeft(2, '0')}-${infinityUp ? '111111' : endUpDate!.year.toString().substring(2) + endUpDate!.month.toString() + endUpDate!.day.toString()},${endUpTime!.hour.toString().padLeft(2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#');
-        }
         sendSMS(
-            'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plug.getUPRelayStatus == 'active' ? 'a' : 'd'},time:${plug.getUPTimerStatus == 'active' ? 'a' : 'd'}#');
-      } else {
-        showMessage('up is not active');
+            'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${infinityUp
+                ? '111111'
+                : startUpDate!.year.toString().substring(2) +
+                startUpDate!.month.toString() +
+                startUpDate!.day.toString()},${startUpTime!.hour.toString()
+                .padLeft(2, '0') +
+                startUpTime!.minute.toString().padLeft(2, '0')}-${infinityUp
+                ? '111111'
+                : endUpDate!.year.toString().substring(2) +
+                endUpDate!.month.toString() +
+                endUpDate!.day.toString()},${endUpTime!.hour.toString().padLeft(
+                2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#');
       }
-    }
-    else {
-      if(downActive!) {
-        plug.setDownRelayStatus = plugDOWN! ? 'active' : 'inactive';
-        plug.setDownTimerStatus = timerDown ? 'active' : 'deactive';
-
-        if (timerDown) {
-          plug.setDownStartClock =
-              '${startDownTime!.hour.toString().padLeft(2, '0')}:${startDownTime!.minute.toString().padLeft(2, '0')}';
-          plug.setDownEndClock =
-              '${endDownTime!.hour.toString().padLeft(2, '0')}:${endDownTime!.minute.toString().padLeft(2, '0')}';
-          plug.setDownStartDate = !infinityDown
-              ? '${startDownDate!.year}/${startDownDate!.month}/${startDownDate!.day}'
-              : '11/11/11';
-          plug.setDownEndDate = !infinityDown
-              ? '${endDownDate!.year}/${endDownDate!.month}/${endDownDate!.day}'
-              : '11/11/11';
-
-          sendSMS(
-              'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${infinityDown ? '111111' : startDownDate!.year.toString().substring(2) + startDownDate!.month.toString() + startDownDate!.day.toString()},${startDownTime!.hour.toString().padLeft(2, '0') + startDownTime!.minute.toString().padLeft(2, '0')}-${infinityDown ? '111111' : endDownDate!.year.toString().substring(2) + endDownDate!.month.toString() + endDownDate!.day.toString()},${endDownTime!.hour.toString().padLeft(2, '0') + endDownTime!.minute.toString().padLeft(2, '0')}#');
-        }
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1?'1' : '2'}DN:${plug.getDownRelayStatus == 'active' ? 'a' : 'd'},time:${plug.getDownTimerStatus == 'active' ? 'a' : 'd'}#');
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plug
+              .getUPRelayStatus == 'active' ? 'a' : 'd'},time:${plug
+              .getUPTimerStatus == 'active' ? 'a' : 'd'}#');
     } else {
-        showMessage('down is not active');
-      }
-    
+      showMessage('up is not active');
     }
+  }
+  else {
+    if (downActive!) {
+      plug.setDownRelayStatus = plugDOWN! ? 'active' : 'inactive';
+      plug.setDownTimerStatus = timerDown ? 'active' : 'deactive';
 
+      if (timerDown) {
+        plug.setDownStartClock =
+        '${startDownTime!.hour.toString().padLeft(2, '0')}:${startDownTime!
+            .minute.toString().padLeft(2, '0')}';
+        plug.setDownEndClock =
+        '${endDownTime!.hour.toString().padLeft(2, '0')}:${endDownTime!.minute
+            .toString().padLeft(2, '0')}';
+        plug.setDownStartDate = !infinityDown
+            ? '${startDownDate!.year}/${startDownDate!.month}/${startDownDate!
+            .day}'
+            : '11/11/11';
+        plug.setDownEndDate = !infinityDown
+            ? '${endDownDate!.year}/${endDownDate!.month}/${endDownDate!.day}'
+            : '11/11/11';
+
+        sendSMS(
+            'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${infinityDown
+                ? '111111'
+                : startDownDate!.year.toString().substring(2) +
+                startDownDate!.month.toString() +
+                startDownDate!.day.toString()},${startDownTime!.hour.toString()
+                .padLeft(2, '0') +
+                startDownTime!.minute.toString().padLeft(2, '0')}-${infinityDown
+                ? '111111'
+                : endDownDate!.year.toString().substring(2) +
+                endDownDate!.month.toString() +
+                endDownDate!.day.toString()},${endDownTime!.hour.toString()
+                .padLeft(2, '0') +
+                endDownTime!.minute.toString().padLeft(2, '0')}#');
+      }
+      sendSMS(
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plug
+              .getDownRelayStatus == 'active' ? 'a' : 'd'},time:${plug
+              .getDownTimerStatus == 'active' ? 'a' : 'd'}#');
+    } else {
+      showMessage('down is not active');
+    }
+  }
+}
+catch( e) {
+  dialog('Please set date', Text('If you activated timer, you must select start and end date'), ()=>Navigator.pop(buildContext), removeCancel: true);
+    }
     deviceBox.put('info', deviceStatus);
   }
 

@@ -22,6 +22,11 @@ class RelayCubit extends Cubit<RelayState> {
   RelayCubit() : super(RelayInitial());
 
   initRelay() {
+    startdate=null;
+    enddate=null;
+    selectedStartDate='';
+    selectedEndDate='';
+
     if (currentPage == Page.Relay1) {
       relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
       sw = deviceStatus.getR1.status == 'ON' ? true : false;
@@ -84,12 +89,17 @@ class RelayCubit extends Cubit<RelayState> {
       startTime = Jalali.now();
       endTime = Jalali.now();
     }
+    else if (currentPage == Page.Relay4) {
+      sw = deviceStatus.getR4.status == 'ON' ? true : false;
+    }
   }
 
   changeMode(Status status) {
     statusOfRelay = status;
     emit(RelayInitial());
   }
+
+  updateUI()=>emit(RelayInitial());
 
   ///submit changes of relay
   changeStatus() async {
@@ -147,6 +157,7 @@ class RelayCubit extends Cubit<RelayState> {
 
     ///timer status
      newRelayState.timer = timer == false ? 'deactive' : 'active';
+     try{
      if (timer!) {//(statusOfRelay == Status.timer) {
       //in r1 else = timer
       newRelayState.startClock = '${startTime!.hour}:${startTime!.minute}';
@@ -158,7 +169,8 @@ class RelayCubit extends Cubit<RelayState> {
 //sms send
         sendSMS(
             '$relay:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#');
-      } else {
+      }
+      else {
         newRelayState.startDate =
             '${startdate!.year.toString().substring(2)}/${startdate!.month}/${startdate!.day}';
         newRelayState.endDate =
@@ -170,7 +182,9 @@ class RelayCubit extends Cubit<RelayState> {
 
       ///set timer status
       newRelayState.timer = timer == false ? 'deactive' : 'active';
-    } //else if() {
+    }} catch(e){
+       dialog('Please set date', m.Text('If you activated timer, you must select start and end date'), ()=>m.Navigator.pop(buildContext), removeCancel: true);
+     }
       ///sensor
       if (currentSensor != null) {
         ///just for relay 1 or 6
@@ -272,7 +286,7 @@ class RelayCubit extends Cubit<RelayState> {
     emit(RelayInitial());
 
     if (infinity) {
-      selectedStartDate = 'حلقه تکرار';
+      selectedStartDate = 'loop';
       selectedEndDate = '';
     } else {
       selectedStartDate = '';

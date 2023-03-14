@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:shome/ups/ups.dart';
 
 import '../../main.dart';
+import '../../relay/relay.dart';
 import '../icon.dart';
 
 part 'icon_state.dart';
@@ -21,7 +22,7 @@ class IconCubit extends Cubit<IconState> {
     // >> To get paths you need these 2 lines
 
     listIcons = manifestMap.keys
-    .where((String key) => key.contains('selectable-icons/'))
+        .where((String key) => key.contains('selectable-icons/'))
         .where((String key) => key.contains('.png'))
         .toList();
 
@@ -32,8 +33,13 @@ class IconCubit extends Cubit<IconState> {
     constants.put(key, newIcon);
     showMessage('operation completed');
 
-    if(iconKey.contains('UPS')) upsCubit!.updateUI();
-    else mainController.updateMain();
+    if (iconKey.contains('UPS'))
+      upsCubit!.updateUI();
+    else if (iconKey.contains('IR4')) {
+      relayCubit!.updateUI();
+      mainController.updateMain();
+    } else
+      mainController.updateMain();
 
     Navigator.pop(buildContext);
   }

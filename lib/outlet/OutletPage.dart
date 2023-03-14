@@ -248,7 +248,7 @@ Widget option(context, bool isUp) {
                       Expanded(
                         child: Column(
                           children: [
-                            Text('ساعت پایان'),
+                            Text('end time'),
                             Directionality(
                               textDirection: TextDirection.ltr,
                               child: TimePickerSpinner(
@@ -267,7 +267,7 @@ Widget option(context, bool isUp) {
                       Expanded(
                         child: Column(
                           children: [
-                            Text('ساعت شروع'),
+                            Text('start time'),
                             Directionality(
                               textDirection: TextDirection.ltr,
                               child: TimePickerSpinner(
@@ -290,11 +290,11 @@ Widget option(context, bool isUp) {
                   ///selected dates
                   SizedBox(height: 5),
                   Container(
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.centerLeft,
                       child: Text(isUp ? selectedUpStartDate : selectedDownStartDate)),
                   SizedBox(height: 5),
                   Container(
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.centerLeft,
                       child: Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
                   SizedBox(height: 10),
                   Padding(
@@ -317,16 +317,16 @@ Widget option(context, bool isUp) {
                                 setState(() {
                                   if(isUp) {
                                     selectedUpEndDate =
-                                    'تاریخ پایان انتخاب شده: ${endUpDate!.year}/${endUpDate!.month}/${endUpDate!.day}';
+                                    'Selected end date: ${endUpDate!.year}/${endUpDate!.month}/${endUpDate!.day}';
                                   } else {
                                     selectedDownEndDate =
-                                    'تاریخ پایان انتخاب شده: ${endDownDate!.year}/${endDownDate!.month}/${endDownDate!.day}';
+                                    'Selected end date: ${endDownDate!.year}/${endDownDate!.month}/${endDownDate!.day}';
                                   }
                                 });
                               },
                               child: Center(
                                 child: const Text(
-                                  'انتخاب تاریخ پایان',
+                                  'select end date',
                                 ),
                               ),
                             ),
@@ -365,12 +365,12 @@ Widget option(context, bool isUp) {
                                 setState(() {
                                   if(isUp) {
                                     selectedUpStartDate =
-                                    'تاریخ شروع انتخاب شده: ${startUpDate!
+                                    'Selected start date: ${startUpDate!
                                         .year}/${startUpDate!.month}/${startUpDate!
                                         .day}';
                                   } else {
                                     selectedDownStartDate =
-                                    'تاریخ شروع انتخاب شده: ${startDownDate!
+                                    'Selected start date: ${startDownDate!
                                         .year}/${startDownDate!.month}/${startDownDate!
                                         .day}';
                                   }
@@ -378,7 +378,7 @@ Widget option(context, bool isUp) {
                               },
                               child: Center(
                                 child: const Text(
-                                  'انتخاب تاریخ شروع',
+                                  'select start date',
                                 ),
                               ),
                             ),
@@ -399,7 +399,7 @@ Widget option(context, bool isUp) {
           SizedBox(height: 20),
           NeumorphicButton(
             padding: EdgeInsets.all(20),
-            child: Text('ثبت تغییرات'),
+            child: Text('submit'),
             onPressed: () => _cubit!.saveChanges(isUp, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
           ),
 
