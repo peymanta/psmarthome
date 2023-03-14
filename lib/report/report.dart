@@ -40,6 +40,8 @@ class _ReportState extends State<Report> {
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
+            button(() => _cubit!.notifications(), 'Show Notifications'),
+            divider(),
             listItemText('Report'),
             button(() => _cubit!.report(), 'Report'),
             button(() => _cubit!.fullReport(), 'Full Report'),
@@ -47,7 +49,9 @@ class _ReportState extends State<Report> {
 
             divider(),
             listItemText('Device'),
-            listItemText('description'),
+            listItemText('''Outbox temp: ${deviceStatus.getPublicReport.outBoxTemp}
+Outbox humidity: ${deviceStatus.getPublicReport.outBoxHumidity}
+Room temp: ${deviceStatus.getPublicReport.temp}'''),
             divider(),
             listItemText('Graph'),
             SizedBox(

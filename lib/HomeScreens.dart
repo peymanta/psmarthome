@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:shome/main.dart';
 import 'package:shome/models/home_screen_items.dart';
 
 import 'outlet/OutletPage.dart';
@@ -65,7 +66,7 @@ Widget homePage(List items) {
                             ),
                           ),
                           //notification
-                          items[index].isNotificationEnabled
+                          items[index].isNotificationEnabled && (logBox.length - constants.get('notifBadge'))>0
                               ? Positioned(
                                 top: 5,
                                 left: 0,
@@ -80,7 +81,7 @@ Widget homePage(List items) {
                                           borderRadius: BorderRadius.circular(50)),
                                       child: Center(
                                         child: Text(
-                                          '${items[index].msgLength}',
+                                          (logBox.length - constants.get('notifBadge')).toString(),
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),

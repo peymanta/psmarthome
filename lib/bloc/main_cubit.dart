@@ -42,7 +42,7 @@ Please enter the SIM card number in your device'''),
       });
       emit(MainInitial());
     }
-
+compile('sms');
     Future.delayed(Duration.zero).then((value) => compile('sms'));
   }
 
