@@ -77,7 +77,7 @@ class _SettingsState extends State<Settings> {
                           child: TimePickerSpinner(
                             isForce2Digits: true,
                             is24HourMode: true,
-                            time: DateTime(0,0,0, int.parse(constants.get('publicreportTimer').substring(1,3)), int.parse(constants.get('publicreportTimer').substring(3))),
+                            time: DateTime.now(),//DateTime(0,0,0, int.parse(constants.get('publicreportTimer').substring(1,3) ?? DateTime.now().hour), int.parse(constants.get('publicreportTimer').substring(3)?? DateTime.now().minute)),
                             onTimeChange: (DateTime event) {
                               setState(() {
                                 selectedTime = event;

@@ -21,11 +21,13 @@ enum Status {
 class RelayCubit extends Cubit<RelayState> {
   RelayCubit() : super(RelayInitial());
 
-  initRelay() {
+  initRelay() async{
+    statusOfRelay = Status.sw;
     startdate=null;
     enddate=null;
     selectedStartDate='';
     selectedEndDate='';
+
 
     if (currentPage == Page.Relay1) {
       relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
@@ -39,7 +41,7 @@ class RelayCubit extends Cubit<RelayState> {
       startTime = Jalali.now();
       endTime = Jalali.now();
     }
-    else if (currentPage == Page.Relay6) {
+     if (currentPage == Page.Relay6) {
       relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
       sw = deviceStatus.getR6.status == 'ON' ? true : false;
       sensor =

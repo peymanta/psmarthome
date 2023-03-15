@@ -52,6 +52,8 @@ dependencies:
   path_provider: ^2.0.13
   shamsi_date: ^1.0.1
   persian_datetime_picker: ^2.5.0
+  sms_receiver: ^0.4.1
+  sms: ^0.2.4
 
 
 dev_dependencies:

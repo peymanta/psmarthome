@@ -12,7 +12,7 @@ part 'temp_state.dart';
 class TempCubit extends Cubit<TempState> {
   TempCubit() : super(TempInitial());
 
-  void init() {
+  void init() async{
     if(isCooler!) {
       automatic = deviceStatus.getPublicReport.autoCooler == 'auto-active';
 infinity = deviceStatus.getCooler.startDate == '11/11/11';

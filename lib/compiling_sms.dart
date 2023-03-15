@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
-
+import 'package:telephony/telephony.dart';
 import 'main.dart';
 import 'models/status.dart';
 
 
-sendSMS(sms) {
-  print('simulation sending sms: $sms');
+sendSMS(sms) async{
+  final Telephony telephony = Telephony.instance;
+  bool? permissionsGranted = await telephony.requestPhoneAndSmsPermissions;
+  if(permissionsGranted!) {
+    telephony.sendSms(to: deviceStatus.number1, message: sms);
+  }
 
   showMessage('operation completed');
 }
@@ -104,9 +108,10 @@ compile(String sms) async{
 // 2144168346
 // TFMN''';
 
-var sms = '''Disable the device first
+// var sms = '''Disable the device first
+//
+// 101/5/19 22:47:33''';
 
-101/5/19 22:47:33''';
   if(sms.split('\n')[1].contains('s:')) {
     compilePublicReport(sms);
   } else {

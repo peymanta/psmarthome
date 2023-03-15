@@ -5,9 +5,10 @@ import 'package:shome/models/home_screen_items.dart';
 
 import 'outlet/OutletPage.dart';
 
-
+int count = 0;
 
 Widget homePage(List items) {
+  count = constants.get('notifBadge') ?? 0;
     return Builder(
       builder: (context) {
         return Container(
@@ -66,7 +67,7 @@ Widget homePage(List items) {
                             ),
                           ),
                           //notification
-                          items[index].isNotificationEnabled && (logBox.length - constants.get('notifBadge'))>0
+                          items[index].isNotificationEnabled && (logBox.length - count ?? 0)>0
                               ? Positioned(
                                 top: 5,
                                 left: 0,
@@ -81,7 +82,7 @@ Widget homePage(List items) {
                                           borderRadius: BorderRadius.circular(50)),
                                       child: Center(
                                         child: Text(
-                                          (logBox.length - constants.get('notifBadge')).toString(),
+                                          (logBox.length - count).toString(),
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),

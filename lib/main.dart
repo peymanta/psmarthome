@@ -26,6 +26,7 @@ import 'models/home_screen_items.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sms/sms.dart';
 
 bool securityState = true;
 late DeviceStatus deviceStatus;
@@ -34,9 +35,12 @@ late Box deviceBox, tempBox, constants, chartsBox, logBox;
 
 late BuildContext buildContext;
 late MainCubit mainController;
+SmsReceiver? smsReceiver;
+String? _textContent = 'Waiting for messages...';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Hive
     ..init((await getApplicationDocumentsDirectory()).path)
     ..registerAdapter(DeviceStatusAdapter())
@@ -61,6 +65,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     scrollBehavior: MyCustomScrollBehavior(),
   ));
+
 }
 
 class MyApp extends StatefulWidget {
@@ -76,12 +81,18 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     mainController = MainCubit();
+
+    smsReceiver = SmsReceiver();
+
     mainController.init();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     buildContext = context;
+
     return Scaffold(
         appBar: AppBar(
             shadowColor: Colors.transparent,
