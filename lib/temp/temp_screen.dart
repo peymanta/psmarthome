@@ -24,7 +24,9 @@ TooltipBehavior? _tooltip;
 
 double? endMin;
 int? sv = 16, ev = 16;
-KnobController? start; ///start also using for light
+KnobController? start;
+
+///start also using for light
 KnobController? end;
 
 Jalali startTime = Jalali.now();
@@ -34,8 +36,397 @@ date.Jalali? enddate;
 String selectedStartDate = '';
 String selectedEndDate = '';
 
-bool pads=false, hub=false;
+bool pads = false, hub = false;
 
+
+
+class Actulator extends StatelessWidget {
+  final TempCubit cubit;
+  final bool cooler;
+  Actulator(this.cubit, context, this.cooler, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    start = KnobController(
+        minimum: 16,
+        maximum: 28,
+        initial: cooler
+            ? double.parse(constants.get('tempMin') ?? '16').clamp(16, 28)
+            : double.parse(constants.get('tempMax') ?? '28').clamp(16, 28));
+    end = KnobController(
+        minimum: 16, //5 endmin+4 or 9
+        maximum: 32, //95
+        initial: cooler
+            ? int.parse(constants.get('tempMin') ?? '16').clamp(16, 32).toDouble()
+            : int.parse(constants.get('tempMax') ?? '32').clamp(16, 32).toDouble());
+
+
+    return  ListView(
+        physics: ClampingScrollPhysics(),
+        children: [
+          //   AnimatedOpacity(
+          // opacity: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? 1 : 0,
+          //     duration: Duration(milliseconds: 600),
+          //     child:
+          Visibility(
+            visible: available!,
+            // duration: Duration(milliseconds: 500),
+            // height: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? (automatic ? 1000 : 200) : 0,
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () => cubit!.status(),
+                  title: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Automatic ${cooler ? 'cooler' : 'heater'}')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: automatic,
+                  ),
+                ),
+                ListTile(
+                  onTap: () => cubit!.changeRest(),
+                  title: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text('${cooler ? 'Cooler' : 'Heater'} Rest')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: rest!,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    // setState(() {
+                    //   pads = !pads;
+                    //   sendSMS('hello');
+                    // });
+                  },
+                  title: Container(
+                      alignment: Alignment.centerLeft, child: Text('Pads')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: pads,
+                  ),
+                ),
+
+                SizedBox(
+                  height: 30,
+                ),
+                //         AnimatedOpacity(
+                //         opacity: automatic ? 1 : 0,
+                // duration: Duration(milliseconds: 600),
+                // child:
+                Visibility(
+                  // height: automatic ? 770 : 0.02,
+                  // duration: Duration(milliseconds: 600),
+                  visible: automatic,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text('end time'),
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: TimePickerSpinner(
+                                    is24HourMode: true,
+                                    isForce2Digits: true,
+                                    onTimeChange: (DateTime time) {
+                                      endTime = Jalali.fromDateTime(time);
+                                    },
+                                    time: endTime!.toDateTime(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text('start time'),
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: TimePickerSpinner(
+                                    is24HourMode: true,
+                                    isForce2Digits: true,
+                                    onTimeChange: (DateTime time) {
+                                      startTime = Jalali.fromDateTime(time);
+                                    },
+                                    time: startTime!.toDateTime(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(selectedStartDate)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(selectedEndDate)),
+                      SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: NeumorphicButton(
+                                  padding: EdgeInsets.all(15),
+                                  onPressed: () async {
+                                    enddate = await date.showPersianDatePicker(
+                                        context: context,
+                                        initialDate: date.Jalali.now(),
+                                        firstDate: date.Jalali.now(),
+                                        lastDate: date.Jalali(3099));
+                                    // setState(() => selectedEndDate =
+                                    // 'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                  },
+                                  child: Center(
+                                    child: const Text(
+                                      'select end date',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                                child: Center(
+                                    child: SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: NeumorphicButton(
+                                          onPressed: () {},
+                                          style: NeumorphicStyle(
+                                              boxShape:
+                                              NeumorphicBoxShape.circle()),
+                                        )))),
+                            Expanded(
+                                child: Center(
+                                  child: NeumorphicCheckbox(
+                                    value: infinity,
+                                    onChanged: (value) => _cubit!.loop(),
+                                  ),
+                                )),
+                            Expanded(
+                              child: Center(
+                                child: NeumorphicButton(
+                                  padding: EdgeInsets.all(15),
+                                  onPressed: () async {
+                                    startdate =
+                                    await date.showPersianDatePicker(
+                                        context: context,
+                                        initialDate: date.Jalali.now(),
+                                        firstDate: date.Jalali.now(),
+                                        lastDate: date.Jalali(3099));
+                                    // setState(() => selectedStartDate =
+                                    // 'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                  },
+                                  child: Center(
+                                    child: const Text(
+                                      'select start date',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 150,
+                                    child: Knob(
+                                      controller: end,
+                                      style: KnobStyle(
+                                        labelStyle: const TextStyle(
+                                            color: Colors.transparent),
+                                        controlStyle: const ControlStyle(
+                                            tickStyle: ControlTickStyle(
+                                                color: Colors.transparent),
+                                            glowColor: Colors.transparent,
+                                            backgroundColor: Color(0xffdde6e8),
+                                            shadowColor: Color(0xffd4d6dd)),
+                                        pointerStyle: PointerStyle(color: blue),
+                                        minorTickStyle: const MinorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                        majorTickStyle: const MajorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(ev.toString()),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: SizedBox(
+                                      width: 150,
+                                      height: 150,
+                                      child: Knob(
+                                        controller: start,
+                                        style: KnobStyle(
+                                          labelStyle:
+                                          TextStyle(color: Colors.transparent),
+                                          controlStyle: ControlStyle(
+                                              tickStyle: ControlTickStyle(
+                                                  color: Colors.transparent),
+                                              glowColor: Colors.transparent,
+                                              backgroundColor: Color(0xffdde6e8),
+                                              shadowColor: Color(0xffd4d6dd)),
+                                          pointerStyle: PointerStyle(color: blue),
+                                          minorTickStyle: MinorTickStyle(
+                                              color: Color(0xffaaadba), length: 6),
+                                          majorTickStyle: MajorTickStyle(
+                                              color: Color(0xffaaadba), length: 6),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(sv.toString())
+                                ],
+                              )),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: NeumorphicButton(
+                          onPressed: () => _cubit!.submitData(),
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text('ثبت تغییرات'),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: NeumorphicButton(
+                          padding: EdgeInsets.all(10),
+                          onPressed: () {},
+                          style: NeumorphicStyle(
+                              boxShape: NeumorphicBoxShape.circle()),
+                        ),
+                      ),
+                    ],
+                    // ),
+                  ),
+                ),
+              ],
+            ),
+            // ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 220,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SfCartesianChart(
+                  primaryXAxis: CategoryAxis(),
+                  legend: Legend(isVisible: false),
+                  tooltipBehavior: _tooltip,
+                  series: <LineSeries>[
+                    LineSeries(
+                        dataSource: tempBox.values.toList(),
+                        xValueMapper: (data, _) => data.x,
+                        yValueMapper: (data, _) => data.y,
+                        // Enable data label
+                        dataLabelSettings: DataLabelSettings(isVisible: true))
+                  ]),
+            ),
+          ),
+
+          divider(),
+
+          ListTile(
+            onTap: () {
+              // setState(() {
+              //   hub = !hub;
+              //   sendSMS('hello');
+              // });
+            },
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Hub'),
+            ),
+            leading: NeumorphicSwitch(value: hub),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          ListTile(
+            onTap: () => cubit!.addDevice(),
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Add device'),
+            ),
+            leading: NeumorphicButton(
+              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
+              child: Icon(
+                Icons.add,
+                color: blue,
+              ),
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(height: 10),
+          ListTile(
+            onTap: () => cubit!.removeDevice(),
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Remove device'),
+            ),
+            leading: NeumorphicButton(
+              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
+              child: Icon(
+                Icons.clear,
+                color: blue,
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ]);
+
+  }
+}
 class CoolerScreen extends StatefulWidget {
   const CoolerScreen({Key? key}) : super(key: key);
 
@@ -71,7 +462,7 @@ class _CoolerScreenState extends State<CoolerScreen> {
               textDirection: TextDirection.rtl,
               child: Container(
                 padding: EdgeInsets.all(20),
-                child: actulator(_cubit, context, cooler: true),
+                child: Actulator(_cubit!, context, true),
               ),
             ),
           );
@@ -82,9 +473,6 @@ class _CoolerScreenState extends State<CoolerScreen> {
     );
   }
 }
-
-
-
 
 class HeaterScreen extends StatefulWidget {
   const HeaterScreen({Key? key}) : super(key: key);
@@ -121,7 +509,7 @@ class _HeaterScreenState extends State<HeaterScreen> {
               textDirection: TextDirection.rtl,
               child: Container(
                 padding: EdgeInsets.all(20),
-                child: actulator(_cubit, context, cooler: false),
+                child: Actulator(_cubit!, context,  false),
               ),
             ),
           );
@@ -133,32 +521,30 @@ class _HeaterScreenState extends State<HeaterScreen> {
   }
 }
 
-
-Widget actulator(cubit, context, {bool cooler= true}) {
-
+Widget actulator(cubit, context, cooler ) {
   start = KnobController(
       minimum: 16,
       maximum: 28,
-      initial: cooler ? double.parse(constants.get('tempMin')).clamp(16, 28) : double.parse(constants.get('tempMax')).clamp(16, 28));
+      initial: cooler
+          ? double.parse(constants.get('tempMin')).clamp(16, 28)
+          : double.parse(constants.get('tempMax')).clamp(16, 28));
   end = KnobController(
       minimum: 16, //5 endmin+4 or 9
       maximum: 32, //95
-      initial: cooler ? int.parse(constants.get('tempMin')).clamp(16, 32).toDouble() : int.parse(constants.get('tempMax')).clamp(16, 32).toDouble()
-      );
+      initial: cooler
+          ? int.parse(constants.get('tempMin')).clamp(16, 32).toDouble()
+          : int.parse(constants.get('tempMax')).clamp(16, 32).toDouble());
 
   return StatefulBuilder(builder: (context, setState) {
     start!.addOnValueChangedListener((double value) {
       setState(() {
         sv = value.toInt();
-        endMin = value  <= 32 ? value  : 32;
+        endMin = value <= 32 ? value : 32;
 
         ev = endMin!.toInt(); //value.roundToDouble();
       });
       end = KnobController(
-          minimum: endMin!,
-          maximum: 32,
-          initial: endMin!
-              .clamp(endMin!, 32));
+          minimum: endMin!, maximum: 32, initial: endMin!.clamp(endMin!, 32));
     });
 
     end!.addOnValueChangedListener((p) {
@@ -166,348 +552,372 @@ Widget actulator(cubit, context, {bool cooler= true}) {
         ev = p.toInt();
       });
     });
-    return ListView(physics: ClampingScrollPhysics(), children: [
-      AnimatedOpacity(
-    opacity: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? 1 : 0,
-        duration: Duration(milliseconds: 600),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          height: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? (automatic ? 1000 : 200) : 0,
-          child: Column(
-            children: [
-
-              ListTile(
-                onTap: () => cubit!.status(),
-                title: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Automatic ${cooler ? 'cooler' : 'heater'}')),
-                // leading: NeumorphicSwitch(value: automatic),
-              leading: NeumorphicSwitch(
-                value: automatic,
-              ),
-              ),
-              ListTile(
-                onTap: () => cubit!.changeRest(),
-                title: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text('${cooler ? 'Cooler' : 'Heater'} Rest')),
-                // leading: NeumorphicSwitch(value: automatic),
-              leading: NeumorphicSwitch(
-                value: rest!,
-              ),
-              ),
-              ListTile(
-                onTap: () {
-                  setState(() {
-                    pads = !pads;
-                    sendSMS('hello');
-                  });
-                },
-                title: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Pads')),
-                // leading: NeumorphicSwitch(value: automatic),
-              leading: NeumorphicSwitch(
-                value: pads,
-              ),
-              ),
-
-          SizedBox(
-            height: 30,
-          ),
-            AnimatedOpacity(
-            opacity: automatic ? 1 : 0,
-    duration: Duration(milliseconds: 600),
-    child: AnimatedContainer(
-    height: automatic ? 770 : 0.02,
-    duration: Duration(milliseconds: 600),
+    return ListView(
+        physics: ClampingScrollPhysics(),
+        itemExtent: 10,
+        children: [
+          //   AnimatedOpacity(
+          // opacity: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? 1 : 0,
+          //     duration: Duration(milliseconds: 600),
+          //     child:
+          Visibility(
+            visible: available!,
+            // duration: Duration(milliseconds: 500),
+            // height: constants.values.contains(isCooler! ? 'cooler' : 'heater') ? (automatic ? 1000 : 200) : 0,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text('end time'),
-                          Directionality(
-                            textDirection: TextDirection.ltr,
-                            child: TimePickerSpinner(
-                              is24HourMode: true,
-                              isForce2Digits: true,
-                              onTimeChange: (DateTime time) {
-                                endTime = Jalali.fromDateTime(time);
-                              },
-                              time: endTime!.toDateTime(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text('start time'),
-                          Directionality(
-                            textDirection: TextDirection.ltr,
-                            child: TimePickerSpinner(
-                              is24HourMode: true,
-                              isForce2Digits: true,
-                              onTimeChange: (DateTime time) {
-                                startTime = Jalali.fromDateTime(time);
-                              },
-                              time: startTime!.toDateTime(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),SizedBox(height: 15),
-                Container(alignment: Alignment.centerLeft, child: Text(selectedStartDate)),
-                SizedBox(height: 10,),
-                Container(alignment: Alignment.centerLeft, child: Text(selectedEndDate)),
-
-                SizedBox(height: 15),
-
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: NeumorphicButton(
-                            padding: EdgeInsets.all(15),
-                            onPressed: () async {
-                              enddate = await date.showPersianDatePicker(
-                                  context: context,
-                                  initialDate: date.Jalali.now(),
-                                  firstDate: date.Jalali.now(),
-                                  lastDate: date.Jalali(3099));
-                              setState(() => selectedEndDate =
-                              'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                            },
-                            child: Center(
-                              child: const Text(
-                                'select end date',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                          child: Center(
-                              child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: NeumorphicButton(
-                                    onPressed: () {},
-                                    style: NeumorphicStyle(
-                                        boxShape:
-                                        NeumorphicBoxShape.circle()),
-                                  )))),
-                      Expanded(
-                          child: Center(
-                            child: NeumorphicCheckbox(
-                              value: infinity,
-                              onChanged: (value) => _cubit!.loop(),
-                            ),
-                          )),
-                      Expanded(
-                        child: Center(
-                          child: NeumorphicButton(
-                            padding: EdgeInsets.all(15),
-                            onPressed: () async {
-                              startdate = await date.showPersianDatePicker(
-                                  context: context,
-                                  initialDate: date.Jalali.now(),
-                                  firstDate: date.Jalali.now(),
-                                  lastDate: date.Jalali(3099));
-                              setState(() => selectedStartDate =
-                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
-                            },
-                            child: Center(
-                              child: const Text(
-                                'select start date',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                ListTile(
+                  onTap: () => cubit!.status(),
+                  title: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Automatic ${cooler ? 'cooler' : 'heater'}')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: automatic,
+                  ),
+                ),
+                ListTile(
+                  onTap: () => cubit!.changeRest(),
+                  title: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text('${cooler ? 'Cooler' : 'Heater'} Rest')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: rest!,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      pads = !pads;
+                      sendSMS('hello');
+                    });
+                  },
+                  title: Container(
+                      alignment: Alignment.centerLeft, child: Text('Pads')),
+                  // leading: NeumorphicSwitch(value: automatic),
+                  leading: NeumorphicSwitch(
+                    value: pads,
                   ),
                 ),
 
-            SizedBox(height: 20,),
-            Row(
-                  children: [
-                    Expanded(
-                      child: Column(
+                SizedBox(
+                  height: 30,
+                ),
+                //         AnimatedOpacity(
+                //         opacity: automatic ? 1 : 0,
+                // duration: Duration(milliseconds: 600),
+                // child:
+                Visibility(
+                  // height: automatic ? 770 : 0.02,
+                  // duration: Duration(milliseconds: 600),
+                  visible: automatic,
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: Knob(
-                                controller: end,
-                                style: KnobStyle(
-                                  labelStyle: const TextStyle(
-                                      color: Colors.transparent),
-                                  controlStyle: const ControlStyle(
-                                      tickStyle: ControlTickStyle(
-                                          color: Colors.transparent),
-                                      glowColor: Colors.transparent,
-                                      backgroundColor: Color(0xffdde6e8),
-                                      shadowColor: Color(0xffd4d6dd)),
-                                  pointerStyle: PointerStyle(color: blue),
-                                  minorTickStyle: const MinorTickStyle(
-                                      color: Color(0xffaaadba),
-                                      length: 6),
-                                  majorTickStyle: const MajorTickStyle(
-                                      color: Color(0xffaaadba),
-                                      length: 6),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text('end time'),
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: TimePickerSpinner(
+                                    is24HourMode: true,
+                                    isForce2Digits: true,
+                                    onTimeChange: (DateTime time) {
+                                      endTime = Jalali.fromDateTime(time);
+                                    },
+                                    time: endTime!.toDateTime(),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(ev.toString()),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text('start time'),
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: TimePickerSpinner(
+                                    is24HourMode: true,
+                                    isForce2Digits: true,
+                                    onTimeChange: (DateTime time) {
+                                      startTime = Jalali.fromDateTime(time);
+                                    },
+                                    time: startTime!.toDateTime(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                    Expanded(
-                        child: Column(
+                      SizedBox(height: 15),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(selectedStartDate)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(selectedEndDate)),
+                      SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: SizedBox(
-                                width: 150,
-                                height: 150,
-                                child: Knob(
-                                  controller: start,
-                                  style: KnobStyle(
-                                    labelStyle: TextStyle(
-                                        color: Colors.transparent),
-                                    controlStyle: ControlStyle(
-                                        tickStyle: ControlTickStyle(
-                                            color: Colors.transparent),
-                                        glowColor: Colors.transparent,
-                                        backgroundColor: Color(0xffdde6e8),
-                                        shadowColor: Color(0xffd4d6dd)),
-                                    pointerStyle: PointerStyle(color: blue),
-                                    minorTickStyle: MinorTickStyle(
-                                        color: Color(0xffaaadba),
-                                        length: 6),
-                                    majorTickStyle: MajorTickStyle(
-                                        color: Color(0xffaaadba),
-                                        length: 6),
+                            Expanded(
+                              child: Center(
+                                child: NeumorphicButton(
+                                  padding: EdgeInsets.all(15),
+                                  onPressed: () async {
+                                    enddate = await date.showPersianDatePicker(
+                                        context: context,
+                                        initialDate: date.Jalali.now(),
+                                        firstDate: date.Jalali.now(),
+                                        lastDate: date.Jalali(3099));
+                                    setState(() => selectedEndDate =
+                                        'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                  },
+                                  child: Center(
+                                    child: const Text(
+                                      'select end date',
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
+                            Expanded(
+                                child: Center(
+                                    child: SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: NeumorphicButton(
+                                          onPressed: () {},
+                                          style: NeumorphicStyle(
+                                              boxShape:
+                                                  NeumorphicBoxShape.circle()),
+                                        )))),
+                            Expanded(
+                                child: Center(
+                              child: NeumorphicCheckbox(
+                                value: infinity,
+                                onChanged: (value) => _cubit!.loop(),
+                              ),
+                            )),
+                            Expanded(
+                              child: Center(
+                                child: NeumorphicButton(
+                                  padding: EdgeInsets.all(15),
+                                  onPressed: () async {
+                                    startdate =
+                                        await date.showPersianDatePicker(
+                                            context: context,
+                                            initialDate: date.Jalali.now(),
+                                            firstDate: date.Jalali.now(),
+                                            lastDate: date.Jalali(3099));
+                                    setState(() => selectedStartDate =
+                                        'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                  },
+                                  child: Center(
+                                    child: const Text(
+                                      'select start date',
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            Text(sv.toString())
                           ],
-                        )
-                    ),
-                  ],
-                ),SizedBox(
-              height: 20,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 150,
+                                    child: Knob(
+                                      controller: end,
+                                      style: KnobStyle(
+                                        labelStyle: const TextStyle(
+                                            color: Colors.transparent),
+                                        controlStyle: const ControlStyle(
+                                            tickStyle: ControlTickStyle(
+                                                color: Colors.transparent),
+                                            glowColor: Colors.transparent,
+                                            backgroundColor: Color(0xffdde6e8),
+                                            shadowColor: Color(0xffd4d6dd)),
+                                        pointerStyle: PointerStyle(color: blue),
+                                        minorTickStyle: const MinorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                        majorTickStyle: const MajorTickStyle(
+                                            color: Color(0xffaaadba),
+                                            length: 6),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(ev.toString()),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                              child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: SizedBox(
+                                  width: 150,
+                                  height: 150,
+                                  child: Knob(
+                                    controller: start,
+                                    style: KnobStyle(
+                                      labelStyle:
+                                          TextStyle(color: Colors.transparent),
+                                      controlStyle: ControlStyle(
+                                          tickStyle: ControlTickStyle(
+                                              color: Colors.transparent),
+                                          glowColor: Colors.transparent,
+                                          backgroundColor: Color(0xffdde6e8),
+                                          shadowColor: Color(0xffd4d6dd)),
+                                      pointerStyle: PointerStyle(color: blue),
+                                      minorTickStyle: MinorTickStyle(
+                                          color: Color(0xffaaadba), length: 6),
+                                      majorTickStyle: MajorTickStyle(
+                                          color: Color(0xffaaadba), length: 6),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(sv.toString())
+                            ],
+                          )),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: NeumorphicButton(
+                          onPressed: () => _cubit!.submitData(),
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text('ثبت تغییرات'),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: NeumorphicButton(
+                          padding: EdgeInsets.all(10),
+                          onPressed: () {},
+                          style: NeumorphicStyle(
+                              boxShape: NeumorphicBoxShape.circle()),
+                        ),
+                      ),
+                    ],
+                    // ),
+                  ),
+                ),
+              ],
             ),
-            Center(
-              child: NeumorphicButton(
-                onPressed: () => _cubit!.submitData(),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('ثبت تغییرات'),),),
+            // ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 220,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SfCartesianChart(
+                  primaryXAxis: CategoryAxis(),
+                  legend: Legend(isVisible: false),
+                  tooltipBehavior: _tooltip,
+                  series: <LineSeries>[
+                    LineSeries(
+                        dataSource: tempBox.values.toList(),
+                        xValueMapper: (data, _) => data.x,
+                        yValueMapper: (data, _) => data.y,
+                        // Enable data label
+                        dataLabelSettings: DataLabelSettings(isVisible: true))
+                  ]),
             ),
-            SizedBox(
-              height: 10,
+          ),
+
+          divider(),
+
+          ListTile(
+            onTap: () {
+              setState(() {
+                hub = !hub;
+                sendSMS('hello');
+              });
+            },
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Hub'),
             ),
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: NeumorphicButton(
-                padding: EdgeInsets.all(10),
-                onPressed: () {},
-                style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
+            leading: NeumorphicSwitch(value: hub),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          ListTile(
+            onTap: () => cubit!.addDevice(),
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Add device'),
+            ),
+            leading: NeumorphicButton(
+              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
+              child: Icon(
+                Icons.add,
+                color: blue,
               ),
+              onPressed: () {},
             ),
-
-          ],
-    ),
-          ),),
-    ],
-    ),
-        ),
-      ),
-      SizedBox(
-        height: 10,
-      ),
-      SizedBox(
-        height: 220,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SfCartesianChart(
-              primaryXAxis: CategoryAxis(),
-              legend: Legend(isVisible: false),
-              tooltipBehavior: _tooltip,
-              series: <LineSeries>[
-                LineSeries(
-                    dataSource: tempBox.values.toList(),
-                    xValueMapper: (data, _) => data.x,
-                    yValueMapper: (data, _) => data.y,
-                    // Enable data label
-                    dataLabelSettings: DataLabelSettings(isVisible: true))
-              ]),
-        ),
-      ),
-
-      divider(),
-
-      ListTile(
-        onTap: () {
-          setState((){
-            hub = !hub;
-            sendSMS('hello');
-          });
-        },
-        title: Container(
-          alignment: Alignment.centerLeft,
-          child: Text('Hub'),
-        ),
-        leading: NeumorphicSwitch(value: hub),
-      ),
-      SizedBox(height: 10,),
-      ListTile(
-        onTap: () => cubit!.addDevice(),
-        title: Container(
-          alignment: Alignment.centerLeft,
-          child: Text('Add device'),
-        ),
-        leading: NeumorphicButton(
-          style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
-          child: Icon(Icons.add, color: blue,), onPressed: () {},),
-      ),SizedBox(height: 10),
-      ListTile(
-        onTap: () => cubit!.removeDevice(),
-        title: Container(
-          alignment: Alignment.centerLeft,
-          child: Text('Remove device'),
-        ),
-        leading: NeumorphicButton(
-          style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
-          child: Icon(Icons.clear, color: blue,), onPressed: () {},),
-      ),
-    ]);
+          ),
+          SizedBox(height: 10),
+          ListTile(
+            onTap: () => cubit!.removeDevice(),
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text('Remove device'),
+            ),
+            leading: NeumorphicButton(
+              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle()),
+              child: Icon(
+                Icons.clear,
+                color: blue,
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ]);
   });
 }
-
-
 
 ///
 class MyApp extends StatelessWidget {

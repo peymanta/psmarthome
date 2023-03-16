@@ -14,41 +14,45 @@ class TempCubit extends Cubit<TempState> {
 
   void init() async{
     if(isCooler!) {
+      available = deviceStatus.getPublicReport.wirelessCooler == 'active';
       automatic = deviceStatus.getPublicReport.autoCooler == 'auto-active';
 infinity = deviceStatus.getCooler.startDate == '11/11/11';
+rest = deviceStatus.publicReport.coolerRest == 'active';
       endMin = 16;
-      sv = int.parse(constants.get('tempMin'));
-      ev = int.parse(constants.get('tempMax'));
+      sv = int.parse(constants.get('tempMin') ?? '16');
+      ev = int.parse(constants.get('tempMax') ?? '16');
       if(deviceStatus.getCooler.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.startClock.split(':')[0]), int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
-        selectedStartDate = 'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getCooler.startDate}';
+        selectedStartDate = 'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? 'loop' : deviceStatus.getCooler.startDate}';
       } else {
         startTime = Jalali.now();
       }
       if(deviceStatus.getCooler.endClock.contains(new RegExp(r'[0-9]'))) {
         endTime   = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.endClock.split(':')[0]),   int.parse(deviceStatus.getCooler.endClock.split(':')[1]));
-        selectedEndDate   = 'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getCooler.endDate}';
+        selectedEndDate   = 'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'loop' :  deviceStatus.getCooler.endDate}';
       } else {
         endTime = Jalali.now();
       }
       rest = deviceStatus.getPublicReport.coolerRest == 'active';
     } else {
+      available = deviceStatus.getPublicReport.wirelessHeater == 'active';
       automatic = deviceStatus.getPublicReport.autoHeater == 'auto-active';
+      rest = deviceStatus.publicReport.heaterRest == 'active';
       endMin = 16;
-      sv = int.parse(constants.get('tempMin'));
-      ev = int.parse(constants.get('tempMax'));
+      sv = int.parse(constants.get('tempMin') ?? '16');
+      ev = int.parse(constants.get('tempMax') ?? '16');
       infinity = deviceStatus.getHeater.startDate == '11/11/11';
 
 
       if(deviceStatus.getHeater.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getHeater.startClock.split(':')[0]), int.parse(deviceStatus.getHeater.startClock.split(':')[1]));
-        selectedStartDate = 'Selected start date: ${deviceStatus.getHeater.startDate == '11/11/11' ? 'حلقه تکرار' : deviceStatus.getHeater.startDate}';
+        selectedStartDate = 'Selected start date: ${(deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? 'loop' : deviceStatus.getHeater.startDate}';
       } else {
         startTime = Jalali.now();
       }
       if(deviceStatus.getHeater.endClock.contains(new RegExp(r'[0-9]'))) {
         endTime   = Jalali(1234, 2, 2, int.parse(deviceStatus.getHeater.endClock.split(':')[0]),   int.parse(deviceStatus.getHeater.endClock.split(':')[1]));
-        selectedEndDate   = 'Selected end date: ${deviceStatus.getHeater.endDate == '11/11/11' ? 'حلقه تکرار' :  deviceStatus.getHeater.endDate}';
+        selectedEndDate   = '${deviceStatus.getHeater.endDate == '11/11/11' ? '' : 'Selected end date: '+ deviceStatus.getHeater.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -185,31 +189,54 @@ infinity = deviceStatus.getCooler.startDate == '11/11/11';
   }
 
   addDevice() {
-    if(!constants.values.toList().contains(isCooler!? 'cooler' : 'heater')) {
-      constants.add(isCooler!? 'cooler' : 'heater');
-    }
-
+    // if(!constants.values.toList().contains(isCooler!? 'cooler' : 'heater')) {
+    //   constants.add(isCooler!? 'cooler' : 'heater');
+    // }
+// if(deviceStatus.getPublicReport.wirelessCooler != 'active') {
+  if(isCooler!) {
+    deviceStatus.getPublicReport.wirelessCooler = 'active';
+    deviceStatus.getPublicReport.wirelessHeater = 'deactive'; /////
+  } else {
+    deviceStatus.getPublicReport.wirelessHeater = 'active';
+    deviceStatus.getPublicReport.wirelessCooler = 'deactive'; /////
+  }
+  deviceBox.put('info', deviceStatus);
+// }
     if(isCooler!) {
       sendSMS('Device,ADD,Cooler');
     } else {
       sendSMS('Device,ADD,Heater');
     }
 
+    available = true;
+
     emit(TempInitial());
   }
 
   removeDevice() {
-    for (int i = 0 ; i < constants.values.length; i++) {
-      if(constants.values.toList()[i]==(isCooler!? 'cooler' : 'heater')) {
-        constants.deleteAt(i);
+    // for (int i = 0 ; i < constants.values.length; i++) {
+    //   if(constants.values.toList()[i]==(isCooler!? 'cooler' : 'heater')) {
+    //     constants.deleteAt(i);
+    //   }
+    // }
+    // if(deviceStatus.getPublicReport.wirelessCooler == 'active') {
+      if(isCooler!) {
+        deviceStatus.getPublicReport.wirelessCooler = 'deactive';
+        deviceStatus.getPublicReport.wirelessHeater = 'active'; /////
+      } else {
+        deviceStatus.getPublicReport.wirelessHeater = 'deactive';
+        deviceStatus.getPublicReport.wirelessCooler = 'active'; /////
       }
-    }
+      deviceBox.put('info', deviceStatus);
+    // }
 
     if(isCooler!) {
       sendSMS('Device,RMV,Cooler');
     } else {
       sendSMS('Device,RMV,Heater');
     }
+
+    available = false;
 
     emit(TempInitial());
   }

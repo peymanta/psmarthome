@@ -116,25 +116,25 @@ Widget Relays() {
   :(sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 540 : 890 : 0);
   if (currentPage == Page.Relay3) {
     endMin = 0;
-    sv = int.parse(deviceStatus.getR3.humMin);
-    ev = int.parse(deviceStatus.getR3.humMax);
+    sv = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMin) : 5;
+    ev = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMax) : 9;
     start = KnobController(
         minimum: 5, //0
         maximum: 95, //95
         initial:
-            endMin!.clamp(double.parse(deviceStatus.getR3.humMin), 95));
+            endMin!.clamp(deviceStatus.getR3.humMin.isNotEmpty? double.parse(deviceStatus.getR3.humMin) : 5, 95));
     end = KnobController(
         minimum: 9, //5 endmin+4 or 9
         maximum: 95, //95
         initial:
-            endMin!.clamp(double.parse(deviceStatus.getR3.humMax), 95));
+            endMin!.clamp(deviceStatus.getR3.humMax.isNotEmpty? double.parse(deviceStatus.getR3.humMax) : 9, 95));
   }
   else if(currentPage == Page.Relay7) {
-    sv = int.parse(deviceStatus.getR7.lux);
+    sv = deviceStatus.getR7.lux.isNotEmpty ? int.parse(deviceStatus.getR7.lux) : 1;
     start = KnobController(
         minimum: 1,
         maximum: 50,
-        initial: double.parse(deviceStatus.getR7.lux).clamp(1, 50));
+        initial: deviceStatus.getR7.lux.isNotEmpty ? double.parse(deviceStatus.getR7.lux).clamp(1, 50) : 1);
   }
   return StatefulBuilder(builder: (context, setState) {
     if (currentPage == Page.Relay3) {
@@ -275,188 +275,203 @@ Widget Relays() {
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 18.0),
-                  child: AnimatedOpacity(
-                    opacity: statusOfRelay != Status.sw ? 0 : 1,
-                    duration: const Duration(milliseconds: 600),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 600),
-                      height: statusOfRelay != Status.sw ? 0.01 : 50,
-                      child: ListTile(
-                        onTap: () => relayCubit!.relay(),
-                        title: const Align(
-                            alignment: Alignment.centerLeft, child: Text('Status')),
-                        leading: NeumorphicSwitch(
-                            onChanged: (v) => relayCubit!.relay(), value: relayStatus!),
-                      ),
-                    ),
+                  child:
+                  // AnimatedOpacity(
+                  //   opacity: statusOfRelay != Status.sw ? 0 : 1,
+                  //   duration: const Duration(milliseconds: 600),
+                  //   child: AnimatedContainer(
+                  //     duration: const Duration(milliseconds: 600),
+                  //     height: statusOfRelay != Status.sw ? 0.01 : 50,
+                  //     child:
+                      Visibility(
+                        visible: statusOfRelay == Status.sw,
+                        child: ListTile(
+                          onTap: () => relayCubit!.relay(),
+                          title: const Align(
+                              alignment: Alignment.centerLeft, child: Text('Status')),
+                          leading: NeumorphicSwitch(
+                              onChanged: (v) => relayCubit!.relay(), value: relayStatus!),
+                    //   ),
+                    // ),
                   ),
+                      ),
                 ),
 
                 ///timer
-                AnimatedOpacity(
-                  opacity: statusOfRelay != Status.timer ? 0 : 1,
-                  duration: const Duration(milliseconds: 600),
-                  child: AnimatedContainer(
-                    height: statusOfRelay != Status.timer ? 0.01 : 480,
-                    curve: Curves.linear,
-                    duration: const Duration(milliseconds: 200),
-                    child: AspectRatio(
-                      aspectRatio: 18.5 / 9,
-                      child: Column(
-                        children: [
-                          listItemSwitch(
-                              'Timer', () => relayCubit!.timerChangeStatus(), timer!),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    const Text('end time'),
-                                    Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: TimePickerSpinner(
-                                        is24HourMode: true,
-                                        isForce2Digits: true,
-                                        onTimeChange: (DateTime time) {
-                                          endTime = Jalali.fromDateTime(time);
-                                        },
-                                        time: DateTime.now(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    const Text('start time'),
-                                    Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: TimePickerSpinner(
-                                        is24HourMode: true,
-                                        isForce2Digits: true,
-                                        onTimeChange: (DateTime time) {
-                                          startTime = Jalali.fromDateTime(time);
-                                        },
-                                        time: DateTime.now(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-
-                          ///selected dates
-                          const SizedBox(height: 5),
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(selectedStartDate)),
-                          const SizedBox(height: 5),
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(selectedEndDate)),
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
+                // AnimatedOpacity(
+                //   opacity: statusOfRelay != Status.timer ? 0 : 1,
+                //   duration: const Duration(milliseconds: 600),
+                //   child: AnimatedContainer(
+                //     height: statusOfRelay != Status.timer ? 0.01 : 480,
+                //     curve: Curves.linear,
+                //     duration: const Duration(milliseconds: 200),
+                //     child: AspectRatio(
+                //       aspectRatio: 18.5 / 9,
+                //       child:
+                      Visibility(
+                        visible: statusOfRelay == Status.timer,
+                        child: Column(
+                          children: [
+                            listItemSwitch(
+                                'Timer', () => relayCubit!.timerChangeStatus(), timer!),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
                               children: [
                                 Expanded(
-                                  child: Center(
-                                    child: NeumorphicButton(
-                                      padding: const EdgeInsets.all(15),
-                                      onPressed: () async {
-                                        enddate = await date.showPersianDatePicker(
-                                            context: context,
-                                            initialDate: date.Jalali.now(),
-                                            firstDate: date.Jalali.now(),
-                                            lastDate: date.Jalali(3099));
-                                        setState(() => selectedEndDate =
-                                            'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                                      },
-                                      child: const Center(
-                                        child: Text(
-                                          'select end date',
+                                  child: Column(
+                                    children: [
+                                      const Text('end time'),
+                                      Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: TimePickerSpinner(
+                                          is24HourMode: true,
+                                          isForce2Digits: true,
+                                          onTimeChange: (DateTime time) {
+                                            endTime = Jalali.fromDateTime(time);
+                                          },
+                                          time: DateTime.now(),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
                                 Expanded(
-                                    child: Center(
-                                        child: SizedBox(
-                                            width: 50,
-                                            height: 50,
-                                            child: NeumorphicButton(
-                                              onPressed: () {},
-                                              style: const NeumorphicStyle(
-                                                  boxShape:
-                                                      NeumorphicBoxShape.circle()),
-                                            )))),
-                                Expanded(
-                                    child: Center(
-                                  child: NeumorphicCheckbox(
-                                    value: infinity,
-                                    onChanged: (value) => relayCubit!.loop(),
-                                  ),
-                                )),
-                                Expanded(
-                                  child: Center(
-                                    child: NeumorphicButton(
-                                      padding: const EdgeInsets.all(15),
-                                      onPressed: () async {
-                                        startdate = await date.showPersianDatePicker(
-                                            context: context,
-                                            initialDate: date.Jalali.now(),
-                                            firstDate: date.Jalali.now(),
-                                            lastDate: date.Jalali(3099));
-                                        setState(() => selectedStartDate =
-                                            'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
-                                      },
-                                      child: const Center(
-                                        child: Text(
-                                          'select start date',
+                                  child: Column(
+                                    children: [
+                                      const Text('start time'),
+                                      Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: TimePickerSpinner(
+                                          is24HourMode: true,
+                                          isForce2Digits: true,
+                                          onTimeChange: (DateTime time) {
+                                            startTime = Jalali.fromDateTime(time);
+                                          },
+                                          time: DateTime.now(),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ),
+                                )
                               ],
                             ),
-                          ),
-                        ],
+
+                            ///selected dates
+                            const SizedBox(height: 5),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(selectedStartDate)),
+                            const SizedBox(height: 5),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(selectedEndDate)),
+                            const SizedBox(height: 10),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: NeumorphicButton(
+                                        padding: const EdgeInsets.all(15),
+                                        onPressed: () async {
+                                          enddate = await date.showPersianDatePicker(
+                                              context: context,
+                                              initialDate: date.Jalali.now(),
+                                              firstDate: date.Jalali.now(),
+                                              lastDate: date.Jalali(3099));
+                                          setState(() => selectedEndDate =
+                                              'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                        },
+                                        child: const Center(
+                                          child: Text(
+                                            'select end date',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Center(
+                                          child: SizedBox(
+                                              width: 50,
+                                              height: 50,
+                                              child: NeumorphicButton(
+                                                onPressed: () {},
+                                                style: const NeumorphicStyle(
+                                                    boxShape:
+                                                        NeumorphicBoxShape.circle()),
+                                              )))),
+                                  Expanded(
+                                      child: Center(
+                                    child: NeumorphicCheckbox(
+                                      value: infinity,
+                                      onChanged: (value) => relayCubit!.loop(),
+                                    ),
+                                  )),
+                                  Expanded(
+                                    child: Center(
+                                      child: NeumorphicButton(
+                                        padding: const EdgeInsets.all(15),
+                                        onPressed: () async {
+                                          startdate = await date.showPersianDatePicker(
+                                              context: context,
+                                              initialDate: date.Jalali.now(),
+                                              firstDate: date.Jalali.now(),
+                                              lastDate: date.Jalali(3099));
+                                          setState(() => selectedStartDate =
+                                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                        },
+                                        child: const Center(
+                                          child: Text(
+                                            'select start date',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                //     ),
+                //   ),
+                // ),
 
                 ///only visible when relay 1 or 6 or 3 opened
-                currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ? AnimatedOpacity(
-                    opacity: statusOfRelay != Status.sensor ? 0 : 1,
-                    duration: const Duration(milliseconds: 600),
-                    child: AnimatedContainer(
-                      margin: const EdgeInsets.only(bottom: 30),
-                      duration: const Duration(milliseconds: 600),
-                      height: statusOfRelay != Status.sensor ? 0.01 : 120,
-                      child: Column(
-                        children: [
-                          listItemSwitch(
-                              'Sensor status', () => relayCubit!.currentSensor(), sensor!),
-                          listItemText('Status', sensorState),
-                        ],
-                      ),
-                    )) : Container(),
+                currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ?
+                // AnimatedOpacity(
+                //     opacity: statusOfRelay != Status.sensor ? 0 : 1,
+                //     duration: const Duration(milliseconds: 600),
+                //     child:
+                    // AnimatedContainer(
+                    //   margin: const EdgeInsets.only(bottom: 30),
+                    //   duration: const Duration(milliseconds: 600),
+                    //   height: statusOfRelay != Status.sensor ? 0.01 : 120,
+                    //   child:
+                      Visibility(
+                        visible: statusOfRelay == Status.sensor,
+                        child: Column(
+                          children: [
+                            listItemSwitch(
+                                'Sensor status', () => relayCubit!.currentSensor(), sensor!),
+                            listItemText('Status', sensorState),
+                          ],
+                        // ),
+                    // )
+    ),
+                      ) : Container(),
 
-                 AnimatedOpacity(
-                        opacity: statusOfRelay != Status.act ? 0 : 1,
-                        duration: const Duration(milliseconds: 600),
-                        child: AnimatedContainer(
-                            height: statusOfRelay != Status.act ? 0.01 : 400,
-                            curve: Curves.linear,
-                            duration: const Duration(milliseconds: 200),
+                 // AnimatedOpacity(
+                 //        opacity: statusOfRelay != Status.act ? 0 : 1,
+                 //        duration: const Duration(milliseconds: 600),
+                 //        child:
+                        Visibility(
+                            visible: statusOfRelay == Status.act ,
                             child: currentPage == Page.Relay3
                                 ? relay3humidity() : currentPage == Page.Relay7 ? Column(
                               children: [
@@ -500,7 +515,7 @@ Widget Relays() {
                                 Text(sv.toString()),
                               ],
                             ) : Container()
-    )
+    // )
     ),
                 Center(
                   child: NeumorphicButton(
@@ -557,71 +572,78 @@ Widget listItemText(subject, status) {
   );
 }
 
-Widget Relay4() {
-  return Column(
-    children: [
-      AnimatedOpacity(
-        opacity: sw!? 1 : 0,
-        duration: const Duration(milliseconds: 600),
-        child: AnimatedContainer(
-          height: sw!? 400 : 0,
-          duration: const Duration(milliseconds: 600),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 90),
-                child: Center(
-                  child: SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: NeumorphicButton(
-                        onPressed: () => relayCubit!.relay4Switch(),
-                        child: Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
-                        style: const NeumorphicStyle(
-                            boxShape: NeumorphicBoxShape.circle(),
-                            shape: NeumorphicShape.convex)),
-                  ),
+class Relay4 extends StatelessWidget {
+  const Relay4({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // AnimatedOpacity(
+        //   opacity: sw!? 1 : 0,
+        //   duration: const Duration(milliseconds: 600),
+        //   child: AnimatedContainer(
+        //     height: sw!? 400 : 0,
+        //     duration: const Duration(milliseconds: 600),
+        //     child:
+        Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 90),
+              child: Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: NeumorphicButton(
+                      onPressed: () => relayCubit!.relay4Switch(),
+                      child: Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
+                      style: const NeumorphicStyle(
+                          boxShape: NeumorphicBoxShape.circle(),
+                          shape: NeumorphicShape.convex)),
                 ),
               ),
-              Positioned(
-                right: 10,
-                child: SizedBox(
-                  width: 220,
-                  height: 110,
-                  child: MaterialButton(
-                    onPressed: () => relayCubit!.icon(),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: blue)),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(13),
-                            child: Image.asset(constants.get('IR4') ?? _4image),
-                          ),
-                          Expanded(
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                    'you can change this icon now'),
-                              )),
-                        ],
-                      ),
+            ),
+            Positioned(
+              right: 10,
+              child: SizedBox(
+                width: 220,
+                height: 110,
+                child: MaterialButton(
+                  onPressed: () => relayCubit!.icon(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: blue)),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(13),
+                          child: Image.asset(constants.get('IR4') ?? _4image),
+                        ),
+                        Expanded(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: const Text(
+                                  'you can change this icon now'),
+                            )),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
+          // ),
+          // ),
         ),
-      ),
-      Column(
-        children: [divider(), listItemSwitch('Switch 4', () => relayCubit!.switchMode(), sw!)],
-      )
-    ],
-  );
+        Column(
+          children: [divider(), listItemSwitch('Switch 4', () => relayCubit!.switchMode(), sw!)],
+        )
+      ],
+    );
+  }
 }
+
 
 Widget relay3humidity() {
   return Column(children: [

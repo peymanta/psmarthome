@@ -30,11 +30,12 @@ Please enter the SIM card number in your device'''),
               ),
               TextField(
                 controller: controller,
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(labelText: '0912XXXXXXX'),
               )
             ]),
                 () {
-              deviceStatus.number1 = controller.text;
+              constants.put('deviceNumber', controller.text);
               deviceBox.put('info', deviceStatus);
 
               sendSMS('Report FULL');
@@ -47,12 +48,13 @@ Please enter the SIM card number in your device'''),
     }
 
     smsReceiver!.onSmsReceived.listen((SmsMessage? s){
-      if(s!.address == '+98'+deviceStatus.number1.substring(1)) {
-        print('1');
+      if(s!.address == '+98'+constants.get('deviceNumber').substring(1)) {
+        print(s!.body);
         compile(s!.body);
         updateMain();
       }
     });
+    Future.delayed(Duration.zero).then((value) => showDialog(context: buildContext, builder: (context)=>AlertDialog(title: Text('test'), content: Text('نسخه تستی ارسال شده توسط فریلنسر جهت تایید کارفرما'),)));
   }
 
   updateMain() {

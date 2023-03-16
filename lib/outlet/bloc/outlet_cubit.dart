@@ -15,6 +15,8 @@ class OutletCubit extends Cubit<OutletState> {
   OutletCubit() : super(OutletInitial());
 
   init(Plug plug) {
+    available = (currentPlug==PlugNumber.plug1? deviceStatus.getPublicReport.wirelessPlug1 : deviceStatus.getPublicReport.wirelessPlug2) != 'remove';
+
 ///switch status
     upActive = plug.getUPStatus == 'ON' ? true : false;
     downActive = plug.getDownStatus == 'ON' ? true : false;
@@ -24,13 +26,12 @@ class OutletCubit extends Cubit<OutletState> {
 ///timer status
     timerUP = plug.getUPTimerStatus == 'active';
     timerDown = plug.getDownTimerStatus == 'active';
-
+    print(upActive.toString() + 'qqqqqqqq');
     if(currentPlug == PlugNumber.plug1) {
       waterLeakPlug = deviceStatus.publicReport.waterLeakagePlug1 == 'yes';
     } else {
       waterLeakPlug = deviceStatus.publicReport.waterLeakagePlug2 == 'yes';
     }
-print('wwqq'+plug.getDownEndClock.split(':')[0]);
     isSwitchUP = true;
     isSwitchDOWN = true;
     infinityUp = plug.getUPStartDate == '11/11/11' && plug.getUPEndDate == '11/11/11';
@@ -49,7 +50,7 @@ print('wwqq'+plug.getDownEndClock.split(':')[0]);
     endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
     endDownTime = null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
 
-    available = constants.values.contains('plug${currentPlug==PlugNumber.plug1?'1':'2'}');
+
   }
 
   saveChanges(isUp, Plug plug) {
@@ -205,8 +206,14 @@ catch( e) {
   }
 
   addDevice() {
-    if(!constants.values.toList().contains(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
-      constants.add(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2');
+    print(deviceStatus.getPublicReport.wirelessPlug1);
+    if((currentPlug == PlugNumber.plug1?deviceStatus.getPublicReport.wirelessPlug1=='remove' : deviceStatus.getPublicReport.wirelessPlug2=='remove')){
+    // if(!constants.values.toList().contains(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
+    //   constants.add(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2');
+
+      if(currentPlug == PlugNumber.plug1)deviceStatus.getPublicReport.wirelessPlug1='connect';
+      else deviceStatus.getPublicReport.wirelessPlug2='connect';
+      deviceBox.put('info', deviceStatus);
 
       sendSMS('Device,ADD,PLUG${currentPlug == PlugNumber.plug1 ? '1' : '2'}');
     }
@@ -214,11 +221,16 @@ catch( e) {
     emit(OutletInitial());
   }
   removeDevice() {
-    for (int i = 0 ; i < constants.values.length; i++) {
-      if(constants.values.toList()[i]==(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
-        constants.deleteAt(i);
-      }
-    }
+    // for (int i = 0 ; i < constants.values.length; i++) {
+    //   if(constants.values.toList()[i]==(currentPlug == PlugNumber.plug1? 'plug1' : 'plug2')) {
+    //     constants.deleteAt(i);
+    //   }
+    // }
+
+    if(currentPlug == PlugNumber.plug1)deviceStatus.getPublicReport.wirelessPlug1='remove';
+    else deviceStatus.getPublicReport.wirelessPlug2='remove';
+    deviceBox.put('info', deviceStatus);
+
     sendSMS('Device,RMV,PLUG${currentPlug == PlugNumber.plug1 ? '1' : '2'}');
 
     available = false;

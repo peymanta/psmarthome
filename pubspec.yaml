@@ -40,7 +40,6 @@ dependencies:
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
   flutter_time_picker_spinner: ^2.0.0
-  flutter_holo_date_picker: ^1.1.0
   knob_widget: ^1.0.3
   syncfusion_flutter_charts: ^20.4.52
   telephony: ^0.2.0
@@ -52,8 +51,8 @@ dependencies:
   path_provider: ^2.0.13
   shamsi_date: ^1.0.1
   persian_datetime_picker: ^2.5.0
-  sms_receiver: ^0.4.1
   sms: ^0.2.4
+  permission_handler: ^10.2.0
 
 
 dev_dependencies:

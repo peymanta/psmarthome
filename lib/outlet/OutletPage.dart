@@ -52,6 +52,7 @@ class _OutletState extends State<Outlet> {
           return
               Scaffold(
             appBar: AppBar(
+              title: Text('Plug ${currentPlug==PlugNumber.plug1 ? '1' : '2'}', style: TextStyle(color: Colors.black),),
               backgroundColor: background,
               shadowColor: Colors.transparent,
               iconTheme: IconThemeData(color: Colors.black),
@@ -67,16 +68,17 @@ class _OutletState extends State<Outlet> {
                     children: [
                       Visibility(
                         visible: available!,
-                        child: AnimatedOpacity(
-                          opacity: available!?1 : 0,
-                          duration: Duration(seconds: 1),
-                          child: Column(
+                        // child: AnimatedOpacity(
+                        //   opacity: available!?1 : 0,
+                        //   duration: Duration(seconds: 1),
+                          child:
+                          Column(
                             children: [
                               option(context, true), //up
 
                               option(context, false), //down
                             ],
-                          ),
+                          // ),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -227,14 +229,16 @@ Widget option(context, bool isUp) {
           SizedBox(
             height: 30,
           ),
-          AnimatedOpacity(
-            curve: Curves.linear,
-            opacity: isUp ? (!isSwitchUP ? 1 : 0) : (!isSwitchDOWN ? 1 : 0),
-            duration: Duration(milliseconds: 600),
-            child: AnimatedContainer(
-                duration: Duration(milliseconds: 600),
-                height:
-                    isUp ? (!isSwitchUP ? 450 : 0) : (!isSwitchDOWN ? 450 : 0),
+          // AnimatedOpacity(
+          //   curve: Curves.linear,
+          //   opacity: isUp ? (!isSwitchUP ? 1 : 0) : (!isSwitchDOWN ? 1 : 0),
+          //   duration: Duration(milliseconds: 600),
+          //   child:
+            Visibility(
+                // duration: Duration(milliseconds: 600),
+                // height:
+                    // isUp ? (!isSwitchUP ? 450 : 0) : (!isSwitchDOWN ? 450 : 0),
+          visible: isUp?!isSwitchUP : !isSwitchDOWN,
                 child: Column(children: [
                   relay.listItemSwitch(
                       'Timer', () => _cubit!.timerChangeStatus(isUp), isUp ? timerUP : timerDown),
@@ -388,14 +392,17 @@ Widget option(context, bool isUp) {
                     ),
                   ),
                 ])),
-          ),
-          AnimatedOpacity(
-              opacity: isUp ? (isSwitchUP ? 1 : 0) : (isSwitchDOWN ? 1 : 0),
-              duration: Duration(milliseconds: 600),
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 600),
+          // ),
+          // AnimatedOpacity(
+          //     opacity: isUp ? (isSwitchUP ? 1 : 0) : (isSwitchDOWN ? 1 : 0),
+          //     duration: Duration(milliseconds: 600),
+          //     child:
+              Visibility(
+                // duration: Duration(milliseconds: 600),
+                visible: isUp? isSwitchUP: isSwitchDOWN,
                 child: relay.listItemSwitch('Plug Active: ON/OFF', () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
-              )),
+              ),
+    // ),
           SizedBox(height: 20),
           NeumorphicButton(
             padding: EdgeInsets.all(20),
@@ -412,7 +419,7 @@ Widget option(context, bool isUp) {
 
 Widget divider() {
   return Column(
-    children: [
+    children: const [
       SizedBox(
         height: 15,
       ),

@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
             shadowColor: Colors.transparent,
             backgroundColor: background,
-            title: Text('Smart Home',
+            title: Text('Smart Home V4.5',
                 style: TextStyle(color: Colors.black))),
         body: BlocBuilder<MainCubit, MainState>(
           bloc: mainController,

@@ -151,7 +151,7 @@ Widget listItemSwitch(name, onPressed, value) {
           child:
           Text(name, style: const TextStyle(fontWeight: FontWeight.w500)),
         ),
-        leading: NeumorphicSwitch(value: value),
+        leading: Switch(value: value, onChanged: (bool value) { onPressed; },),
       ),
       SizedBox(height: 10),
     ],

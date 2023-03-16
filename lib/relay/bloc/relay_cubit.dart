@@ -22,77 +22,81 @@ class RelayCubit extends Cubit<RelayState> {
   RelayCubit() : super(RelayInitial());
 
   initRelay() async{
-    statusOfRelay = Status.sw;
-    startdate=null;
-    enddate=null;
-    selectedStartDate='';
-    selectedEndDate='';
+    try {
+      statusOfRelay = Status.sw;
+      startdate = null;
+      enddate = null;
+      selectedStartDate = '';
+      selectedEndDate = '';
 
 
-    if (currentPage == Page.Relay1) {
-      relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
-      sw = deviceStatus.getR1.status == 'ON' ? true : false;
-      sensor = deviceStatus.getPublicReport.currentSensor1 == 'active'
-          ? true
-          : false;
-      timer = deviceStatus.getR1.timer == 'active' ? true : false;
-      sensorState = deviceStatus.getPublicReport.currentSensor1;
+      if (currentPage == Page.Relay1) {
+        relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
+        sw = deviceStatus.getR1.status == 'ON' ? true : false;
+        sensor = deviceStatus.getPublicReport.currentSensor1 == 'active'
+            ? true
+            : false;
+        timer = deviceStatus.getR1.timer == 'active' ? true : false;
+        sensorState = deviceStatus.getPublicReport.currentSensor1;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-     if (currentPage == Page.Relay6) {
-      relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
-      sw = deviceStatus.getR6.status == 'ON' ? true : false;
-      sensor =
-          deviceStatus.getPublicReport.currentSensor6 == 'active' ? true : false;
-      timer = deviceStatus.getR6.timer == 'active' ? true : false;
-      sensorState = deviceStatus.getPublicReport.currentSensor6;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay6) {
+        relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
+        sw = deviceStatus.getR6.status == 'ON' ? true : false;
+        sensor =
+        deviceStatus.getPublicReport.currentSensor6 == 'active' ? true : false;
+        timer = deviceStatus.getR6.timer == 'active' ? true : false;
+        sensorState = deviceStatus.getPublicReport.currentSensor6;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-    else if (currentPage == Page.Relay3) {
-      relayStatus = deviceStatus.getR3.relay == 'active' ? true : false;
-      sw = deviceStatus.getR3.status == 'ON' ? true : false;
-      sensor = deviceStatus.getPublicReport.currentSensor3 == 'active'
-          ? true
-          : false;
-      timer = deviceStatus.getR3.timer == 'active' ? true : false;
-      sensorState = deviceStatus.getPublicReport.currentSensor3;
-      humidity = deviceStatus.getR3.humStatus == 'active' ? true : false;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay3) {
+        relayStatus = deviceStatus.getR3.relay == 'active' ? true : false;
+        sw = deviceStatus.getR3.status == 'ON' ? true : false;
+        sensor = deviceStatus.getPublicReport.currentSensor3 == 'active'
+            ? true
+            : false;
+        timer = deviceStatus.getR3.timer == 'active' ? true : false;
+        sensorState = deviceStatus.getPublicReport.currentSensor3;
+        humidity = deviceStatus.getR3.humStatus == 'active' ? true : false;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-    else if (currentPage == Page.Relay7) {
-      relayStatus = deviceStatus.getR7.relay == 'active' ? true : false;
-      sw = deviceStatus.getR7.status == 'ON' ? true : false;
-      timer = deviceStatus.getR7.timer == 'active' ? true : false;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay7) {
+        relayStatus = deviceStatus.getR7.relay == 'active' ? true : false;
+        sw = deviceStatus.getR7.status == 'ON' ? true : false;
+        timer = deviceStatus.getR7.timer == 'active' ? true : false;
 
-      light = deviceStatus.getR7.light == 'active' ? true : false;
+        light = deviceStatus.getR7.light == 'active' ? true : false;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-    else if (currentPage == Page.Relay2) {
-      relayStatus = deviceStatus.getR2.relay == 'active' ? true : false;
-      sw = deviceStatus.getR2.status == 'ON' ? true : false;
-      timer = deviceStatus.getR2.timer == 'active' ? true : false;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay2) {
+        relayStatus = deviceStatus.getR2.relay == 'active' ? true : false;
+        sw = deviceStatus.getR2.status == 'ON' ? true : false;
+        timer = deviceStatus.getR2.timer == 'active' ? true : false;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-    else if (currentPage == Page.Relay5) {
-      relayStatus = deviceStatus.getR5.relay == 'active' ? true : false;
-      sw = deviceStatus.getR5.status == 'ON' ? true : false;
-      timer = deviceStatus.getR5.timer == 'active' ? true : false;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay5) {
+        relayStatus = deviceStatus.getR5.relay == 'active' ? true : false;
+        sw = deviceStatus.getR5.status == 'ON' ? true : false;
+        timer = deviceStatus.getR5.timer == 'active' ? true : false;
 
-      startTime = Jalali.now();
-      endTime = Jalali.now();
-    }
-    else if (currentPage == Page.Relay4) {
-      sw = deviceStatus.getR4.status == 'ON' ? true : false;
+        startTime = Jalali.now();
+        endTime = Jalali.now();
+      }
+      else if (currentPage == Page.Relay4) {
+        sw = deviceStatus.getR4.status == 'ON' ? true : false;
+      }
+    } catch (e) {
+      dialog('Error', m.Text('No Data Found, Please request a full report from your device'), ()=>m.Navigator.pop(buildContext));
     }
   }
 

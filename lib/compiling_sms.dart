@@ -3,13 +3,15 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:telephony/telephony.dart';
 import 'main.dart';
 import 'models/status.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:background_sms/background_sms.dart';
 
 
 sendSMS(sms) async{
-  final Telephony telephony = Telephony.instance;
-  bool? permissionsGranted = await telephony.requestPhoneAndSmsPermissions;
-  if(permissionsGranted!) {
-    telephony.sendSms(to: deviceStatus.number1, message: sms);
+  await [Permission.sms].request(); //request permission
+
+  if(await  Permission.sms.isGranted) {
+    BackgroundSms.sendMessage(phoneNumber: constants.get('deviceNumber'), message: sms);
   }
 
   showMessage('operation completed');
@@ -35,7 +37,7 @@ compile(String sms) async{
 // E:H
 // P:C
 // r:A
-// WP#1:C-2:C
+// WP#1:C-2:R
 // CU:1:DA,3:DA,6:DA
 // V:D
 // Ti#38
@@ -45,20 +47,20 @@ compile(String sms) async{
 // F:0
 // C:a
 // 30min
-// WC:C.''';
+// WC:D.''';
 
-// var sms = '''Cooler:
-// 11/11/11-00:06
-// 11/11/11-23:56
-// TEMP SET:20~25
-//
-// WP1UP: ON,Ra,Ta
-// 11/11/11-16:30
-// 11/11/11-23:55
-//
-// WP1DN: ON,Ra,Td
-// 11/11/11-00:00
-// 11/11/11-23:55''';
+var sms = '''Cooler:
+11/11/11-00:06
+11/11/18-23:56
+TEMP SET:20~25
+
+WP1UP: OFF,Ra,Ta
+11/11/11-16:30
+11/11/11-23:55
+
+WP1DN: ON,Ra,Td
+11/11/13-00:00
+11/11/11-23:55''';
 
 // var sms = '''R1:
 // OFF,Rd,Td,
@@ -92,11 +94,11 @@ compile(String sms) async{
 // 11/11/11-01:20
 // LU35''';
 
-// var sms = '''WP2UP: ON,Ra,Td
+// var sms = '''WP2UP: ON,Rd,Ta
 // 11/11/11-00:00
 // 11/11/11-23:55
 //
-// WP2DN: ON,Ra,Ta
+// WP2DN: OFF,Ra,Ta
 // 11/11/11-00:01
 // 11/11/11-23:55
 //
@@ -875,6 +877,10 @@ compileInteractiveSMS(String sms) {
     logBox.add(sms);
   }
   if(sms.contains('GSM Power has become Abnormal')) {
+    dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
+    logBox.add(sms);
+  }
+  if(sms.contains('There is probably a similar device on the same freq.Ch!')) {
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
     logBox.add(sms);
   }
