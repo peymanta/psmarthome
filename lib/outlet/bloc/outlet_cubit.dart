@@ -86,7 +86,7 @@ try {
                 : endUpDate!.year.toString().substring(2) +
                 endUpDate!.month.toString() +
                 endUpDate!.day.toString()},${endUpTime!.hour.toString().padLeft(
-                2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#');
+                2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
       sendSMS(
           'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plug
@@ -129,7 +129,7 @@ try {
                 endDownDate!.month.toString() +
                 endDownDate!.day.toString()},${endDownTime!.hour.toString()
                 .padLeft(2, '0') +
-                endDownTime!.minute.toString().padLeft(2, '0')}#');
+                endDownTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
       sendSMS(
           'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plug

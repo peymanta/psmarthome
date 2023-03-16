@@ -177,13 +177,15 @@ Widget Relays() {
                 currentPage == Page.Relay2 ? MaterialButton(onPressed: ()=>relayCubit!.icon(is2b: true), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon bottom'),)) : Container(),
               ],
             )),
-        AnimatedOpacity(
-          opacity: sw! ? 1 : 0,
-          duration: const Duration(milliseconds: 600),
-          child: AnimatedContainer(
-            height: rheight,
-            duration: const Duration(milliseconds: 600),
-            child: Column(
+        Visibility(
+          visible: sw! ,
+          // duration: const Duration(milliseconds: 600),
+          child:
+          // AnimatedContainer(
+          //   height: rheight,
+          //   duration: const Duration(milliseconds: 600),
+          //   child:
+            Column(
               children: [
                 ListTile(
                   onTap: () => relayCubit!.changeMode(Status.sw),
@@ -531,8 +533,8 @@ Widget Relays() {
               ],
             ),
           ),
-        )
-            ,
+        // )
+
 
 
 
@@ -589,7 +591,7 @@ class Relay4 extends StatelessWidget {
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 90),
+              padding: const EdgeInsets.only(top: 150),
               child: Center(
                 child: SizedBox(
                   width: 100,
@@ -636,8 +638,11 @@ class Relay4 extends StatelessWidget {
           // ),
           // ),
         ),
-        Column(
-          children: [divider(), listItemSwitch('Switch 4', () => relayCubit!.switchMode(), sw!)],
+        Padding(
+          padding: const EdgeInsets.only(top: 30),
+          child: Column(
+            children: [divider(), listItemSwitch('Switch 4', () => relayCubit!.switchMode(), sw!)],
+          ),
         )
       ],
     );

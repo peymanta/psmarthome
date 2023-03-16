@@ -66,6 +66,32 @@ class _OutletState extends State<Outlet> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.getPublicReport.wirelessPlug1 : deviceStatus.getPublicReport.wirelessPlug2))),
+                          Expanded(
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(':Wireless status'))),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.publicReport.waterLeakagePlug1 : deviceStatus.publicReport.waterLeakagePlug2))),
+                          Expanded(
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(':Water leak status'))),
+                        ],
+                      ),
+                      divider(),
                       Visibility(
                         visible: available!,
                         // child: AnimatedOpacity(
@@ -82,19 +108,7 @@ class _OutletState extends State<Outlet> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                              child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.getPublicReport.wirelessPlug1 : deviceStatus.getPublicReport.wirelessPlug2))),
-                          Expanded(
-                              child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text('Wireless Status:'))),
-                        ],
-                      ),
-                      SizedBox(height: 20),
+
                       ListTile(
                           onTap: () => _cubit!.changeActive(true, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
                           title: Container(
@@ -146,27 +160,16 @@ class _OutletState extends State<Outlet> {
                         ),
                       ),
                       divider(),
-                      ListTile(
-                        onTap: () => _cubit!.waterLeakageStatus(),
-                        title: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text('Water leak detector'),
-                        ),
-                        leading: NeumorphicSwitch(value: waterLeakPlug!),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                              child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.publicReport.waterLeakagePlug1 : deviceStatus.publicReport.waterLeakagePlug2))),
-                          Expanded(
-                              child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text('Status'))),
-                        ],
-                      ),
+                      // ListTile(
+                      //   onTap: () => _cubit!.waterLeakageStatus(),
+                      //   title: Container(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Text('Water leak detector'),
+                      //   ),
+                      //   leading: NeumorphicSwitch(value: waterLeakPlug!),
+                      // ),
+                      // SizedBox(height: 20),
+
                     ],
                   )),
             ),
@@ -423,7 +426,7 @@ Widget divider() {
       SizedBox(
         height: 15,
       ),
-      Divider(),
+      Divider(color: Colors.black54),
       SizedBox(
         height: 15,
       ),

@@ -25,9 +25,10 @@ class _IconState extends State<Icon> {
 
   @override
   Widget build(BuildContext context) {
+    print('1233' + iconKey.contains('UPS').toString() );
     return Scaffold(
       backgroundColor: background,
-      appBar: AppBar(title: Text('Select Icon for ${iconKey.contains('UPS') ? 'UPS Item' : 'Relay'} ${iconKey.contains('UPS') ? iconKey.substring(4) : iconKey.substring(2)}', style: TextStyle(color: Colors.black),),
+      appBar: AppBar(title: Text('Select Icon for ${iconKey.contains('UPS') ? 'UPS Item' : 'Relay'} ${iconKey.contains('UPS') ? iconKey.substring(4) : iconKey}', style: TextStyle(color: Colors.black),),
         backgroundColor: background,
         shadowColor: Colors.transparent,
         iconTheme: IconThemeData(color: Colors.black),

@@ -231,7 +231,7 @@ Widget listItemText(text) {
     children: [
       Padding(
           padding: const EdgeInsets.all(15),
-          child: Container(alignment: Alignment.centerLeft, child: Text(text))),
+          child: Container(alignment: Alignment.centerLeft, child: Text(text, style: TextStyle(fontSize: 12),))),
       SizedBox(
         height: 20,
       )

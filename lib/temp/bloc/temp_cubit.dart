@@ -74,7 +74,7 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
         if (infinity) {
           deviceStatus.getCooler.startDate = '11/11/11';
           deviceStatus.getCooler.endDate = '11/11/11';
-          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#');
+          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
           sendSMS('T-min:$sv,max:$ev#');
         } else {
           deviceStatus.getCooler.startDate =
@@ -97,7 +97,7 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
           var eclock = deviceStatus.getCooler.endClock.split(':')[0].padLeft(
               2, '0') +
               deviceStatus.getCooler.endClock.split(':')[1].padLeft(2, '0');
-          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
+          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#', showDialog: false);
           sendSMS('T-min:$sv,max:$ev#');
         }
 
@@ -113,7 +113,7 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
         if (infinity) {
           deviceStatus.getHeater.startDate = '11/11/11';
           deviceStatus.getHeater.endDate = '11/11/11';
-          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#');
+          sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
           sendSMS('T-min:$sv,max:$ev#');
         } else {
           deviceStatus.getHeater.startDate =
@@ -136,7 +136,7 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
           var eclock = deviceStatus.getHeater.endClock.split(':')[0].padLeft(
               2, '0') +
               deviceStatus.getHeater.endClock.split(':')[1].padLeft(2, '0');
-          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#');
+          sendSMS('C/H:$sdate,$sclock-$edate,$eclock#', showDialog: false);
           sendSMS('T-min:$sv,max:$ev#');
         }
 
@@ -151,11 +151,11 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
     automatic = !automatic;
     if(isCooler!) {
       deviceStatus.getPublicReport.autoCooler = automatic ? 'auto-active' : 'auto-deactive';
-      sendSMS('Cooler:${automatic ? 'a' : 'd'}#');
+      sendSMS('Cooler:${automatic ? 'a' : 'd'}#', showDialog: false);
       sendSMS('Heater:${automatic ? 'd' : 'a'}#');
     } else {
       deviceStatus.getPublicReport.autoHeater = automatic ? 'auto-active' : 'auto-deactive';
-      sendSMS('Heater:${automatic ? 'a' : 'd'}#');
+      sendSMS('Heater:${automatic ? 'a' : 'd'}#', showDialog: false);
       sendSMS('Cooler:${automatic ? 'd' : 'a'}#');
     }
     deviceBox.put('info', deviceStatus);

@@ -7,14 +7,22 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:background_sms/background_sms.dart';
 
 
-sendSMS(sms) async{
+sendSMS(sms, {showDialog = false}) async{
   await [Permission.sms].request(); //request permission
 
-  if(await  Permission.sms.isGranted) {
-    BackgroundSms.sendMessage(phoneNumber: constants.get('deviceNumber'), message: sms);
+  if(await  Permission.sms.isGranted && showDialog) {
+    dialog('Verify', Text('Do you agree with the operation?'), () {
+    //   BackgroundSms.sendMessage(
+    //       phoneNumber: constants.get('deviceNumber'), message: sms);
+     showMessage('operation completed');
+    });
+  } else {
+    // BackgroundSms.sendMessage(
+    //     phoneNumber: constants.get('deviceNumber'), message: sms);
+    showMessage('operation completed');
   }
 
-  showMessage('operation completed');
+print(sms);
 }
 compile(String sms) async{
 //   var sms = '''1210 01:04

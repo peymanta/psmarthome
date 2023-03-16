@@ -158,7 +158,7 @@ class RelayCubit extends Cubit<RelayState> {
     //if (statusOfRelay == Status.sw) {
       newRelayState.relay = relayStatus == false ? 'deactive' : 'active';
       // deviceStatus.setR1 = newRelayState;
-      sendSMS(relayStatus == false ? '$relay:off#' : '$relay:on#');
+
     // }
 
     ///timer status
@@ -174,7 +174,7 @@ class RelayCubit extends Cubit<RelayState> {
         newRelayState.endDate = '11/11/11';
 //sms send
         sendSMS(
-            '$relay:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#');
+            '$relay:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
       else {
         newRelayState.startDate =
@@ -183,7 +183,7 @@ class RelayCubit extends Cubit<RelayState> {
             '${enddate!.year.toString().substring(2)}/${enddate!.month}/${enddate!.day}';
 //sms send
         sendSMS(
-            '$relay:${newRelayState.startDate.replaceAll('/', '')},${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#');
+            '$relay:${newRelayState.startDate.replaceAll('/', '')},${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
 
       ///set timer status
@@ -234,6 +234,13 @@ class RelayCubit extends Cubit<RelayState> {
 
   switchMode() async {
     sw = !sw!;
+var relayName = currentPage == Page.Relay1 ? '1'
+    : currentPage == Page.Relay2 ? '2'
+    : currentPage == Page.Relay3 ? '3'
+    : currentPage == Page.Relay4 ? '4'
+    : currentPage == Page.Relay5 ? '5'
+    : currentPage == Page.Relay6 ? '6'
+    : '7';
 
     if (currentPage == Page.Relay1) {
       model.Relay newRelayState = deviceStatus.getR1;
@@ -257,6 +264,8 @@ class RelayCubit extends Cubit<RelayState> {
       model.Relay newRelayState = deviceStatus.getR4;
       newRelayState.status = sw == true ? 'ON' : 'OFF';
     }
+
+    sendSMS(sw == false ? '$relayName:off#' : '$relayName:on#');
 
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
