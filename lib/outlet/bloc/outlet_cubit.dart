@@ -36,10 +36,10 @@ class OutletCubit extends Cubit<OutletState> {
     isSwitchDOWN = true;
     infinityUp = plug.getUPStartDate == '11/11/11' && plug.getUPEndDate == '11/11/11';
     infinityDown = plug.getDownStartDate == '11/11/11' && plug.getDownEndDate == '11/11/11';
-    selectedUpStartDate = '';
-    selectedUpEndDate = '';
-    selectedDownStartDate = '';
-    selectedDownEndDate = '';
+    selectedUpStartDate = infinityUp ? ':Start & End date' : '';
+    selectedUpEndDate = infinityUp ? 'Repeat every day' : '';
+    selectedDownStartDate = infinityDown ? ':Start & End date' : '';
+    selectedDownEndDate = infinityDown ? 'Repeat every day' : '';
 
     startUpTime = null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
     startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
@@ -88,10 +88,7 @@ try {
                 endUpDate!.day.toString()},${endUpTime!.hour.toString().padLeft(
                 2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
-      sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plug
-              .getUPRelayStatus == 'active' ? 'a' : 'd'},time:${plug
-              .getUPTimerStatus == 'active' ? 'a' : 'd'}#');
+      ////////////
     } else {
       showMessage('up is not active');
     }
@@ -131,10 +128,7 @@ try {
                 .padLeft(2, '0') +
                 endDownTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
-      sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plug
-              .getDownRelayStatus == 'active' ? 'a' : 'd'},time:${plug
-              .getDownTimerStatus == 'active' ? 'a' : 'd'}#');
+      ///////
     } else {
       showMessage('down is not active');
     }
@@ -161,6 +155,14 @@ catch( e) {
     } else {
       infinityDown = !infinityDown;
     }
+
+    if(isUp && infinityUp) {
+      selectedUpStartDate = ':Start & End date';
+      selectedUpEndDate = 'Repeat every day';
+    } else if(!isUp && infinityDown) {
+      selectedDownStartDate = ':Start & End date';
+      selectedDownEndDate = 'Repeat every day';
+    }
     emit(OutletInitial());
   }
 
@@ -170,20 +172,43 @@ catch( e) {
   }
 
   timerChangeStatus(isUp) {
+    Plug plug = currentPlug == PlugNumber.plug1 ? deviceStatus.getPLug1 : deviceStatus.getPlug2;
+
     if (isUp) {
       timerUP = !timerUP;
+      sendSMS(
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive! ? 'a' : 'd'},time:${ timerUP ? 'a' : 'd'}#');
     } else {
       timerDown = !timerDown;
+      sendSMS(
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive! ? 'a' : 'd'},time:${ timerDown ? 'a' : 'd'}#');
     }
+    plug.setUPTimerStatus = timerUP! ? 'active' : 'deactive';
+    plug.setDownTimerStatus = timerDown! ? 'active' : 'deactive';
+
+    if(currentPlug == PlugNumber.plug1) deviceStatus.setPlug1 = plug;
+    else if(currentPlug == PlugNumber.plug1) deviceStatus.setPlug2 = plug;
+    deviceBox.put('info', deviceStatus);
+
     emit(OutletInitial());
   }
 
   plug(isUp) {
+    Plug plug = currentPlug == PlugNumber.plug1 ? deviceStatus.getPLug1 : deviceStatus.getPlug2;
+
     if (isUp) {
       plugUP = !plugUP!;
+      sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plugUP! ? 'on' : 'off'}#');
     } else {
       plugDOWN = !plugDOWN!;
+      sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plugDOWN! ? 'on' : 'off'}#');
     }
+    plug.setUPRelayStatus = plugUP! ? 'active' : 'deactive';
+    plug.setDownRelayStatus = plugDOWN! ? 'active' : 'deactive';
+
+    if(currentPlug == PlugNumber.plug1) deviceStatus.setPlug1 = plug;
+    else if(currentPlug == PlugNumber.plug1) deviceStatus.setPlug2 = plug;
+    deviceBox.put('info', deviceStatus);
 
     emit(OutletInitial());
   }
@@ -194,13 +219,17 @@ catch( e) {
 
       plug.setUPStatus = upActive! ? 'ON' : 'OFF';
       deviceBox.put('info', deviceStatus);
-      sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive! ? 'on' : 'off'}#');
+
+      sendSMS(
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive! ? 'a' : 'd'},time:${ timerUP ? 'a' : 'd'}#');
     } else {
       downActive = !downActive!;
 
       plug.setDownStatus = downActive! ? 'ON' : 'OFF';
       deviceBox.put('info', deviceStatus);
-      sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive! ? 'on' : 'off'}#');
+      // sendSMS('P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive! ? 'on' : 'off'}#');
+      sendSMS(
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive! ? 'a' : 'd'},time:${timerDown ? 'a' : 'd'}#');
     }
     emit(OutletInitial());
   }

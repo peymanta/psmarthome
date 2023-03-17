@@ -55,7 +55,7 @@ Please enter the SIM card number in your device'''),
       }
     });
     Future.delayed(Duration.zero).then((value) => showDialog(context: buildContext, builder: (context)=>AlertDialog(title: Text('test'), content: Text('نسخه تستی ارسال شده توسط فریلنسر جهت تایید کارفرما'),)));
-    compile('');
+    // compile('');
   }
 
   updateMain() {

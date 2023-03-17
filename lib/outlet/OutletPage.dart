@@ -213,14 +213,14 @@ Widget option(context, bool isUp) {
                 onTap: () => _cubit!.status(isUp, false),
                 title: Container(
                     alignment: Alignment.centerLeft,
-                    child: Text('Timing Active')),
+                    child: const Text('Timing')),
                 leading: SizedBox(
                   width: 100,
                   height: 100,
                   child: NeumorphicRadio(
                       onChanged: (v) => _cubit!.status(isUp, false),
                       style: NeumorphicRadioStyle(
-                          boxShape: NeumorphicBoxShape.circle(),
+                          boxShape: const NeumorphicBoxShape.circle(),
                           selectedColor: blue),
                       groupValue: isUp == true ? isSwitchUP : isSwitchDOWN,
                       value: false),
@@ -228,7 +228,7 @@ Widget option(context, bool isUp) {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           // AnimatedOpacity(
@@ -243,7 +243,7 @@ Widget option(context, bool isUp) {
           visible: isUp?!isSwitchUP : !isSwitchDOWN,
                 child: Column(children: [
                   relay.listItemSwitch(
-                      'Timer', () => _cubit!.timerChangeStatus(isUp), isUp ? timerUP : timerDown),
+                      'Timing Active', () => _cubit!.timerChangeStatus(isUp), isUp ? timerUP : timerDown),
 
                   SizedBox(
                     height: 20,
@@ -340,16 +340,6 @@ Widget option(context, bool isUp) {
                         ),
                         Expanded(
                             child: Center(
-                                child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: NeumorphicButton(
-                                      onPressed: () {},
-                                      style: NeumorphicStyle(
-                                          boxShape: NeumorphicBoxShape.circle()),
-                                    )))),
-                        Expanded(
-                            child: Center(
                           child: NeumorphicCheckbox(
                             value: isUp ? infinityUp : infinityDown,
                             onChanged: (value) => _cubit!.loop(isUp),
@@ -393,25 +383,18 @@ Widget option(context, bool isUp) {
                       ],
                     ),
                   ),
+                  SizedBox(height: 20),
+                  NeumorphicButton(
+                    padding: EdgeInsets.all(20),
+                    child: Text('submit'),
+                    onPressed: () => _cubit!.saveChanges(isUp, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
+                  ),
                 ])),
-          // ),
-          // AnimatedOpacity(
-          //     opacity: isUp ? (isSwitchUP ? 1 : 0) : (isSwitchDOWN ? 1 : 0),
-          //     duration: Duration(milliseconds: 600),
-          //     child:
               Visibility(
                 // duration: Duration(milliseconds: 600),
                 visible: isUp? isSwitchUP: isSwitchDOWN,
-                child: relay.listItemSwitch('Plug Active: ON/OFF', () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
+                child: relay.listItemSwitch('Plug: ON/OFF', () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
               ),
-    // ),
-          SizedBox(height: 20),
-          NeumorphicButton(
-            padding: EdgeInsets.all(20),
-            child: Text('submit'),
-            onPressed: () => _cubit!.saveChanges(isUp, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
-          ),
-
           isUp? divider() : Container(),
         ],
       ),
