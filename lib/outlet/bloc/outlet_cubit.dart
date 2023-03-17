@@ -26,7 +26,7 @@ class OutletCubit extends Cubit<OutletState> {
 ///timer status
     timerUP = plug.getUPTimerStatus == 'active';
     timerDown = plug.getDownTimerStatus == 'active';
-    print(upActive.toString() + 'qqqqqqqq');
+
     if(currentPlug == PlugNumber.plug1) {
       waterLeakPlug = deviceStatus.publicReport.waterLeakagePlug1 == 'yes';
     } else {

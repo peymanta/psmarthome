@@ -109,7 +109,7 @@ class _RelayState extends State<Relay> {
 }
 
 Widget Relays() {
-  double rheight = currentPage == Page.Relay2 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
+ double rheight = currentPage == Page.Relay2 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
   : currentPage == Page.Relay3 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 600 : 950 : 0)
   : currentPage == Page.Relay5 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 760 : 0)
   : currentPage == Page.Relay6 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 510 : 870 : 0)
@@ -278,19 +278,12 @@ Widget Relays() {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 18.0),
                   child:
-                  // AnimatedOpacity(
-                  //   opacity: statusOfRelay != Status.sw ? 0 : 1,
-                  //   duration: const Duration(milliseconds: 600),
-                  //   child: AnimatedContainer(
-                  //     duration: const Duration(milliseconds: 600),
-                  //     height: statusOfRelay != Status.sw ? 0.01 : 50,
-                  //     child:
                       Visibility(
                         visible: statusOfRelay == Status.sw,
                         child: ListTile(
                           onTap: () => relayCubit!.relay(),
-                          title: const Align(
-                              alignment: Alignment.centerLeft, child: Text('Status')),
+                          title: Align(
+                              alignment: Alignment.centerLeft, child: Text(':Switch $pageNumber ON/OFF')),
                           leading: NeumorphicSwitch(
                               onChanged: (v) => relayCubit!.relay(), value: relayStatus!),
                     //   ),
@@ -300,16 +293,6 @@ Widget Relays() {
                 ),
 
                 ///timer
-                // AnimatedOpacity(
-                //   opacity: statusOfRelay != Status.timer ? 0 : 1,
-                //   duration: const Duration(milliseconds: 600),
-                //   child: AnimatedContainer(
-                //     height: statusOfRelay != Status.timer ? 0.01 : 480,
-                //     curve: Curves.linear,
-                //     duration: const Duration(milliseconds: 200),
-                //     child: AspectRatio(
-                //       aspectRatio: 18.5 / 9,
-                //       child:
                       Visibility(
                         visible: statusOfRelay == Status.timer,
                         child: Column(
@@ -395,17 +378,7 @@ Widget Relays() {
                                       ),
                                     ),
                                   ),
-                                  Expanded(
-                                      child: Center(
-                                          child: SizedBox(
-                                              width: 50,
-                                              height: 50,
-                                              child: NeumorphicButton(
-                                                onPressed: () {},
-                                                style: const NeumorphicStyle(
-                                                    boxShape:
-                                                        NeumorphicBoxShape.circle()),
-                                              )))),
+
                                   Expanded(
                                       child: Center(
                                     child: NeumorphicCheckbox(
@@ -437,6 +410,15 @@ Widget Relays() {
                                 ],
                               ),
                             ),
+                            Center(
+                              child: NeumorphicButton(
+                                onPressed: () => relayCubit!.changeTime(),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('submit'),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -446,21 +428,12 @@ Widget Relays() {
 
                 ///only visible when relay 1 or 6 or 3 opened
                 currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ?
-                // AnimatedOpacity(
-                //     opacity: statusOfRelay != Status.sensor ? 0 : 1,
-                //     duration: const Duration(milliseconds: 600),
-                //     child:
-                    // AnimatedContainer(
-                    //   margin: const EdgeInsets.only(bottom: 30),
-                    //   duration: const Duration(milliseconds: 600),
-                    //   height: statusOfRelay != Status.sensor ? 0.01 : 120,
-                    //   child:
                       Visibility(
                         visible: statusOfRelay == Status.sensor,
                         child: Column(
                           children: [
                             listItemSwitch(
-                                'Sensor status', () => relayCubit!.currentSensor(), sensor!),
+                                'Sensor Act/Deact', () => relayCubit!.currentSensor(), sensor!),
                             listItemText('Status', sensorState),
                           ],
                         // ),
@@ -468,10 +441,6 @@ Widget Relays() {
     ),
                       ) : Container(),
 
-                 // AnimatedOpacity(
-                 //        opacity: statusOfRelay != Status.act ? 0 : 1,
-                 //        duration: const Duration(milliseconds: 600),
-                 //        child:
                         Visibility(
                             visible: statusOfRelay == Status.act ,
                             child: currentPage == Page.Relay3
@@ -515,19 +484,23 @@ Widget Relays() {
                                   height: 10,
                                 ),
                                 Text(sv.toString()),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Center(
+                                  child: NeumorphicButton(
+                                    onPressed: () => relayCubit!.lightAct(),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text('submit'),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ) : Container()
     // )
     ),
-                Center(
-                  child: NeumorphicButton(
-                    onPressed: () => relayCubit!.changeStatus(),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text('submit'),
-                    ),
-                  ),
-                ),
+
 
                 divider(),
               ],
@@ -744,14 +717,14 @@ Widget relay3humidity() {
       height: 10,
     ),
     Center(
-        child: SizedBox(
-            width: 50,
-            height: 50,
-            child: NeumorphicButton(
-              onPressed: () {},
-              style: const NeumorphicStyle(
-                  boxShape: NeumorphicBoxShape.circle()),
-            ))),
+      child: NeumorphicButton(
+        onPressed: () => relayCubit!.humudityAct(),
+        child: const Padding(
+          padding: EdgeInsets.all(10),
+          child: Text('submit'),
+        ),
+      ),
+    ),
   ]);
 }
 ////////////////////

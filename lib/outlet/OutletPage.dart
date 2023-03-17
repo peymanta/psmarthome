@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import '../colors.dart';
+import '../compiling_sms.dart';
 import '../main.dart';
 import '../relay/relay.dart' as relay;
 import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
@@ -41,10 +42,11 @@ class _OutletState extends State<Outlet> {
     _cubit = OutletCubit();
 
     _cubit!.init(currentPlug == PlugNumber.plug1 ? deviceStatus.getPLug1 : deviceStatus.getPlug2);
+
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {compile('');
     return BlocBuilder<OutletCubit, OutletState>(
       bloc: _cubit,
       builder: (context, state) {
@@ -94,9 +96,6 @@ class _OutletState extends State<Outlet> {
                       divider(),
                       Visibility(
                         visible: available!,
-                        // child: AnimatedOpacity(
-                        //   opacity: available!?1 : 0,
-                        //   duration: Duration(seconds: 1),
                           child:
                           Column(
                             children: [
@@ -139,7 +138,7 @@ class _OutletState extends State<Outlet> {
                             Icons.add,
                             color: blue,
                           ),
-                          onPressed: () {},
+                          onPressed: () => _cubit!.addDevice(),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -156,10 +155,10 @@ class _OutletState extends State<Outlet> {
                             Icons.clear,
                             color: blue,
                           ),
-                          onPressed: () {},
+                          onPressed: () => _cubit!.removeDevice(),
                         ),
                       ),
-                      divider(),
+                      // divider(),
                       // ListTile(
                       //   onTap: () => _cubit!.waterLeakageStatus(),
                       //   title: Container(

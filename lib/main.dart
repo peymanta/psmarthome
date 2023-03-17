@@ -36,7 +36,6 @@ late Box deviceBox, tempBox, constants, chartsBox, logBox;
 late BuildContext buildContext;
 late MainCubit mainController;
 SmsReceiver? smsReceiver;
-String? _textContent = 'Waiting for messages...';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -62,7 +62,7 @@ var sms = '''Cooler:
 11/11/18-23:56
 TEMP SET:20~25
 
-WP1UP: OFF,Ra,Ta
+WP1UP: ON,Rd,Ta
 11/11/11-16:30
 11/11/11-23:55
 

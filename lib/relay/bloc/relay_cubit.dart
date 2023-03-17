@@ -11,6 +11,8 @@ import '../../models/status.dart' as model;
 
 part 'relay_state.dart';
 
+model.Relay? newRelayState;
+
 enum Status {
   sw,
   timer,
@@ -21,14 +23,13 @@ enum Status {
 class RelayCubit extends Cubit<RelayState> {
   RelayCubit() : super(RelayInitial());
 
-  initRelay() async{
+  initRelay() async {
     try {
       statusOfRelay = Status.sw;
       startdate = null;
       enddate = null;
       selectedStartDate = '';
       selectedEndDate = '';
-
 
       if (currentPage == Page.Relay1) {
         relayStatus = deviceStatus.getR1.relay == 'active' ? true : false;
@@ -41,19 +42,21 @@ class RelayCubit extends Cubit<RelayState> {
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay6) {
+
+        newRelayState = deviceStatus.getR1;
+      } else if (currentPage == Page.Relay6) {
         relayStatus = deviceStatus.getR6.relay == 'active' ? true : false;
         sw = deviceStatus.getR6.status == 'ON' ? true : false;
-        sensor =
-        deviceStatus.getPublicReport.currentSensor6 == 'active' ? true : false;
+        sensor = deviceStatus.getPublicReport.currentSensor6 == 'active'
+            ? true
+            : false;
         timer = deviceStatus.getR6.timer == 'active' ? true : false;
         sensorState = deviceStatus.getPublicReport.currentSensor6;
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay3) {
+        newRelayState = deviceStatus.getR6;
+      } else if (currentPage == Page.Relay3) {
         relayStatus = deviceStatus.getR3.relay == 'active' ? true : false;
         sw = deviceStatus.getR3.status == 'ON' ? true : false;
         sensor = deviceStatus.getPublicReport.currentSensor3 == 'active'
@@ -65,8 +68,8 @@ class RelayCubit extends Cubit<RelayState> {
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay7) {
+        newRelayState = deviceStatus.getR3;
+      } else if (currentPage == Page.Relay7) {
         relayStatus = deviceStatus.getR7.relay == 'active' ? true : false;
         sw = deviceStatus.getR7.status == 'ON' ? true : false;
         timer = deviceStatus.getR7.timer == 'active' ? true : false;
@@ -75,28 +78,32 @@ class RelayCubit extends Cubit<RelayState> {
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay2) {
+        newRelayState = deviceStatus.getR7;
+      } else if (currentPage == Page.Relay2) {
         relayStatus = deviceStatus.getR2.relay == 'active' ? true : false;
         sw = deviceStatus.getR2.status == 'ON' ? true : false;
         timer = deviceStatus.getR2.timer == 'active' ? true : false;
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay5) {
+        newRelayState = deviceStatus.getR2;
+      } else if (currentPage == Page.Relay5) {
         relayStatus = deviceStatus.getR5.relay == 'active' ? true : false;
         sw = deviceStatus.getR5.status == 'ON' ? true : false;
         timer = deviceStatus.getR5.timer == 'active' ? true : false;
 
         startTime = Jalali.now();
         endTime = Jalali.now();
-      }
-      else if (currentPage == Page.Relay4) {
+        newRelayState = deviceStatus.getR5;
+      } else if (currentPage == Page.Relay4) {
         sw = deviceStatus.getR4.status == 'ON' ? true : false;
       }
     } catch (e) {
-      dialog('Error', m.Text('No Data Found, Please request a full report from your device'), ()=>m.Navigator.pop(buildContext));
+      dialog(
+          'Error',
+          m.Text(
+              'No Data Found, Please request a full report from your device'),
+          () => m.Navigator.pop(buildContext));
     }
   }
 
@@ -105,195 +112,163 @@ class RelayCubit extends Cubit<RelayState> {
     emit(RelayInitial());
   }
 
-  updateUI()=>emit(RelayInitial());
+  updateUI() => emit(RelayInitial());
 
-  ///submit changes of relay
-  changeStatus() async {
-    ///for relay 1
-    if (currentPage == Page.Relay1) {
-      model.Relay newRelayState = deviceStatus.getR1;
-      relayTimerSensor(newRelayState, '1', currentSensor: deviceStatus.getPublicReport.currentSensor1);
 
-      sendSMS(
-          '1:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
-    }else if (currentPage == Page.Relay6) {
-      model.Relay newRelayState = deviceStatus.getR6;
-      relayTimerSensor(newRelayState, '6', currentSensor: deviceStatus.getPublicReport.currentSensor6);
 
-      sendSMS(
-          '6:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
-    }else if (currentPage == Page.Relay3) {
-      model.Relay newRelayState = deviceStatus.getR3;
-      relayTimerSensor(deviceStatus.getR3, '3', currentSensor: deviceStatus.getPublicReport.currentSensor3);
-
-      sendSMS(
-          '3:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity! ? 'a' : 'd'}#');
-    }else if (currentPage == Page.Relay7) {
-      model.Relay newRelayState = deviceStatus.getR7;
-      relayTimerSensor(deviceStatus.getR7, '7');
-
-      sendSMS(
-          '7:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light! ? 'a' : 'd'}#');
-    }
-    else if (currentPage == Page.Relay2) {
-      model.Relay newRelayState = deviceStatus.getR2;
-      relayTimerSensor(deviceStatus.getR2, '2');
-
-      sendSMS(
-          '2:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
-    }
-    else if (currentPage == Page.Relay5) {
-      model.Relay newRelayState = deviceStatus.getR5;
-      relayTimerSensor(deviceStatus.getR5, '5');
-
-      sendSMS(
-          '5:rl:${relayStatus == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}#');
-    }
-    await deviceBox.put('info', deviceStatus);
-    emit(RelayInitial());
-  }
-
-  relayTimerSensor(model.Relay newRelayState, String relay, {currentSensor}) {
+  changeTime() {
     ///relay status
     //if (statusOfRelay == Status.sw) {
-      newRelayState.relay = relayStatus == false ? 'deactive' : 'active';
-      // deviceStatus.setR1 = newRelayState;
+
+    // deviceStatus.setR1 = newRelayState;
 
     // }
 
     ///timer status
-     newRelayState.timer = timer == false ? 'deactive' : 'active';
-     try{
-     if (timer!) {//(statusOfRelay == Status.timer) {
-      //in r1 else = timer
-      newRelayState.startClock = '${startTime!.hour}:${startTime!.minute}';
-      newRelayState.endClock = '${endTime!.hour}:${endTime!.minute}';
-      if (infinity) {
-        //set infinity loop for timer
-        newRelayState.startDate = '11/11/11';
-        newRelayState.endDate = '11/11/11';
+    newRelayState!.timer = timer == false ? 'deactive' : 'active';
+    try {
+      if (timer!) {
+        //(statusOfRelay == Status.timer) {
+        //in r1 else = timer
+        newRelayState!.startClock = '${startTime!.hour}:${startTime!.minute}';
+        newRelayState!.endClock = '${endTime!.hour}:${endTime!.minute}';
+        if (infinity) {
+          //set infinity loop for timer
+          newRelayState!.startDate = '11/11/11';
+          newRelayState!.endDate = '11/11/11';
 //sms send
-        sendSMS(
-            '$relay:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
-      }
-      else {
-        newRelayState.startDate =
-            '${startdate!.year.toString().substring(2)}/${startdate!.month}/${startdate!.day}';
-        newRelayState.endDate =
-            '${enddate!.year.toString().substring(2)}/${enddate!.month}/${enddate!.day}';
+          sendSMS(
+              '$pageNumber:111111,${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#',
+              showDialog: false);
+        } else {
+          newRelayState!.startDate =
+              '${startdate!.year.toString().substring(2)}/${startdate!.month}/${startdate!.day}';
+          newRelayState!.endDate =
+              '${enddate!.year.toString().substring(2)}/${enddate!.month}/${enddate!.day}';
 //sms send
-        sendSMS(
-            '$relay:${newRelayState.startDate.replaceAll('/', '')},${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-${newRelayState.endDate.replaceAll('/', '')},${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
+          sendSMS(
+              '$pageNumber:${newRelayState!.startDate.replaceAll('/', '')},${startTime!.hour.toString().padLeft(2, '0')}${startTime!.minute.toString().padLeft(2, '0')}-${newRelayState!.endDate.replaceAll('/', '')},${endTime!.hour.toString().padLeft(2, '0')}${endTime!.minute.toString().padLeft(2, '0')}#',
+              showDialog: false);
+        }
+
+        ///set timer status
+        newRelayState!.timer = timer == false ? 'deactive' : 'active';
       }
+    } catch (e) {
+      dialog(
+          'Please set date',
+          m.Text('If you activated timer, you must select start and end date'),
+          () => m.Navigator.pop(buildContext),
+          removeCancel: true);
+    }
 
-      ///set timer status
-      newRelayState.timer = timer == false ? 'deactive' : 'active';
-    }} catch(e){
-       dialog('Please set date', m.Text('If you activated timer, you must select start and end date'), ()=>m.Navigator.pop(buildContext), removeCancel: true);
-     }
-      ///sensor
-      if (currentSensor != null) {
-        ///just for relay 1 or 6
-        currentSensor = sensor! ? 'active' : 'deactive';
-        sensorState = currentSensor;
-        sendSMS(sensor! ? '$relay:CA#' : '$relay:CD#');
-      }
-
-    // }
-
-    if (relay == '1') {
+    if (pageNumber == '1') {
       deviceStatus.setR1 = newRelayState;
-      deviceStatus.getPublicReport.currentSensor1 = currentSensor;
-    } else if (relay == '6') {
+    } else if (pageNumber == '6') {
       deviceStatus.setR6 = newRelayState;
-      deviceStatus.getPublicReport.currentSensor6 = currentSensor;
-    }else if (relay == '3') {
-      newRelayState.humStatus = humidity! ? 'active' : 'deactive';
-      if(humidity!) {
-        newRelayState.humMin = sv.toString();
-        newRelayState.humMax = ev.toString();
-        sendSMS('h-min:$sv,max:$ev#'); //run operation if humidity is active
-         }
-
+    } else if (pageNumber == '3') {
       deviceStatus.setR3 = newRelayState;
-      deviceStatus.getPublicReport.currentSensor3 = currentSensor;
-    }else if (relay == '7') {
-      newRelayState.light = light! ? 'active' : 'deactive';
-      if(light!) {
-        newRelayState.lux = sv.toString();
-        sendSMS('lux:$sv#'); //run operation if light is active
-         }
-
+    } else if (pageNumber == '7') {
       deviceStatus.setR7 = newRelayState;
-    } else if (relay == '2') {
+    } else if (pageNumber == '2') {
       deviceStatus.setR2 = newRelayState;
-    } else if (relay == '5') {
+    } else if (pageNumber == '5') {
       deviceStatus.setR2 = newRelayState;
     }
   }
 
   switchMode() async {
     sw = !sw!;
-var relayName = currentPage == Page.Relay1 ? '1'
-    : currentPage == Page.Relay2 ? '2'
-    : currentPage == Page.Relay3 ? '3'
-    : currentPage == Page.Relay4 ? '4'
-    : currentPage == Page.Relay5 ? '5'
-    : currentPage == Page.Relay6 ? '6'
-    : '7';
 
-    if (currentPage == Page.Relay1) {
-      model.Relay newRelayState = deviceStatus.getR1;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    } else if (currentPage == Page.Relay6) {
-      model.Relay newRelayState = deviceStatus.getR6;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    } else if (currentPage == Page.Relay3) {
-      model.Relay newRelayState = deviceStatus.getR3;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    }else if (currentPage == Page.Relay7) {
-      model.Relay newRelayState = deviceStatus.getR7;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    }else if (currentPage == Page.Relay2) {
-      model.Relay newRelayState = deviceStatus.getR2;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    }else if (currentPage == Page.Relay5) {
-      model.Relay newRelayState = deviceStatus.getR5;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    }else if (currentPage == Page.Relay4) {
-      model.Relay newRelayState = deviceStatus.getR4;
-      newRelayState.status = sw == true ? 'ON' : 'OFF';
-    }
+    newRelayState!.status = sw == true ? 'ON' : 'OFF';
+    sendSMS(
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light! ? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity! ? 'a' : 'd'}' : ''}#');
+    await deviceBox.put('info', deviceStatus);
+    emit(RelayInitial());
+  }
 
-    sendSMS(sw == false ? '$relayName:off#' : '$relayName:on#');
+  relay() async{
+    relayStatus = !relayStatus!;
+
+    newRelayState!.relay = relayStatus == false ? 'deactive' : 'active';
+    sendSMS(relayStatus == false ? '$pageNumber:off#' : '$pageNumber:on#');
 
     await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
   }
 
-  relay() {
-    relayStatus = !relayStatus!;
-    emit(RelayInitial());
-  }
-
-  currentSensor() {
+  ///just for relay 1 or 6 or 3
+  currentSensor() async{
     sensor = !sensor!;
+
+    var current = currentPage == Page.Relay1
+        ? deviceStatus.getPublicReport.currentSensor1
+        : currentPage == Page.Relay3
+            ? deviceStatus.getPublicReport.currentSensor3
+            : deviceStatus.getPublicReport.currentSensor6;
+
+    current = sensor! ? 'active' : 'deactive';
+
+    sensorState = current;
+    sendSMS(sensor! ? '$pageNumber:CA#' : '$pageNumber:CD#');
+
+    if(currentPage == Page.Relay1) deviceStatus.getPublicReport.currentSensor1 = current;
+    else if(currentPage == Page.Relay3) deviceStatus.getPublicReport.currentSensor3 = current;
+    else if(currentPage == Page.Relay6) deviceStatus.getPublicReport.currentSensor6 = current;
+
+    await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
   }
 
   timerChangeStatus() {
     timer = !timer!;
+    sendSMS(
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light! ? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity! ? 'a' : 'd'}' : ''}#');
+
     emit(RelayInitial());
   }
 
   humidityStatus() {
     humidity = !humidity!;
+    newRelayState!.humStatus = humidity! ? 'active' : 'deactive';
+
+    sendSMS(
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity! ? 'a' : 'd'}#');
+
+    deviceStatus.setR3 = newRelayState; ///because humidity only in relay 3
+    deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
   }
 
-  lightStatus() {
+  lightStatus() async{
     light = !light!;
+    newRelayState!.light = light! ? 'active' : 'deactive';
+
+    sendSMS(
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light! ? 'a' : 'd'}#');
+
+    deviceStatus.setR7 = newRelayState;
+    await deviceBox.put('info', deviceStatus);
     emit(RelayInitial());
+  }
+
+  humudityAct(){
+    newRelayState!.humStatus = humidity! ? 'active' : 'deactive';
+
+      newRelayState!.humMin = sv.toString();
+      newRelayState!.humMax = ev.toString();
+      sendSMS('h-min:$sv,max:$ev#', showDialog: false); //run operation if humidity is active
+
+    deviceStatus.setR3 = newRelayState;
+    deviceBox.put('info', deviceStatus);
+  }
+
+  lightAct(){
+      newRelayState!.lux = sv.toString();
+      sendSMS('lux:$sv#', showDialog: false); //run operation if light is active
+
+    deviceStatus.setR7 = newRelayState;
+    deviceBox.put('info', deviceStatus);
   }
 
   loop() {
@@ -301,35 +276,36 @@ var relayName = currentPage == Page.Relay1 ? '1'
     emit(RelayInitial());
 
     if (infinity) {
-      selectedStartDate = 'loop';
-      selectedEndDate = '';
+      selectedStartDate = ':Start & End date';
+      selectedEndDate = 'Repeat every day';
     } else {
       selectedStartDate = '';
       selectedEndDate = '';
     }
   }
-  
+
   relay4Switch() {
     sendSMS('4:on#');
   }
 
-  icon({is2b = false}){
-    if(is2b) {
+  icon({is2b = false}) {
+    if (is2b) {
       iconKey = 'IR2b';
-    } else if(currentPage == Page.Relay2) {
+    } else if (currentPage == Page.Relay2) {
       iconKey = 'IR2';
-    }else if(currentPage == Page.Relay4) {
+    } else if (currentPage == Page.Relay4) {
       iconKey = 'IR4';
-    }else if(currentPage == Page.Relay3) {
+    } else if (currentPage == Page.Relay3) {
       iconKey = 'IR3';
-    }else if(currentPage == Page.Relay5) {
+    } else if (currentPage == Page.Relay5) {
       iconKey = 'IR5';
-    }else if(currentPage == Page.Relay6) {
+    } else if (currentPage == Page.Relay6) {
       iconKey = 'IR6';
-    }else if(currentPage == Page.Relay7) {
+    } else if (currentPage == Page.Relay7) {
       iconKey = 'IR7';
     }
 
-    m.Navigator.push(buildContext, m.MaterialPageRoute(builder: (context) => Icon()));
+    m.Navigator.push(
+        buildContext, m.MaterialPageRoute(builder: (context) => Icon()));
   }
 }
