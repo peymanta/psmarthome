@@ -237,6 +237,9 @@ class RelayCubit extends Cubit<RelayState> {
 
     deviceStatus.setR3 = newRelayState; ///because humidity only in relay 3
     deviceBox.put('info', deviceStatus);
+    constants.put('IR2', humidity! ? 'assets/selectable-icons/fan.png' : 'assets/selectable-icons/question.png');
+    mainController.updateMain();
+
     emit(RelayInitial());
   }
 

@@ -23,13 +23,13 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
       ev = int.parse(constants.get('tempMax') ?? '16');
       if(deviceStatus.getCooler.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.startClock.split(':')[0]), int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
-        selectedStartDate = 'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? 'loop' : deviceStatus.getCooler.startDate}';
+        selectedStartDate = 'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date' : deviceStatus.getCooler.startDate}';
       } else {
         startTime = Jalali.now();
       }
       if(deviceStatus.getCooler.endClock.contains(new RegExp(r'[0-9]'))) {
         endTime   = Jalali(1234, 2, 2, int.parse(deviceStatus.getCooler.endClock.split(':')[0]),   int.parse(deviceStatus.getCooler.endClock.split(':')[1]));
-        selectedEndDate   = 'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'loop' :  deviceStatus.getCooler.endDate}';
+        selectedEndDate   = 'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'Repeat every day' :  deviceStatus.getCooler.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -62,12 +62,9 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
     emit(TempInitial());
   }
 
-  submitData() {
+  submitTimer() {
     try {
       if (isCooler!) {
-        constants.put('tempMin', sv.toString());
-        constants.put('tempMax', ev.toString());
-
         deviceStatus.getCooler.startClock =
         '${startTime!.hour}:${startTime!.minute}';
         deviceStatus.getCooler.endClock = '${endTime!.hour}:${endTime!.minute}';
@@ -75,7 +72,6 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
           deviceStatus.getCooler.startDate = '11/11/11';
           deviceStatus.getCooler.endDate = '11/11/11';
           sendSMS('C/H:111111,${startTime!.hour.toString().padLeft(2, '0')+startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0')+endTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
-          sendSMS('T-min:$sv,max:$ev#');
         } else {
           deviceStatus.getCooler.startDate =
           '${startdate!.year}/${startdate!.month}/${startdate!.day}';
@@ -98,7 +94,6 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
               2, '0') +
               deviceStatus.getCooler.endClock.split(':')[1].padLeft(2, '0');
           sendSMS('C/H:$sdate,$sclock-$edate,$eclock#', showDialog: false);
-          sendSMS('T-min:$sv,max:$ev#');
         }
 
         deviceBox.put('info', deviceStatus);
@@ -147,6 +142,12 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
     deviceBox.put('info', deviceStatus);
     emit(TempInitial());
   }
+
+  submitTemp(isCooler) {
+      constants.put('tempMin', sv.toString());
+      constants.put('tempMax', ev.toString());
+      sendSMS('T-min:$sv,max:$ev#', showDialog: false);
+  }
   void status() {
     automatic = !automatic;
     if(isCooler!) {
@@ -178,8 +179,8 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
   }
   void loop() {
     infinity = !infinity;
-    selectedStartDate = infinity ? 'loop' : '';
-    selectedEndDate = '';
+    selectedStartDate = infinity ? ':Start & End date' : '';
+    selectedEndDate = infinity ? 'Repeat every day' : '';
     emit(TempInitial());
   }
 
