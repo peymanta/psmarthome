@@ -43,6 +43,8 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
       ev = int.parse(constants.get('tempMax') ?? '16');
       infinity = deviceStatus.getHeater.startDate == '11/11/11';
 
+      ///static routing in hub var
+      hub = deviceStatus.staticRouting == 'hub';
 
       if(deviceStatus.getHeater.startClock.contains(new RegExp(r'[0-9]'))) {
         startTime = Jalali(1234, 2, 2, int.parse(deviceStatus.getHeater.startClock.split(':')[0]), int.parse(deviceStatus.getHeater.startClock.split(':')[1]));

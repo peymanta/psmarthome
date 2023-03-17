@@ -53,6 +53,7 @@ dependencies:
   persian_datetime_picker: ^2.5.0
   sms: ^0.2.4
   permission_handler: ^10.2.0
+  benchmark_harness: ^2.2.1
 
 
 dev_dependencies:

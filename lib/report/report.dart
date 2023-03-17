@@ -51,7 +51,26 @@ class _ReportState extends State<Report> {
             listItemText('Device'),
             listItemText('''Outbox temp: ${deviceStatus.getPublicReport.outBoxTemp}
 Outbox humidity: ${deviceStatus.getPublicReport.outBoxHumidity}
-Room temp: ${deviceStatus.getPublicReport.temp}'''),
+Room temp: ${deviceStatus.getPublicReport.temp}
+Case door: ${deviceStatus.getPublicReport.caseDoor}
+Buzzer: ${deviceStatus.getPublicReport.buzzer}
+Fan: ${deviceStatus.getPublicReport.fanCount}
+5 volt relays: ${deviceStatus.getPublicReport.power5}
+5 volt micro controller: ${deviceStatus.getPublicReport.microPower}
+Security: ${deviceStatus.getPublicReport.securitySystem}
+Water leak 1: ${deviceStatus.getPublicReport.waterLeakagePlug1}
+Water leak 2: ${deviceStatus.getPublicReport.waterLeakagePlug2}
+Cooler rest: ${deviceStatus.getPublicReport.coolerRest}
+Short sms: ${deviceStatus.getPublicReport.shortReport}
+View: ${deviceStatus.getPublicReport.view}
+Plug: ${deviceStatus.getPublicReport.plug}
+Light: ${deviceStatus.getPublicReport.daynight}
+Battery State: ${deviceStatus.getPublicReport.battery}
+Extention Voltage: ${deviceStatus.getPublicReport.power}
+GSM Power signal: ${deviceStatus.getPublicReport.gsmSignalPower}
+Motion sensor: ${deviceStatus.getPublicReport.motionSensor}
+Reset counts: ${deviceStatus.resetCount}
+'''),
             divider(),
             listItemText('Graph'),
             SizedBox(

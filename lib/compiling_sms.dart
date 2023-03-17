@@ -57,18 +57,18 @@ compile(String sms) async{
 // 30min
 // WC:D.''';
 
-var sms = '''Cooler:
-11/11/11-00:06
-11/11/18-23:56
-TEMP SET:20~25
-
-WP1UP: ON,Rd,Ta
-11/11/11-16:30
-11/11/11-23:55
-
-WP1DN: ON,Ra,Td
-11/11/13-00:00
-11/11/11-23:55''';
+// var sms = '''Cooler:
+// 11/11/11-00:06
+// 11/11/18-23:56
+// TEMP SET:20~25
+//
+// WP1UP: ON,Rd,Ta
+// 11/11/11-16:30
+// 11/11/11-23:55
+//
+// WP1DN: ON,Ra,Td
+// 11/11/13-00:00
+// 11/11/11-23:55''';
 
 // var sms = '''R1:
 // OFF,Rd,Td,
@@ -129,6 +129,8 @@ WP1DN: ON,Ra,Td
   }
 
   await deviceBox.put('info', deviceStatus);
+
+  mainController.updateMain();
 }
 
 compilePublicReport(String sms) {
