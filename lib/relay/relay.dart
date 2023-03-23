@@ -11,22 +11,22 @@ import '../main.dart';
 import 'bloc/relay_cubit.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
-RelayCubit? relayCubit;
-Status? statusOfRelay = Status.sw;
+late RelayCubit relayCubit;
+late Status statusOfRelay = Status.sw;
 bool infinity = false;
-bool? relayStatus;
+late bool relayStatus;
 
-Jalali? startTime;
-Jalali? endTime;
+late Jalali startTime;
+late Jalali endTime;
 
-date.Jalali? startdate;
-date.Jalali? enddate;
+late date.Jalali startdate;
+late date.Jalali enddate;
 String selectedStartDate = '';
 String selectedEndDate = '';
 
-bool? sw, sensor, timer, humidity, light;
+late bool sw, sensor, timer, humidity, light;
 
-String? sensorState;
+late String sensorState;
 
 String _4image = 'assets/icons/question.png';
 
@@ -58,6 +58,7 @@ class _RelayState extends State<Relay> {
     relayCubit = RelayCubit();
 
     relayCubit!.initRelay();
+
     pageNumber = currentPage == Page.Relay1
         ? '1'
         : currentPage == Page.Relay2
@@ -173,7 +174,7 @@ Widget Relays() {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                MaterialButton(onPressed: ()=>relayCubit!.icon(), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon'),)),
+                MaterialButton(onPressed: ()=>relayCubit.icon(), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon'),)),
                 currentPage == Page.Relay2 ? MaterialButton(onPressed: ()=>relayCubit!.icon(is2b: true), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon bottom'),)) : Container(),
               ],
             )),
@@ -187,7 +188,10 @@ Widget Relays() {
           //   child:
             Column(
               children: [
-                ListTile(
+                Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    child: ListTile(
                   onTap: () => relayCubit!.changeMode(Status.sw),
                   title: Container(
                     alignment: Alignment.centerLeft,
@@ -203,38 +207,46 @@ Widget Relays() {
                         groupValue: statusOfRelay,
                         value: Status.sw),
                   ),
-                ),
+                )),
                 const SizedBox(
                   height: 10,
                 ),
-                ListTile(
-                  onTap: () => relayCubit!.changeMode(Status.timer),
-                  title: Container(
-                    height: 50,
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Timer'),
-                  ),
-                  leading: SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: NeumorphicRadio(
-                        onChanged: (v) => relayCubit!.changeMode(v!),
-                        style: NeumorphicRadioStyle(
-                            selectedColor: blue, boxShape: const NeumorphicBoxShape.circle()),
-                        groupValue: statusOfRelay,
-                        value: Status.timer),
+                Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  child: ListTile(
+                    onTap: () => relayCubit!.changeMode(Status.timer),
+                    title: Container(
+                      height: 50,
+                      alignment: Alignment.centerLeft,
+                      child: const Text('Timing'),
+                    ),
+                    leading: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: NeumorphicRadio(
+                          onChanged: (v) => relayCubit!.changeMode(v!),
+                          style: NeumorphicRadioStyle(
+                              selectedColor: blue, boxShape: const NeumorphicBoxShape.circle()),
+                          groupValue: statusOfRelay,
+                          value: Status.timer),
+                    ),
                   ),
                 ),
 
                 ///humidity only visible when relay 3 opened
                 Visibility(
                     visible: currentPage == Page.Relay3 || currentPage == Page.Relay7,
-                    child: ListTile(
+                    child: Column(
+                      children: [
+                        Container(
+                            height: 10),
+                        ListTile(
                       onTap: () => relayCubit!.changeMode(Status.act),
                       title: Container(
                         height: 50,
                         alignment: Alignment.centerLeft,
-                        child: Text(currentPage == Page.Relay3 ? 'Humidity' : 'Light'),
+                        child: Text(currentPage == Page.Relay3 ? 'Humidity sensor' : 'Light'),
                       ),
                       leading: SizedBox(
                         width: 100,
@@ -247,7 +259,8 @@ Widget Relays() {
                             groupValue: statusOfRelay,
                             value: Status.act),
                       ),
-                    )),
+                    )],
+            ),),
 
                 ///current sensor only visible when relay 1 or 3 or 6 opened
                 Visibility(
@@ -257,7 +270,7 @@ Widget Relays() {
                     child: ListTile(
                       onTap: () => relayCubit!.changeMode(Status.sensor),
                       title: Container(
-                        height: 80,
+                        height: 50,
                         alignment: Alignment.centerLeft,
                         child: const Text('Current sensor'),
                       ),
@@ -298,7 +311,7 @@ Widget Relays() {
                         child: Column(
                           children: [
                             listItemSwitch(
-                                'Timer', () => relayCubit!.timerChangeStatus(), timer!),
+                                'Timing Active', () => relayCubit!.timerChangeStatus(), timer!),
                             const SizedBox(
                               height: 20,
                             ),
@@ -357,27 +370,27 @@ Widget Relays() {
                               padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
-                                  Expanded(
-                                    child: Center(
-                                      child: NeumorphicButton(
-                                        padding: const EdgeInsets.all(15),
-                                        onPressed: () async {
-                                          enddate = await date.showPersianDatePicker(
-                                              context: context,
-                                              initialDate: date.Jalali.now(),
-                                              firstDate: date.Jalali.now(),
-                                              lastDate: date.Jalali(3099));
-                                          setState(() => selectedEndDate =
-                                              'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            'select end date',
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // Expanded(
+                                  //   child: Center(
+                                  //     child: NeumorphicButton(
+                                  //       padding: const EdgeInsets.all(15),
+                                  //       onPressed: () async {
+                                  //         enddate = (await date.showPersianDatePicker(
+                                  //             context: context,
+                                  //             initialDate: date.Jalali.now(),
+                                  //             firstDate: date.Jalali.now(),
+                                  //             lastDate: date.Jalali(3099)))!;
+                                  //         setState(() => selectedEndDate =
+                                  //             'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                  //       },
+                                  //       child: const Center(
+                                  //         child: Text(
+                                  //           'select end date',
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
 
                                   Expanded(
                                       child: Center(
@@ -391,17 +404,23 @@ Widget Relays() {
                                       child: NeumorphicButton(
                                         padding: const EdgeInsets.all(15),
                                         onPressed: () async {
-                                          startdate = await date.showPersianDatePicker(
+                                          startdate = (await date.showPersianDatePicker(
                                               context: context,
                                               initialDate: date.Jalali.now(),
                                               firstDate: date.Jalali.now(),
-                                              lastDate: date.Jalali(3099));
-                                          setState(() => selectedStartDate =
-                                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}');
+                                              lastDate: date.Jalali(3099)))!;
+                                          setState(() {
+                                            enddate = startdate.addDays(1);
+
+                                            selectedStartDate =
+                                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}';
+                                          setState(() => selectedEndDate =
+                                          'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                          });
                                         },
                                         child: const Center(
                                           child: Text(
-                                            'select start date',
+                                            'select date',
                                           ),
                                         ),
                                       ),
@@ -521,13 +540,22 @@ Widget Relays() {
 }
 
 Widget listItemSwitch(name, onPressed, value) {
-  return ListTile(
-    onTap: onPressed,
-    title: Container(
-      alignment: Alignment.centerLeft,
-      child: Text(name),
+  return MaterialButton(
+    onPressed: onPressed,
+    child: Row(
+      children: [
+        Expanded(
+              flex: 4,
+              child: Center(
+                  child: NeumorphicSwitch(value: value))),
+          Expanded(
+          flex: 8,
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child: Text(name),),
+        ),
+      ],
     ),
-    leading: NeumorphicSwitch(value: value),
   );
 }
 
@@ -625,7 +653,7 @@ class Relay4 extends StatelessWidget {
 
 Widget relay3humidity() {
   return Column(children: [
-    listItemSwitch('Humidity status',
+    listItemSwitch('Sensor Act/Deact',
             () => relayCubit!.humidityStatus(), humidity!),
     const SizedBox(height: 20,),
     const Center(

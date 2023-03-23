@@ -48,20 +48,30 @@ Widget homePage(List items) {
                                           right: 10,
                                           child: Icon(
                                             items[index].icon,
-                                            color: Color(0xff838fa3),
+                                            color: items[index].getIconColor,
                                           ))
                                       : Container(),
                                   items[index].bottomImage !=null
                                       ? Positioned(
                                           bottom: 10,
-                                          // right: 0,//items[index].isBottomImageLeft == true? 0:null,
+                                          left: items[index].isBottomImageLeft == true? 0:null,
                                           child: Image.asset(
                                             items[index].bottomImage,
-                                            width: 150,
+                                            width: items[index].isBottomImageLeft? 50 : 150,
                                             height: 30,
                                             // color: Color(0xff838fa3),
                                           ))
                                       : Container(),
+                                  items[index].thirdImage !=null
+                                      ? Positioned(
+                                      top: 10,
+                                      left: 0,
+                                      child: Image.asset(
+                                        items[index].thirdImage,
+                                        width: items[index].isBottomImageLeft? 50 : 150,
+                                        height: 30,
+                                        // color: Color(0xff838fa3),
+                                      )) : Container()
                                 ],
                               ),
                             ),

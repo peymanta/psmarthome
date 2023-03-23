@@ -134,7 +134,6 @@ rest = deviceStatus.publicReport.coolerRest == 'active';
               2, '0') +
               deviceStatus.getHeater.endClock.split(':')[1].padLeft(2, '0');
           sendSMS('C/H:$sdate,$sclock-$edate,$eclock#', showDialog: false);
-          sendSMS('T-min:$sv,max:$ev#');
         }
 
       }

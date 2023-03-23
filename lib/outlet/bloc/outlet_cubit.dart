@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:meta/meta.dart';
-import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:shome/compiling_sms.dart';
+import 'package:shome/icon/icon.dart';
 import 'package:shome/main.dart';
 import 'package:shome/outlet/OutletPage.dart';
 
@@ -42,12 +42,12 @@ class OutletCubit extends Cubit<OutletState> {
     selectedDownEndDate = infinityDown ? 'Repeat every day' : '';
 
     startUpTime = null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
-    startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
-    startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
+    // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
+    // startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
     startDownTime = null; // DateTime(1111, 1, 1, int.parse(plug.getDownStartClock.split(':')[0]), int.parse(plug.getDownStartClock.split(':')[1])); //
     endUpTime = null; // DateTime(1111, 1, 1, int.parse(plug.getUPEndClock.split(':')[0]), int.parse(plug.getUPEndClock.split(':')[1]));//plug.getUPEndClock; //
-    endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
-    endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
+    // endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
+    // endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
     endDownTime = null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
 
 
@@ -78,14 +78,14 @@ try {
             'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${infinityUp
                 ? '111111'
                 : startUpDate!.year.toString().substring(2) +
-                startUpDate!.month.toString() +
-                startUpDate!.day.toString()},${startUpTime!.hour.toString()
+                startUpDate!.month.toString().padLeft(2, '0') +
+                startUpDate!.day.toString().padLeft(2, '0')},${startUpTime!.hour.toString()
                 .padLeft(2, '0') +
                 startUpTime!.minute.toString().padLeft(2, '0')}-${infinityUp
                 ? '111111'
                 : endUpDate!.year.toString().substring(2) +
-                endUpDate!.month.toString() +
-                endUpDate!.day.toString()},${endUpTime!.hour.toString().padLeft(
+                endUpDate!.month.toString().padLeft(2, '0') +
+                endUpDate!.day.toString().padLeft(2, '0')},${endUpTime!.hour.toString().padLeft(
                 2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#', showDialog: false);
       }
       ////////////
@@ -135,7 +135,7 @@ try {
   }
 }
 catch( e) {
-  dialog('Please set date', Text('If you activated timer, you must select start and end date'), ()=>Navigator.pop(buildContext), removeCancel: true);
+  dialog('Please set date', m.Text('If you activated timer, you must select start and end date'), ()=>m.Navigator.pop(buildContext), removeCancel: true);
     }
     deviceBox.put('info', deviceStatus);
   }
@@ -277,5 +277,13 @@ catch( e) {
     deviceBox.put('info', deviceStatus);
 
     emit(OutletInitial());
+  }
+
+  icon() {
+    if(currentPlug == PlugNumber.plug1) iconKey = 'PLUG1B';
+    else iconKey = 'PLUG2B';
+
+    m.Navigator.push(
+        buildContext, m.MaterialPageRoute(builder: (context) => Icon()));
   }
 }

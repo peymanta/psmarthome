@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' as widget;
 
+import '../colors.dart';
+
 class HomeItem {
-  var Image, Icon, icEnabled, notif,
+  var Image, Icon, iconColor, icEnabled, notif,
       messageLength, //number of messages shows in notification
-  iWidth, iHeight, bottomImageVar, bILeft = false, clickable;
-  HomeItem(this.Image, {icon, iconEnabled = true, notificationEnabled = false, msgLength = 0, imageWidth = 70.0, imageHeight = 70.0, bottomImage, isBottomImageLeft = false,  onPressed}) {
+  iWidth, iHeight, bottomImageVar, thirdImageVar, bILeft = false, clickable;
+  HomeItem(this.Image, {icon, icColor = primary, iconEnabled = true, notificationEnabled = false, msgLength = 0, imageWidth = 70.0, imageHeight = 70.0, bottomImage, thirdImage, isBottomImageLeft = false,  onPressed}) {
     Icon = icon;
+    iconColor = icColor;
     icEnabled = iconEnabled;
     notif = notificationEnabled;
     messageLength = msgLength;
     iWidth = imageWidth;
     iHeight = imageHeight;
     bottomImageVar = bottomImage;
+    thirdImageVar = thirdImage;
     clickable = onPressed;
     bILeft = isBottomImageLeft;
   }
@@ -20,6 +24,8 @@ class HomeItem {
   IconData get icon => Icon;
   String get image => Image;
   get bottomImage => bottomImageVar;
+  get getIconColor => iconColor;
+  get thirdImage => thirdImageVar;
   bool get isIconEnabled => icEnabled;
   bool get isNotificationEnabled => notif;
   int get msgLength => messageLength;

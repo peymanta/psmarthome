@@ -11,6 +11,7 @@ import 'package:shome/models/status.dart';
 import 'package:shome/pages.dart';
 import 'package:shome/relay/bloc/relay_cubit.dart';
 import 'package:shome/relay/relay.dart' as relay;
+import 'package:shome/relay/relay.dart';
 import 'package:shome/report/report.dart';
 import 'package:shome/security/security.dart';
 import 'package:shome/settings/settings.dart';
@@ -27,6 +28,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sms/sms.dart';
+import 'package:benchmark_harness/benchmark_harness.dart';
 
 bool securityState = true;
 late DeviceStatus deviceStatus;
@@ -58,6 +60,7 @@ void main() async {
   logBox = await Hive.openBox('log'); //log of report page
 
   chartsObject = chartsBox.get('object') ?? Charts();
+
 
   runApp(MaterialApp(
     home: MyApp(),

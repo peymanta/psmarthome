@@ -11,19 +11,39 @@ import '../relay/relay.dart' as relay;
 import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import 'bloc/outlet_cubit.dart';
 
-OutletCubit? _cubit;
-bool timerUP = false, timerDown = false, infinityUp = false, infinityDown = false;
-DateTime? startUpTime = DateTime.now(), endUpTime = DateTime.now(), startDownTime = DateTime.now(), endDownTime = DateTime.now();
-date.Jalali? startUpDate, endUpDate, startDownDate, endDownDate;
-String selectedUpStartDate = '', selectedUpEndDate = '', selectedDownStartDate = '', selectedDownEndDate = '';
-bool? plugUP, plugDOWN, ///for timer switch
- upActive, downActive, ///for switch
+late OutletCubit _cubit;
+bool timerUP = false,
+    timerDown = false,
+    infinityUp = false,
+    infinityDown = false;
+DateTime? startUpTime = DateTime.now(),
+    endUpTime = DateTime.now(),
+    startDownTime = DateTime.now(),
+    endDownTime = DateTime.now();
+late date.Jalali startUpDate, endUpDate, startDownDate, endDownDate;
+String selectedUpStartDate = '',
+    selectedUpEndDate = '',
+    selectedDownStartDate = '',
+    selectedDownEndDate = '';
+late bool plugUP,
+    plugDOWN,
+
+    ///for timer switch
+    upActive,
+    downActive,
+
+    ///for switch
     waterLeakPlug,
-available, active; ///for enabling plug
+    available,
+    active;
+
+///for enabling plug
 
 enum PlugNumber { plug1, plug2 }
 
-bool isSwitchUP = false, isSwitchDOWN = false; ///for animated opacity
+bool isSwitchUP = false, isSwitchDOWN = false;
+
+///for animated opacity
 
 var currentPlug;
 
@@ -41,20 +61,24 @@ class _OutletState extends State<Outlet> {
     super.initState();
     _cubit = OutletCubit();
 
-    _cubit!.init(currentPlug == PlugNumber.plug1 ? deviceStatus.getPLug1 : deviceStatus.getPlug2);
-
+    _cubit!.init(currentPlug == PlugNumber.plug1
+        ? deviceStatus.getPLug1
+        : deviceStatus.getPlug2);
   }
 
   @override
-  Widget build(BuildContext context) {compile('');
+  Widget build(BuildContext context) {
+    compile('');
     return BlocBuilder<OutletCubit, OutletState>(
       bloc: _cubit,
       builder: (context, state) {
         if (state is OutletInitial) {
-          return
-              Scaffold(
+          return Scaffold(
             appBar: AppBar(
-              title: Text('Plug ${currentPlug==PlugNumber.plug1 ? '1' : '2'}', style: TextStyle(color: Colors.black),),
+              title: Text(
+                'Plug ${currentPlug == PlugNumber.plug1 ? '1' : '2'}',
+                style: TextStyle(color: Colors.black),
+              ),
               backgroundColor: background,
               shadowColor: Colors.transparent,
               iconTheme: IconThemeData(color: Colors.black),
@@ -68,12 +92,27 @@ class _OutletState extends State<Outlet> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
+                      MaterialButton(
+                        onPressed: () => _cubit.icon(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(children: [
+                            Expanded(flex: 8, child: Center(child: Text('Change connected device icon'))),
+                            Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
+                          ]),
+                        ),
+                      ),
+                      SizedBox(height: 25),
                       Row(
                         children: [
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerRight,
-                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.getPublicReport.wirelessPlug1 : deviceStatus.getPublicReport.wirelessPlug2))),
+                                  child: Text(currentPlug == PlugNumber.plug1
+                                      ? deviceStatus
+                                          .getPublicReport.wirelessPlug1
+                                      : deviceStatus
+                                          .getPublicReport.wirelessPlug2))),
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerLeft,
@@ -86,7 +125,11 @@ class _OutletState extends State<Outlet> {
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerRight,
-                                  child: Text(currentPlug == PlugNumber.plug1 ? deviceStatus.publicReport.waterLeakagePlug1 : deviceStatus.publicReport.waterLeakagePlug2))),
+                                  child: Text(currentPlug == PlugNumber.plug1
+                                      ? deviceStatus
+                                          .publicReport.waterLeakagePlug1
+                                      : deviceStatus
+                                          .publicReport.waterLeakagePlug2))),
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerLeft,
@@ -96,20 +139,23 @@ class _OutletState extends State<Outlet> {
                       divider(),
                       Visibility(
                         visible: available!,
-                          child:
-                          Column(
-                            children: [
-                              option(context, true), //up
+                        child: Column(
+                          children: [
+                            option(context, true), //up
 
-                              option(context, false), //down
-                            ],
+                            option(context, false), //down
+                          ],
                           // ),
                         ),
                       ),
                       SizedBox(height: 20),
 
                       ListTile(
-                          onTap: () => _cubit!.changeActive(true, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
+                          onTap: () => _cubit!.changeActive(
+                              true,
+                              currentPlug == PlugNumber.plug1
+                                  ? deviceStatus.plug1
+                                  : deviceStatus.plug2),
                           title: Container(
                             alignment: Alignment.centerLeft,
                             child: Text('UP Active'),
@@ -117,7 +163,11 @@ class _OutletState extends State<Outlet> {
                           leading: NeumorphicSwitch(value: upActive!)),
                       SizedBox(height: 10),
                       ListTile(
-                        onTap: () => _cubit!.changeActive(false, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
+                        onTap: () => _cubit!.changeActive(
+                            false,
+                            currentPlug == PlugNumber.plug1
+                                ? deviceStatus.plug1
+                                : deviceStatus.plug2),
                         title: Container(
                           alignment: Alignment.centerLeft,
                           child: Text('Down Active'),
@@ -168,7 +218,6 @@ class _OutletState extends State<Outlet> {
                       //   leading: NeumorphicSwitch(value: waterLeakPlug!),
                       // ),
                       // SizedBox(height: 20),
-
                     ],
                   )),
             ),
@@ -231,171 +280,150 @@ Widget option(context, bool isUp) {
           const SizedBox(
             height: 30,
           ),
-          // AnimatedOpacity(
-          //   curve: Curves.linear,
-          //   opacity: isUp ? (!isSwitchUP ? 1 : 0) : (!isSwitchDOWN ? 1 : 0),
-          //   duration: Duration(milliseconds: 600),
-          //   child:
-            Visibility(
-                // duration: Duration(milliseconds: 600),
-                // height:
-                    // isUp ? (!isSwitchUP ? 450 : 0) : (!isSwitchDOWN ? 450 : 0),
-          visible: isUp?!isSwitchUP : !isSwitchDOWN,
-                child: Column(children: [
-                  relay.listItemSwitch(
-                      'Timing Active', () => _cubit!.timerChangeStatus(isUp), isUp ? timerUP : timerDown),
+          Visibility(
+              visible: isUp ? !isSwitchUP : !isSwitchDOWN,
+              child: Column(children: [
+                relay.listItemSwitch(
+                    'Timing Active',
+                    () => _cubit!.timerChangeStatus(isUp),
+                    isUp ? timerUP : timerDown),
 
-                  SizedBox(
-                    height: 20,
-                  ),
+                SizedBox(
+                  height: 20,
+                ),
 
-                  Row(
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text('end time'),
+                          Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: TimePickerSpinner(
+                              is24HourMode: true,
+                              isForce2Digits: true,
+                              onTimeChange: (DateTime time) {
+                                if (isUp)
+                                  endUpTime = time;
+                                else
+                                  endDownTime = time;
+                              },
+                              time: DateTime.now(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text('start time'),
+                          Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: TimePickerSpinner(
+                              is24HourMode: true,
+                              isForce2Digits: true,
+                              onTimeChange: (DateTime time) {
+                                if (isUp)
+                                  startUpTime = time;
+                                else
+                                  startDownTime = time;
+                                print(startUpTime);
+                              },
+                              time: DateTime.now(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                ///selected dates
+                SizedBox(height: 5),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        isUp ? selectedUpStartDate : selectedDownStartDate)),
+                SizedBox(height: 5),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child:
+                        Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
                     children: [
                       Expanded(
-                        child: Column(
-                          children: [
-                            Text('end time'),
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: TimePickerSpinner(
-                                is24HourMode: true,
-                                isForce2Digits: true,
-                                onTimeChange: (DateTime time) {
-                                  if(isUp) endUpTime = time;
-                                  else endDownTime = time;
-                                },
-                                time: DateTime.now(),
+                          child: Center(
+                        child: NeumorphicCheckbox(
+                          value: isUp ? infinityUp : infinityDown,
+                          onChanged: (value) => _cubit!.loop(isUp),
+                        ),
+                      )),
+                      Expanded(
+                        child: Center(
+                          child: NeumorphicButton(
+                            padding: EdgeInsets.all(15),
+                            onPressed: () async {
+                              var output = await date.showPersianDatePicker(
+                                  context: context,
+                                  initialDate: date.Jalali.now(),
+                                  firstDate: date.Jalali.now(),
+                                  lastDate: date.Jalali(3099));
+
+                              setState(() {
+                                if (isUp) {
+                                  startUpDate = output!;
+                                  endUpDate = startUpDate
+                                      .addDays(1); //end is tomorrow of start
+
+                                  selectedUpStartDate =
+                                      'Selected start date: ${startUpDate.formatCompactDate()}';
+                                  selectedUpEndDate =
+                                      'Selected end date: ${endUpDate.formatCompactDate()}';
+                                } else {
+                                  startDownDate = output!;
+                                  endDownDate = startDownDate.addDays(1);
+
+                                  selectedDownStartDate =
+                                      'Selected start date: ${startDownDate.addDays(1)}';
+                                  selectedDownStartDate =
+                                      'Selected start date: ${endDownDate.addDays(1)}';
+                                }
+                              });
+                            },
+                            child: Center(
+                              child: const Text(
+                                'select start date',
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text('start time'),
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: TimePickerSpinner(
-                                is24HourMode: true,
-                                isForce2Digits: true,
-                                onTimeChange: (DateTime time) {
-
-                                  if(isUp) startUpTime = time;
-                                  else startDownTime = time;
-                                  print(startUpTime);},
-                                time: DateTime.now(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
-
-                  ///selected dates
-                  SizedBox(height: 5),
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(isUp ? selectedUpStartDate : selectedDownStartDate)),
-                  SizedBox(height: 5),
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: NeumorphicButton(
-                              padding: EdgeInsets.all(15),
-                              onPressed: () async {
-                                var output = await date.showPersianDatePicker(
-                                    context: context,
-                                    initialDate: date.Jalali.now(),
-                                    firstDate: date.Jalali.now(),
-                                    lastDate: date.Jalali(3099));
-                                if(isUp) endUpDate = output;
-                                else endDownDate = output;
-
-                                setState(() {
-                                  if(isUp) {
-                                    selectedUpEndDate =
-                                    'Selected end date: ${endUpDate!.year}/${endUpDate!.month}/${endUpDate!.day}';
-                                  } else {
-                                    selectedDownEndDate =
-                                    'Selected end date: ${endDownDate!.year}/${endDownDate!.month}/${endDownDate!.day}';
-                                  }
-                                });
-                              },
-                              child: Center(
-                                child: const Text(
-                                  'select end date',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                            child: Center(
-                          child: NeumorphicCheckbox(
-                            value: isUp ? infinityUp : infinityDown,
-                            onChanged: (value) => _cubit!.loop(isUp),
-                          ),
-                        )),
-                        Expanded(
-                          child: Center(
-                            child: NeumorphicButton(
-                              padding: EdgeInsets.all(15),
-                              onPressed: () async {
-                                var output = await date.showPersianDatePicker(
-                                    context: context,
-                                    initialDate: date.Jalali.now(),
-                                    firstDate: date.Jalali.now(),
-                                    lastDate: date.Jalali(3099));
-                                if(isUp) startUpDate = output;
-                                else startDownDate = output;
-
-                                setState(() {
-                                  if(isUp) {
-                                    selectedUpStartDate =
-                                    'Selected start date: ${startUpDate!
-                                        .year}/${startUpDate!.month}/${startUpDate!
-                                        .day}';
-                                  } else {
-                                    selectedDownStartDate =
-                                    'Selected start date: ${startDownDate!
-                                        .year}/${startDownDate!.month}/${startDownDate!
-                                        .day}';
-                                  }
-                                });
-                              },
-                              child: Center(
-                                child: const Text(
-                                  'select start date',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  NeumorphicButton(
-                    padding: EdgeInsets.all(20),
-                    child: Text('submit'),
-                    onPressed: () => _cubit!.saveChanges(isUp, currentPlug == PlugNumber.plug1 ? deviceStatus.plug1 : deviceStatus.plug2),
-                  ),
-                ])),
-              Visibility(
-                // duration: Duration(milliseconds: 600),
-                visible: isUp? isSwitchUP: isSwitchDOWN,
-                child: relay.listItemSwitch('Plug: ON/OFF', () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
-              ),
-          isUp? divider() : Container(),
+                ),
+                SizedBox(height: 20),
+                NeumorphicButton(
+                  padding: EdgeInsets.all(20),
+                  child: Text('submit'),
+                  onPressed: () => _cubit!.saveChanges(
+                      isUp,
+                      currentPlug == PlugNumber.plug1
+                          ? deviceStatus.plug1
+                          : deviceStatus.plug2),
+                ),
+              ])),
+          Visibility(
+            // duration: Duration(milliseconds: 600),
+            visible: isUp ? isSwitchUP : isSwitchDOWN,
+            child: relay.listItemSwitch('Plug: ON/OFF',
+                () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
+          ),
+          divider(),
         ],
       ),
     );

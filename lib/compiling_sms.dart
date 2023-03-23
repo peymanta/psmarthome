@@ -7,24 +7,30 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:background_sms/background_sms.dart';
 
 
-sendSMS(sms, {showDialog = false}) async{
+sendSMS(sms, {showDialog = true}) async{
   await [Permission.sms].request(); //request permission
 
   if(await  Permission.sms.isGranted && showDialog) {
     dialog('Verify', Text('Do you agree with the operation?'), () {
-    //   BackgroundSms.sendMessage(
-    //       phoneNumber: constants.get('deviceNumber'), message: sms);
+      BackgroundSms.sendMessage(
+          phoneNumber: constants.get('deviceNumber'), message: sms);
      showMessage('operation completed');
+     Navigator.pop(buildContext);
     });
   } else {
-    // BackgroundSms.sendMessage(
-    //     phoneNumber: constants.get('deviceNumber'), message: sms);
+    BackgroundSms.sendMessage(
+        phoneNumber: constants.get('deviceNumber'), message: sms);
     showMessage('operation completed');
   }
 
 print(sms);
 }
 compile(String sms) async{
+  var sms = '''Version : a400
+
+Cap Voltage ~ 13.40 V
+
+101/12/26 23:24:34''';
 //   var sms = '''1210 01:04
 // s:A
 // U:A
@@ -785,6 +791,8 @@ compileInteractiveSMS(String sms) {
     chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
 
     dialog('version', Text(sms.split('\n')[0]), ()=>Navigator.pop(buildContext), removeCancel: true);
+    chartsBox.put('object', chartsObject);
+
     logBox.add(sms);
   }
   if(sms.contains('LOW Battery')) {
@@ -828,6 +836,8 @@ compileInteractiveSMS(String sms) {
 
     deviceBox.put('info', deviceStatus);
   }
+
+
   if(sms.contains('Please Check the Time&Date')) {
     dialog('Please check Time', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
     logBox.add(sms);

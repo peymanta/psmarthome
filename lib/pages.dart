@@ -7,6 +7,7 @@ import 'package:shome/security/security.dart';
 import 'package:shome/settings/settings.dart';
 import 'package:shome/temp/temp_screen.dart';
 import 'package:shome/ups/ups.dart';
+import 'colors.dart';
 import 'main.dart';
 import 'models/home_screen_items.dart';
 import 'outlet/OutletPage.dart';
@@ -16,7 +17,11 @@ late List page1, page2;
 void getPages() {
   page1 = [
 
-    HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
+    HomeItem('assets/icons/outlet.png',
+        bottomImage: constants.get('PLUG1B') ?? 'assets/selectable-icons/question.png',
+        isBottomImageLeft: true,
+        thirdImage: deviceStatus.getPublicReport.waterLeakagePlug1 == 'yes' ? 'assets/selectable-icons/leaking.png' : null,
+        icon: Icons.wifi_rounded,
         onPressed: () {
           currentPlug = PlugNumber.plug1;
           Navigator.push(
@@ -24,6 +29,9 @@ void getPages() {
               MaterialPageRoute(builder: (buildContext) => Outlet()));
         }),
     HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
+        bottomImage: constants.get('PLUG2B') ?? 'assets/selectable-icons/question.png',
+        isBottomImageLeft: true,
+        thirdImage: deviceStatus.getPublicReport.waterLeakagePlug2 == 'yes' ? 'assets/selectable-icons/leaking.png' : null,
         onPressed: () {
           currentPlug = PlugNumber.plug2;
           Navigator.push(
@@ -66,6 +74,9 @@ void getPages() {
                 MaterialPageRoute(builder: (buildContext) => Report()))),
     HomeItem('assets/icons/camera1.png',
         icon: Icons.shield_rounded,
+        icColor: securityState
+  ? green
+      :primary,
         imageWidth: 200.0,
         imageHeight: 200.0, onPressed: () {
           relay.currentPage = relay.Page.Relay1;
@@ -116,7 +127,11 @@ void getPages() {
         }),
     HomeItem(constants.get('IR7') ?? 'assets/icons/question.png',
         bottomImage: 'assets/icons/bottomImage2.png',
-        icon: Icons.shield_rounded, onPressed: () {
+        icon: Icons.shield_rounded,
+        icColor: securityState
+            ? green
+            :primary,
+        onPressed: () {
           relay.currentPage = relay.Page.Relay7;
           Navigator.push(
               buildContext,
