@@ -68,7 +68,6 @@ class _OutletState extends State<Outlet> {
 
   @override
   Widget build(BuildContext context) {
-    compile('');
     return BlocBuilder<OutletCubit, OutletState>(
       bloc: _cubit,
       builder: (context, state) {
@@ -381,23 +380,23 @@ Widget option(context, bool isUp) {
                                       .addDays(1); //end is tomorrow of start
 
                                   selectedUpStartDate =
-                                      'Selected start date: ${startUpDate.formatCompactDate()}';
+                                      'Selected up start date: ${startUpDate.formatCompactDate()}';
                                   selectedUpEndDate =
-                                      'Selected end date: ${endUpDate.formatCompactDate()}';
+                                      'Selected up end date: ${endUpDate.formatCompactDate()}';
                                 } else {
                                   startDownDate = output!;
                                   endDownDate = startDownDate.addDays(1);
 
                                   selectedDownStartDate =
-                                      'Selected start date: ${startDownDate.addDays(1)}';
-                                  selectedDownStartDate =
-                                      'Selected start date: ${endDownDate.addDays(1)}';
+                                      'Selected down start date: ${startDownDate.formatCompactDate()}';
+                                  selectedDownEndDate =
+                                      'Selected down end date: ${endDownDate.formatCompactDate()}';
                                 }
                               });
                             },
                             child: Center(
                               child: const Text(
-                                'select start date',
+                                'select date',
                               ),
                             ),
                           ),

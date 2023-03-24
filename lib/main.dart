@@ -139,7 +139,7 @@ showMessage(msg) {
 }
 
 dialog(title, contents, onConfirm, {cancellable = true, removeCancel = false}) {
-  showDialog(
+  return showDialog(
       barrierDismissible: cancellable,
       context: buildContext,
       builder: (context) => Dialog(

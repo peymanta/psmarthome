@@ -36,10 +36,10 @@ class OutletCubit extends Cubit<OutletState> {
     isSwitchDOWN = true;
     infinityUp = plug.getUPStartDate == '11/11/11' && plug.getUPEndDate == '11/11/11';
     infinityDown = plug.getDownStartDate == '11/11/11' && plug.getDownEndDate == '11/11/11';
-    selectedUpStartDate = infinityUp ? ':Start & End date' : '';
-    selectedUpEndDate = infinityUp ? 'Repeat every day' : '';
-    selectedDownStartDate = infinityDown ? ':Start & End date' : '';
-    selectedDownEndDate = infinityDown ? 'Repeat every day' : '';
+    selectedUpStartDate = infinityUp ? ':Start & End date' : 'selected up start date: ${plug.getUPStartDate}';
+    selectedUpEndDate = infinityUp ? 'Repeat every day' : 'selected up end date: ${plug.getUPEndDate}';
+    selectedDownStartDate = infinityDown ? ':Start & End date' : 'selected down start date: ${plug.getDownStartDate}';
+    selectedDownEndDate = infinityDown ? 'Repeat every day' : 'selected down end date: ${plug.getDownEndDate}';
 
     startUpTime = null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
     // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
@@ -132,12 +132,12 @@ try {
     } else {
       showMessage('down is not active');
     }
-  }
+  }deviceBox.put('info', deviceStatus);
 }
 catch( e) {
   dialog('Please set date', m.Text('If you activated timer, you must select start and end date'), ()=>m.Navigator.pop(buildContext), removeCancel: true);
     }
-    deviceBox.put('info', deviceStatus);
+
   }
 
   void status(bool isUp, switchStatus) {

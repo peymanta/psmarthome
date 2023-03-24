@@ -47,38 +47,38 @@ class Actulator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    start = KnobController(
-        minimum: 16,
-        maximum: 28,
-        initial: cooler
-            ? double.parse(constants.get('tempMin') ?? '16').clamp(16, 28)
-            : double.parse(constants.get('tempMax') ?? '28').clamp(16, 28));
-    end = KnobController(
-        minimum: 16, //5 endmin+4 or 9
-        maximum: 32, //95
-        initial: cooler
-            ? int.parse(constants.get('tempMin') ?? '16').clamp(16, 32).toDouble()
-            : int.parse(constants.get('tempMax') ?? '32').clamp(16, 32).toDouble());
-
+    // start = KnobController(
+    //     minimum: 16,
+    //     maximum: 28,
+    //     initial: cooler
+    //         ? double.parse(constants.get('tempMin') ?? '16').clamp(16, 28)
+    //         : double.parse(constants.get('tempMax') ?? '28').clamp(16, 28));
+    // end = KnobController(
+    //     minimum: 16, //5 endmin+4 or 9
+    //     maximum: 32, //95
+    //     initial: cooler
+    //         ? int.parse(constants.get('tempMin') ?? '16').clamp(16, 32).toDouble()
+    //         : int.parse(constants.get('tempMax') ?? '32').clamp(16, 32).toDouble());
+    //
 
     return  StatefulBuilder(
       builder: (context, setState) {
-        start!.addOnValueChangedListener((double value) {
-          setState(() {
-            sv = value.toInt();
-            endMin = value <= 32 ? value : 32;
-
-            ev = endMin!.toInt(); //value.roundToDouble();
-          });
-          end = KnobController(
-              minimum: endMin!, maximum: 32, initial: endMin!.clamp(endMin!, 32));
-        });
-
-        end!.addOnValueChangedListener((p) {
-          setState(() {
-            ev = p.toInt();
-          });
-        });
+        // start!.addOnValueChangedListener((double value) {
+        //   setState(() {
+        //     sv = value.toInt();
+        //     endMin = value <= 32 ? value : 32;
+        //
+        //     ev = endMin!.toInt(); //value.roundToDouble();
+        //   });
+        //   end = KnobController(
+        //       minimum: endMin!, maximum: 32, initial: endMin!.clamp(endMin!, 32));
+        // });
+        //
+        // end!.addOnValueChangedListener((p) {
+        //   setState(() {
+        //     ev = p.toInt();
+        //   });
+        // });
         return ListView(
             physics: ClampingScrollPhysics(),
             children: [
@@ -220,93 +220,8 @@ class Actulator extends StatelessWidget {
                           SizedBox(
                             height: 60,
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(5),
-                                      child: SizedBox(
-                                        width: 150,
-                                        height: 150,
-                                        child: Knob(
-                                          controller: end,
-                                          style: KnobStyle(
-                                            labelStyle: const TextStyle(
-                                                color: Colors.transparent),
-                                            controlStyle: const ControlStyle(
-                                                tickStyle: ControlTickStyle(
-                                                    color: Colors.transparent),
-                                                glowColor: Colors.transparent,
-                                                backgroundColor: Color(0xffdde6e8),
-                                                shadowColor: Color(0xffd4d6dd)),
-                                            pointerStyle: PointerStyle(color: blue),
-                                            minorTickStyle: const MinorTickStyle(
-                                                color: Color(0xffaaadba),
-                                                length: 6),
-                                            majorTickStyle: const MajorTickStyle(
-                                                color: Color(0xffaaadba),
-                                                length: 6),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(ev.toString()),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(5),
-                                        child: SizedBox(
-                                          width: 150,
-                                          height: 150,
-                                          child: Knob(
-                                            controller: start,
-                                            style: KnobStyle(
-                                              labelStyle:
-                                              TextStyle(color: Colors.transparent),
-                                              controlStyle: ControlStyle(
-                                                  tickStyle: ControlTickStyle(
-                                                      color: Colors.transparent),
-                                                  glowColor: Colors.transparent,
-                                                  backgroundColor: Color(0xffdde6e8),
-                                                  shadowColor: Color(0xffd4d6dd)),
-                                              pointerStyle: PointerStyle(color: blue),
-                                              minorTickStyle: MinorTickStyle(
-                                                  color: Color(0xffaaadba), length: 6),
-                                              majorTickStyle: MajorTickStyle(
-                                                  color: Color(0xffaaadba), length: 6),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(sv.toString())
-                                    ],
-                                  )),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                            child: NeumorphicButton(
-                              onPressed: () => _cubit!.submitTemp(isCooler),
-                              child: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text('submit'),
-                              ),
-                            ),
-                          ),
+
+                          NeumorphicButton(child: Text('show temp volumes'), padding: const EdgeInsets.all(20), onPressed: ()=> cubit.knobDialog(),)
                         ],
                         // ),
                       ),

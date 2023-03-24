@@ -6,13 +6,12 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import 'package:shome/colors.dart';
 import 'package:shome/outlet/OutletPage.dart';
 
-import '../a.dart' as a;
 import '../main.dart';
 import 'bloc/relay_cubit.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 late RelayCubit relayCubit;
-late Status statusOfRelay = Status.sw;
+Status statusOfRelay = Status.sw;
 bool infinity = false;
 late bool relayStatus;
 
@@ -28,7 +27,7 @@ late bool sw, sensor, timer, humidity, light;
 
 late String sensorState;
 
-String _4image = 'assets/icons/question.png';
+String _4Image = 'assets/icons/question.png';
 
 enum Page { Relay1, Relay2, Relay3, Relay4, Relay5, Relay6, Relay7 }
 
@@ -57,7 +56,7 @@ class _RelayState extends State<Relay> {
     super.initState();
     relayCubit = RelayCubit();
 
-    relayCubit!.initRelay();
+    relayCubit.initRelay();
 
     pageNumber = currentPage == Page.Relay1
         ? '1'
@@ -96,7 +95,7 @@ class _RelayState extends State<Relay> {
                 color: NeumorphicColors.background,
                 padding: const EdgeInsets.all(20),
                 child:currentPage == Page.Relay4
-                        ? Relay4()
+                        ? const Relay4()
                         :  Relays(),
               ),
             ),
@@ -110,60 +109,60 @@ class _RelayState extends State<Relay> {
 }
 
 Widget Relays() {
- double rheight = currentPage == Page.Relay2 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
-  : currentPage == Page.Relay3 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 600 : 950 : 0)
-  : currentPage == Page.Relay5 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 760 : 0)
-  : currentPage == Page.Relay6 ? (sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 510 : 870 : 0)
-  :(sw! ? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 540 : 890 : 0);
-  if (currentPage == Page.Relay3) {
-    endMin = 0;
-    sv = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMin) : 5;
-    ev = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMax) : 9;
-    start = KnobController(
-        minimum: 5, //0
-        maximum: 95, //95
-        initial:
-            endMin!.clamp(deviceStatus.getR3.humMin.isNotEmpty? double.parse(deviceStatus.getR3.humMin) : 5, 95));
-    end = KnobController(
-        minimum: 9, //5 endmin+4 or 9
-        maximum: 95, //95
-        initial:
-            endMin!.clamp(deviceStatus.getR3.humMax.isNotEmpty? double.parse(deviceStatus.getR3.humMax) : 9, 95));
-  }
-  else if(currentPage == Page.Relay7) {
-    sv = deviceStatus.getR7.lux.isNotEmpty ? int.parse(deviceStatus.getR7.lux) : 1;
-    start = KnobController(
-        minimum: 1,
-        maximum: 50,
-        initial: deviceStatus.getR7.lux.isNotEmpty ? double.parse(deviceStatus.getR7.lux).clamp(1, 50) : 1);
-  }
+ // double rheight = currentPage == Page.Relay2 ? (sw? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 340 : 750 : 0)
+ //  : currentPage == Page.Relay3 ? (sw? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 600 : 950 : 0)
+ //  : currentPage == Page.Relay5 ? (sw? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 350 : 760 : 0)
+ //  : currentPage == Page.Relay6 ? (sw? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 510 : 870 : 0)
+ //  :(sw? statusOfRelay == Status.sw || statusOfRelay == Status.sensor ? 540 : 890 : 0);
+ //  // if (currentPage == Page.Relay3) {
+  //   endMin = 0;
+  //   sv = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMin) : 5;
+  //   ev = deviceStatus.getR3.humMin.isNotEmpty ? int.parse(deviceStatus.getR3.humMax) : 9;
+  //   start = KnobController(
+  //       minimum: 5, //0
+  //       maximum: 95, //95
+  //       initial:
+  //           endMin!.clamp(deviceStatus.getR3.humMin.isNotEmpty? double.parse(deviceStatus.getR3.humMin) : 5, 95));
+  //   end = KnobController(
+  //       minimum: 9, //5 endmin+4 or 9
+  //       maximum: 95, //95
+  //       initial:
+  //           endMin!.clamp(deviceStatus.getR3.humMax.isNotEmpty? double.parse(deviceStatus.getR3.humMax) : 9, 95));
+  // }
+  // else if(currentPage == Page.Relay7) {
+  //   sv = deviceStatus.getR7.lux.isNotEmpty ? int.parse(deviceStatus.getR7.lux) : 1;
+  //   start = KnobController(
+  //       minimum: 1,
+  //       maximum: 50,
+  //       initial: deviceStatus.getR7.lux.isNotEmpty ? double.parse(deviceStatus.getR7.lux).clamp(1, 50) : 1);
+  // }
   return StatefulBuilder(builder: (context, setState) {
     if (currentPage == Page.Relay3) {
-      start!.addOnValueChangedListener((double value) {
-        setState(() {
-          sv = value.toInt();
-          endMin = (value + 5.0) <= 95 ? (value + 5.0) : 95;
-
-          ev = endMin!.toInt(); //value.roundToDouble();
-        });
-        end = KnobController(
-            minimum: endMin!,
-            maximum: double.parse(deviceStatus.getR3.humMax),
-            initial: endMin!
-                .clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
-      });
-
-      end!.addOnValueChangedListener((p) {
-        setState(() {
-          ev = p.toInt();
-        });
-      });
-    } else if(currentPage == Page.Relay7) {
-      start!.addOnValueChangedListener((p) {
-        setState(() {
-          sv = p.toInt();
-        });
-      });
+      // start!.addOnValueChangedListener((double value) {
+      //   setState(() {
+      //     sv = value.toInt();
+      //     endMin = (value + 5.0) <= 95 ? (value + 5.0) : 95;
+      //
+      //     ev = endMin!.toInt(); //value.roundToDouble();
+      //   });
+      //   end = KnobController(
+      //       minimum: endMin!,
+      //       maximum: double.parse(deviceStatus.getR3.humMax),
+      //       initial: endMin!
+      //           .clamp(endMin!, double.parse(deviceStatus.getR3.humMax)));
+      // });
+      //
+      // end!.addOnValueChangedListener((p) {
+      //   setState(() {
+      //     ev = p.toInt();
+      //   });
+      // });
+    // } else if(currentPage == Page.Relay7) {
+    //   start!.addOnValueChangedListener((p) {
+    //     setState(() {
+    //       sv = p.toInt();
+    //     });
+    //   });
     }
     return ListView(
       shrinkWrap: true,
@@ -174,12 +173,12 @@ Widget Relays() {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                MaterialButton(onPressed: ()=>relayCubit.icon(), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon'),)),
-                currentPage == Page.Relay2 ? MaterialButton(onPressed: ()=>relayCubit!.icon(is2b: true), child: ListTile(leading: Icon(Icons.edit, color: primary), title: const Text('Change Icon bottom'),)) : Container(),
+                MaterialButton(onPressed: ()=>relayCubit.icon(), child: const ListTile(leading: Icon(Icons.edit, color: primary), title: Text('Change Icon'),)),
+                currentPage == Page.Relay2 ? MaterialButton(onPressed: ()=>relayCubit.icon(is2b: true), child: const ListTile(leading: Icon(Icons.edit, color: primary), title: Text('Change Icon bottom'),)) : Container(),
               ],
             )),
         Visibility(
-          visible: sw! ,
+          visible: sw,
           // duration: const Duration(milliseconds: 600),
           child:
           // AnimatedContainer(
@@ -192,7 +191,7 @@ Widget Relays() {
                     alignment: Alignment.center,
                     height: 50,
                     child: ListTile(
-                  onTap: () => relayCubit!.changeMode(Status.sw),
+                  onTap: () => relayCubit.changeMode(Status.sw),
                   title: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text('Switch'),
@@ -201,9 +200,9 @@ Widget Relays() {
                     width: 100,
                     height: 100,
                     child: NeumorphicRadio(
-                        onChanged: (v) => relayCubit!.changeMode(v!),
-                        style: NeumorphicRadioStyle(
-                            selectedColor: blue, boxShape: const NeumorphicBoxShape.circle()),
+                        onChanged: (v) => relayCubit.changeMode(v!),
+                        style: const NeumorphicRadioStyle(
+                            selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
                         groupValue: statusOfRelay,
                         value: Status.sw),
                   ),
@@ -215,7 +214,7 @@ Widget Relays() {
                   alignment: Alignment.center,
                   height: 50,
                   child: ListTile(
-                    onTap: () => relayCubit!.changeMode(Status.timer),
+                    onTap: () => relayCubit.changeMode(Status.timer),
                     title: Container(
                       height: 50,
                       alignment: Alignment.centerLeft,
@@ -225,9 +224,9 @@ Widget Relays() {
                       width: 100,
                       height: 100,
                       child: NeumorphicRadio(
-                          onChanged: (v) => relayCubit!.changeMode(v!),
-                          style: NeumorphicRadioStyle(
-                              selectedColor: blue, boxShape: const NeumorphicBoxShape.circle()),
+                          onChanged: (v) => relayCubit.changeMode(v!),
+                          style: const NeumorphicRadioStyle(
+                              selectedColor: blue, boxShape: NeumorphicBoxShape.circle()),
                           groupValue: statusOfRelay,
                           value: Status.timer),
                     ),
@@ -242,7 +241,7 @@ Widget Relays() {
                         Container(
                             height: 10),
                         ListTile(
-                      onTap: () => relayCubit!.changeMode(Status.act),
+                      onTap: () => relayCubit.changeMode(Status.act),
                       title: Container(
                         height: 50,
                         alignment: Alignment.centerLeft,
@@ -252,10 +251,10 @@ Widget Relays() {
                         width: 100,
                         height: 100,
                         child: NeumorphicRadio(
-                            onChanged: (v) => relayCubit!.changeMode(v!),
-                            style: NeumorphicRadioStyle(
+                            onChanged: (v) => relayCubit.changeMode(v!),
+                            style: const NeumorphicRadioStyle(
                                 selectedColor: blue,
-                                boxShape: const NeumorphicBoxShape.circle()),
+                                boxShape: NeumorphicBoxShape.circle()),
                             groupValue: statusOfRelay,
                             value: Status.act),
                       ),
@@ -267,24 +266,29 @@ Widget Relays() {
                     visible: currentPage == Page.Relay1 ||
                         currentPage == Page.Relay3 ||
                         currentPage == Page.Relay6,
-                    child: ListTile(
-                      onTap: () => relayCubit!.changeMode(Status.sensor),
-                      title: Container(
-                        height: 50,
-                        alignment: Alignment.centerLeft,
-                        child: const Text('Current sensor'),
-                      ),
-                      leading: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: NeumorphicRadio(
-                            onChanged: (v) => relayCubit!.changeMode(v!),
-                            style: NeumorphicRadioStyle(
-                                selectedColor: blue,
-                                boxShape: const NeumorphicBoxShape.circle()),
-                            groupValue: statusOfRelay,
-                            value: Status.sensor),
-                      ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10,),
+                        ListTile(
+                          onTap: () => relayCubit.changeMode(Status.sensor),
+                          title: Container(
+                            height: 50,
+                            alignment: Alignment.centerLeft,
+                            child: const Text('Current sensor'),
+                          ),
+                          leading: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: NeumorphicRadio(
+                                onChanged: (v) => relayCubit.changeMode(v!),
+                                style: const NeumorphicRadioStyle(
+                                    selectedColor: blue,
+                                    boxShape: NeumorphicBoxShape.circle()),
+                                groupValue: statusOfRelay,
+                                value: Status.sensor),
+                          ),
+                        ),
+                      ],
                     )),
 
                 const SizedBox(height: 30),
@@ -294,11 +298,11 @@ Widget Relays() {
                       Visibility(
                         visible: statusOfRelay == Status.sw,
                         child: ListTile(
-                          onTap: () => relayCubit!.relay(),
+                          onTap: () => relayCubit.relay(),
                           title: Align(
                               alignment: Alignment.centerLeft, child: Text(':Switch $pageNumber ON/OFF')),
                           leading: NeumorphicSwitch(
-                              onChanged: (v) => relayCubit!.relay(), value: relayStatus!),
+                              onChanged: (v) => relayCubit.relay(), value: relayStatus),
                     //   ),
                     // ),
                   ),
@@ -311,7 +315,7 @@ Widget Relays() {
                         child: Column(
                           children: [
                             listItemSwitch(
-                                'Timing Active', () => relayCubit!.timerChangeStatus(), timer!),
+                                'Timing Active', () => relayCubit.timerChangeStatus(), timer),
                             const SizedBox(
                               height: 20,
                             ),
@@ -396,7 +400,7 @@ Widget Relays() {
                                       child: Center(
                                     child: NeumorphicCheckbox(
                                       value: infinity,
-                                      onChanged: (value) => relayCubit!.loop(),
+                                      onChanged: (value) => relayCubit.loop(),
                                     ),
                                   )),
                                   Expanded(
@@ -413,9 +417,9 @@ Widget Relays() {
                                             enddate = startdate.addDays(1);
 
                                             selectedStartDate =
-                                              'Selected start date: ${startdate!.year}/${startdate!.month}/${startdate!.day}';
+                                              'Selected start date: ${startdate.year}/${startdate.month}/${startdate.day}';
                                           setState(() => selectedEndDate =
-                                          'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                          'Selected end date: ${enddate.year}/${enddate.month}/${enddate.day}');
                                           });
                                         },
                                         child: const Center(
@@ -431,7 +435,7 @@ Widget Relays() {
                             ),
                             Center(
                               child: NeumorphicButton(
-                                onPressed: () => relayCubit!.changeTime(),
+                                onPressed: () => relayCubit.changeTime(),
                                 child: const Padding(
                                   padding: EdgeInsets.all(10),
                                   child: Text('submit'),
@@ -452,7 +456,7 @@ Widget Relays() {
                         child: Column(
                           children: [
                             listItemSwitch(
-                                'Sensor Act/Deact', () => relayCubit!.currentSensor(), sensor!),
+                                'Sensor Act/Deact', () => relayCubit.currentSensor(), sensor),
                             listItemText('Status', sensorState),
                           ],
                         // ),
@@ -466,55 +470,24 @@ Widget Relays() {
                                 ? relay3humidity() : currentPage == Page.Relay7 ? Column(
                               children: [
                                 listItemSwitch(
-                                    'Light status', () => relayCubit!.lightStatus(), light!),
+                                    'Light status', () => relayCubit.lightStatus(), light),
                                 const SizedBox(height: 30),
                                 const Text('Set light'),
                                 const SizedBox(height: 20),
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: SizedBox(
-                                      width: 150,
-                                      height: 150,
-                                      child: Knob(
-                                        controller: start,
-                                        style: KnobStyle(
-                                          labelStyle: const TextStyle(
-                                              color: Colors.transparent),
-                                          controlStyle: const ControlStyle(
-                                              tickStyle: ControlTickStyle(
-                                                  color: Colors.transparent),
-                                              glowColor: Colors.transparent,
-                                              backgroundColor: Color(0xffdde6e8),
-                                              shadowColor: Color(0xffd4d6dd)),
-                                          pointerStyle: PointerStyle(color: blue),
-                                          minorTickStyle: const MinorTickStyle(
-                                              color: Color(0xffaaadba),
-                                              length: 6),
-                                          majorTickStyle: const MajorTickStyle(
-                                              color: Color(0xffaaadba),
-                                              length: 6),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(sv.toString()),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Center(
-                                  child: NeumorphicButton(
-                                    onPressed: () => relayCubit!.lightAct(),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Text('submit'),
-                                    ),
-                                  ),
-                                ),
+                                NeumorphicButton(padding: const EdgeInsets.all(20), child: const Text('show light volume'), onPressed: () => relayCubit.relay7knob(),),
+
+                                // const SizedBox(
+                                //   height: 20,
+                                // ),
+                                // Center(
+                                //   child: NeumorphicButton(
+                                //     onPressed: () => relayCubit!.lightAct(),
+                                //     child: const Padding(
+                                //       padding: EdgeInsets.all(10),
+                                //       child: Text('submit'),
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ) : Container()
     // )
@@ -532,12 +505,13 @@ Widget Relays() {
 
         listItemSwitch(
             'Switch $pageNumber',
-            () => relayCubit!.switchMode(),
-            sw!),
+            () => relayCubit.switchMode(),
+            sw),
       ],
     );
   });
 }
+
 
 Widget listItemSwitch(name, onPressed, value) {
   return MaterialButton(
@@ -598,8 +572,8 @@ class Relay4 extends StatelessWidget {
                   width: 100,
                   height: 100,
                   child: NeumorphicButton(
-                      onPressed: () => relayCubit!.relay4Switch(),
-                      child: Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
+                      onPressed: () => relayCubit.relay4Switch(),
+                      child: const Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
                       style: const NeumorphicStyle(
                           boxShape: NeumorphicBoxShape.circle(),
                           shape: NeumorphicShape.convex)),
@@ -612,7 +586,7 @@ class Relay4 extends StatelessWidget {
                 width: 220,
                 height: 110,
                 child: MaterialButton(
-                  onPressed: () => relayCubit!.icon(),
+                  onPressed: () => relayCubit.icon(),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -621,7 +595,7 @@ class Relay4 extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(13),
-                          child: Image.asset(constants.get('IR4') ?? _4image),
+                          child: Image.asset(constants.get('IR4') ?? _4Image),
                         ),
                         Expanded(
                             child: Container(
@@ -642,7 +616,7 @@ class Relay4 extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 30),
           child: Column(
-            children: [divider(), listItemSwitch('Switch 4', () => relayCubit!.switchMode(), sw!)],
+            children: [divider(), listItemSwitch('Switch 4', () => relayCubit.switchMode(), sw)],
           ),
         )
       ],
@@ -654,7 +628,7 @@ class Relay4 extends StatelessWidget {
 Widget relay3humidity() {
   return Column(children: [
     listItemSwitch('Sensor Act/Deact',
-            () => relayCubit!.humidityStatus(), humidity!),
+            () => relayCubit.humidityStatus(), humidity),
     const SizedBox(height: 20,),
     const Center(
         child: Text('Set Humidity',
@@ -663,96 +637,19 @@ Widget relay3humidity() {
     const SizedBox(
       height: 30,
     ),
-    Row(
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Knob(
-                    controller: end,
-                    style: KnobStyle(
-                      labelStyle: const TextStyle(
-                          color: Colors.transparent),
-                      controlStyle: const ControlStyle(
-                          tickStyle: ControlTickStyle(
-                              color: Colors.transparent),
-                          glowColor: Colors.transparent,
-                          backgroundColor: Color(0xffdde6e8),
-                          shadowColor: Color(0xffd4d6dd)),
-                      pointerStyle: PointerStyle(color: blue),
-                      minorTickStyle: const MinorTickStyle(
-                          color: Color(0xffaaadba),
-                          length: 6),
-                      majorTickStyle: const MajorTickStyle(
-                          color: Color(0xffaaadba),
-                          length: 6),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(ev.toString()),
-            ],
-          ),
-        ),
-        Expanded(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: SizedBox(
-                    width: 150,
-                    height: 150,
-                    child: Knob(
-                      controller: start,
-                      style: KnobStyle(
-                        labelStyle: const TextStyle(
-                            color: Colors.transparent),
-                        controlStyle: const ControlStyle(
-                            tickStyle: ControlTickStyle(
-                                color: Colors.transparent),
-                            glowColor: Colors.transparent,
-                            backgroundColor: Color(0xffdde6e8),
-                            shadowColor: Color(0xffd4d6dd)),
-                        pointerStyle: PointerStyle(color: blue),
-                        minorTickStyle: const MinorTickStyle(
-                            color: Color(0xffaaadba),
-                            length: 6),
-                        majorTickStyle: const MajorTickStyle(
-                            color: Color(0xffaaadba),
-                            length: 6),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(sv.toString())
-              ],
-            )
-        ),
-      ],
-    ),
-    const SizedBox(
-      height: 10,
-    ),
-    Center(
-      child: NeumorphicButton(
-        onPressed: () => relayCubit!.humudityAct(),
-        child: const Padding(
-          padding: EdgeInsets.all(10),
-          child: Text('submit'),
-        ),
-      ),
-    ),
+    NeumorphicButton(padding: const EdgeInsets.all(20), child: const Text('show humidity volumes'), onPressed: () => relayCubit.relay3knob(),)
+    // const SizedBox(
+    //   height: 10,
+    // ),
+    // Center(
+    //   child: NeumorphicButton(
+    //     onPressed: () => relayCubit!.humudityAct(),
+    //     child: const Padding(
+    //       padding: EdgeInsets.all(10),
+    //       child: Text('submit'),
+    //     ),
+    //   ),
+    // ),
   ]);
 }
 ////////////////////
