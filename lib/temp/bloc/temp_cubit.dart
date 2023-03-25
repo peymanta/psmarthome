@@ -192,23 +192,23 @@ class TempCubit extends Cubit<TempState> {
   void status() {
     var automaticVar = !automatic;
     if (isCooler) {
-      sendSMS('Cooler:${automatic ? 'a' : 'd'}#', onPressed: () {
+      sendSMS('Cooler:${automaticVar ? 'a' : 'd'}#', onPressed: () {
         automatic = automaticVar;
 
         deviceStatus.getPublicReport.autoCooler =
             automatic ? 'auto-active' : 'auto-deactive';
-        sendSMS('Heater:${automatic ? 'd' : 'a'}#', showDialog: false);
+        sendSMS('Heater:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
         emit(TempInitial());
       });
     } else {
-      sendSMS('Heater:${automatic ? 'a' : 'd'}#', onPressed: () {
+      sendSMS('Heater:${automaticVar ? 'a' : 'd'}#', onPressed: () {
         automatic = automaticVar;
 
         deviceStatus.getPublicReport.autoHeater =
             automatic ? 'auto-active' : 'auto-deactive';
-        sendSMS('Cooler:${automatic ? 'd' : 'a'}#', showDialog: false);
+        sendSMS('Cooler:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
         emit(TempInitial());

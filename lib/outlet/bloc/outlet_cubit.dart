@@ -185,7 +185,7 @@ class OutletCubit extends Cubit<OutletState> {
     if (isUp) {
       var timerUPVar = !timerUP;
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive ? 'a' : 'd'},time:${timerUP ? 'a' : 'd'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive ? 'a' : 'd'},time:${timerUPVar ? 'a' : 'd'}#',
           onPressed: () {
         timerUP = timerUPVar;
         timer();
@@ -193,7 +193,7 @@ class OutletCubit extends Cubit<OutletState> {
     } else {
       var timerDownVar = !timerDown;
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive ? 'a' : 'd'},time:${timerDown ? 'a' : 'd'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive ? 'a' : 'd'},time:${timerDownVar ? 'a' : 'd'}#',
           onPressed: () {
         timerDown = timerDownVar;
         timer();
@@ -222,7 +222,7 @@ class OutletCubit extends Cubit<OutletState> {
     if (isUp) {
       var plugUPVar = !plugUP;
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plugUP ? 'on' : 'off'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${plugUPVar ? 'on' : 'off'}#',
           onPressed: () {
         plugUP = plugUPVar;
         plug();
@@ -230,7 +230,7 @@ class OutletCubit extends Cubit<OutletState> {
     } else {
       var plugDOWNVar = !plugDOWN;
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plugDOWN ? 'on' : 'off'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${plugDOWNVar ? 'on' : 'off'}#',
           onPressed: () {
         plugDOWN = plugDOWNVar;
         plug();
@@ -243,7 +243,7 @@ class OutletCubit extends Cubit<OutletState> {
       var upActiveVar = !upActive;
 
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActive ? 'a' : 'd'},time:${timerUP ? 'a' : 'd'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${upActiveVar ? 'a' : 'd'},time:${timerUP ? 'a' : 'd'}#',
           onPressed: () {
         upActive = upActiveVar;
         plug.setUPStatus = upActive ? 'ON' : 'OFF';
@@ -253,7 +253,7 @@ class OutletCubit extends Cubit<OutletState> {
     } else {
       var downActiveVar = !downActive;
       sendSMS(
-          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActive ? 'a' : 'd'},time:${timerDown ? 'a' : 'd'}#',
+          'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${downActiveVar ? 'a' : 'd'},time:${timerDown ? 'a' : 'd'}#',
           onPressed: () {
         downActive = downActiveVar;
         plug.setDownStatus = downActive ? 'ON' : 'OFF';

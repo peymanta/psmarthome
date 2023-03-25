@@ -220,7 +220,7 @@ class RelayCubit extends Cubit<RelayState> {
     var swVar = !sw;
 
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
+        '$pageNumber:rl:${swVar == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
     onPressed: () async{
           sw = swVar;
       newRelayState!.status = sw == true ? 'ON' : 'OFF';
@@ -230,7 +230,7 @@ class RelayCubit extends Cubit<RelayState> {
 
   relay() async{
     var relayStatusVar = !relayStatus;
-    sendSMS(relayStatus == false ? '$pageNumber:off#' : '$pageNumber:on#', onPressed: () async{
+    sendSMS(relayStatusVar == false ? '$pageNumber:off#' : '$pageNumber:on#', onPressed: () async{
       relayStatus = relayStatusVar;
       newRelayState!.relay = relayStatus == false ? 'deactive' : 'active';
       await deviceBox.put('info', deviceStatus);
@@ -243,7 +243,7 @@ class RelayCubit extends Cubit<RelayState> {
   currentSensor() async{
     var sensorVar = !sensor;
 
-    sendSMS(sensor? '$pageNumber:CA#' : '$pageNumber:CD#', onPressed: () async{
+    sendSMS(sensorVar? '$pageNumber:CA#' : '$pageNumber:CD#', onPressed: () async{
       sensor = sensorVar;
 
       var current = currentPage == Page.Relay1
@@ -269,7 +269,7 @@ class RelayCubit extends Cubit<RelayState> {
   timerChangeStatus() {
     var timerVar = !timer;
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timerVar == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
     onPressed: () {
           timer = timerVar;
           newRelayState!.timer = timer? 'active' : 'deactive';
@@ -297,7 +297,7 @@ class RelayCubit extends Cubit<RelayState> {
     var humidityVar = !humidity;
 
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity? 'a' : 'd'}#', onPressed: (){
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidityVar? 'a' : 'd'}#', onPressed: (){
           humidity = humidityVar;
       newRelayState!.humStatus = humidity? 'active' : 'deactive';
 
@@ -315,7 +315,7 @@ class RelayCubit extends Cubit<RelayState> {
     var lightVar = !light;
 
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light? 'a' : 'd'}#', onPressed: () async{
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${lightVar? 'a' : 'd'}#', onPressed: () async{
           light = lightVar;
 
       newRelayState!.light = light? 'active' : 'deactive';
