@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shome/compiling_sms.dart';
 import 'package:shome/main.dart';
 import 'package:shome/models/status.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../colors.dart';
 import '../outlet/OutletPage.dart';
-import '../temp/temp_screen.dart';
 import 'bloc/report_cubit.dart';
 
 TooltipBehavior? _tooltip;
 ReportCubit? _cubit;
+List<ChartData> capVoltages = [];
 
 class Report extends StatefulWidget {
   const Report({Key? key}) : super(key: key);
@@ -25,15 +26,19 @@ class _ReportState extends State<Report> {
     super.initState();
     _tooltip = TooltipBehavior();
     _cubit = ReportCubit();
+
+
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   print(constants.get('capvolt'));
+    // compile('');
+// Future.delayed(Duration(seconds: 2)).then((value) => print(capVoltages));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: background,
         shadowColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Container(
         color: background,
@@ -73,32 +78,32 @@ Reset counts: ${deviceStatus.resetCount}
 '''),
             divider(),
             listItemText('Graph'),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             listItemText('average inbox temp'),
-            chart(chartsObject.inBoxTemps!),
+            chart(chartsObject.inBoxTemps),
             listItemText('average outbox temp'),
-            chart(chartsObject.outBoxTemps!),
+            chart(chartsObject.outBoxTemps),
             listItemText('average outbox humidity'),
-            chart(chartsObject.outBoxHumiditys!),
+            chart(chartsObject.outBoxHumiditys),
             listItemText('fan active counts'),
-            chart(chartsObject.fanCounts!),
+            chart(chartsObject.fanCounts),
             listItemText('average mobile signal power'),
-            chart(chartsObject.mobileSignals!),
+            chart(chartsObject.mobileSignals),
             listItemText('cap voltages'),
-            chart(chartsObject.batteryVoltages!),
-            SizedBox(
+            chart(constants.get('capvolt') ?? []),
+            const SizedBox(
               height: 10,
             ),
 
             ///step charts
             listItemText('power outage'),
-            chart(chartsObject.electricalIssuses!, isStep: true),
+            chart(chartsObject.electricalIssuses, isStep: true),
             listItemText('wireless plugs/temp actulator'),
             chart4Lines(chartsObject.onePlugs, chartsObject.twoPlugs, chartsObject.coolers, chartsObject.heaters),
             listItemText('device resets'),
-            chart(chartsObject.deviceResets!, isStep: true),
+            chart(chartsObject.deviceResets, isStep: true),
           ],
         ),
       ),
@@ -108,7 +113,6 @@ Reset counts: ${deviceStatus.resetCount}
 
 Widget chart(List<ChartData> data, {isStep = false}) {
   if (data.isNotEmpty && !isStep) {
-    print(1);
     return SizedBox(
       height: 220,
       child: SfCartesianChart(
@@ -121,7 +125,7 @@ Widget chart(List<ChartData> data, {isStep = false}) {
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
                 // Enable data label
-                dataLabelSettings: DataLabelSettings(isVisible: true))
+                dataLabelSettings: const DataLabelSettings(isVisible: true))
           ]),
     );
   } else if (data.isNotEmpty && isStep) {
@@ -137,11 +141,10 @@ Widget chart(List<ChartData> data, {isStep = false}) {
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
                 // Enable data label
-                dataLabelSettings: DataLabelSettings(isVisible: true))
+                dataLabelSettings: const DataLabelSettings(isVisible: true))
           ]),
     );
   } else {
-    print(2);
     return SizedBox(
       height: 220,
       child: Stack(
@@ -152,10 +155,10 @@ Widget chart(List<ChartData> data, {isStep = false}) {
           ),
           Positioned.fill(
               child: Container(
-            child: Center(
+            color: background.withOpacity(.65),
+            child: const Center(
               child: Text('No Data'),
             ),
-            color: background.withOpacity(.65),
           ))
         ],
       ),
@@ -183,32 +186,31 @@ Widget chart4Lines(List<ChartData> data1, data2, data3, data4) {
                 dataSource: data1.toList(),
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
-                dataLabelSettings: DataLabelSettings(isVisible: true)),
+                dataLabelSettings: const DataLabelSettings(isVisible: true)),
             StepLineSeries(
               name: 'plug 2',
               color: yellow,
                 dataSource: data2.toList(),
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
-                dataLabelSettings: DataLabelSettings(isVisible: true)),
+                dataLabelSettings: const DataLabelSettings(isVisible: true)),
             StepLineSeries(
               name: 'cooler',
               color: green,
                 dataSource: data3.toList(),
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
-                dataLabelSettings: DataLabelSettings(isVisible: true)),
+                dataLabelSettings: const DataLabelSettings(isVisible: true)),
             StepLineSeries(
               name: 'heater',
               color: red,
                 dataSource: data4.toList(),
                 xValueMapper: (data, _) => data.x,
                 yValueMapper: (data, _) => data.y,
-                dataLabelSettings: DataLabelSettings(isVisible: true)),
+                dataLabelSettings: const DataLabelSettings(isVisible: true)),
           ]),
     );
   } else {
-    print(2);
     return SizedBox(
       height: 220,
       child: Stack(
@@ -219,10 +221,10 @@ Widget chart4Lines(List<ChartData> data1, data2, data3, data4) {
           ),
           Positioned.fill(
               child: Container(
-            child: Center(
+            color: background.withOpacity(.65),
+            child: const Center(
               child: Text('No Data'),
             ),
-            color: background.withOpacity(.65),
           ))
         ],
       ),
@@ -240,7 +242,7 @@ Widget button(onPressed, name) {
             child:
                 Container(alignment: Alignment.centerLeft, child: Text(name))),
       ),
-      SizedBox(height: 10)
+      const SizedBox(height: 10)
     ],
   );
 }
@@ -250,8 +252,8 @@ Widget listItemText(text) {
     children: [
       Padding(
           padding: const EdgeInsets.all(15),
-          child: Container(alignment: Alignment.centerLeft, child: Text(text, style: TextStyle(fontSize: 12),))),
-      SizedBox(
+          child: Container(alignment: Alignment.centerLeft, child: Text(text, style: const TextStyle(fontSize: 12),))),
+      const SizedBox(
         height: 20,
       )
     ],

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import '../colors.dart';
-import '../compiling_sms.dart';
 import '../main.dart';
 import '../relay/relay.dart' as relay;
 import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
@@ -61,7 +59,7 @@ class _OutletState extends State<Outlet> {
     super.initState();
     _cubit = OutletCubit();
 
-    _cubit!.init(currentPlug == PlugNumber.plug1
+    _cubit.init(currentPlug == PlugNumber.plug1
         ? deviceStatus.getPLug1
         : deviceStatus.getPlug2);
   }
@@ -76,11 +74,11 @@ class _OutletState extends State<Outlet> {
             appBar: AppBar(
               title: Text(
                 'Plug ${currentPlug == PlugNumber.plug1 ? '1' : '2'}',
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
               backgroundColor: background,
               shadowColor: Colors.transparent,
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: Container(
               color: background,
@@ -96,12 +94,12 @@ class _OutletState extends State<Outlet> {
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Row(children: [
-                            Expanded(flex: 8, child: Center(child: Text('Change connected device icon'))),
-                            Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
+                            const Expanded(flex: 8, child: Center(child: Text('Change connected device icon'))),
+                            const Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
                           ]),
                         ),
                       ),
-                      SizedBox(height: 25),
+                      const SizedBox(height: 25),
                       Row(
                         children: [
                           Expanded(
@@ -115,10 +113,10 @@ class _OutletState extends State<Outlet> {
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(':Wireless status'))),
+                                  child: const Text(':Wireless status'))),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Row(
                         children: [
                           Expanded(
@@ -132,79 +130,82 @@ class _OutletState extends State<Outlet> {
                           Expanded(
                               child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(':Water leak status'))),
+                                  child: const Text(':Water leak status'))),
                         ],
                       ),
                       divider(),
-                      Visibility(
-                        visible: available!,
-                        child: Column(
+                       Column(
                           children: [
                             option(context, true), //up
 
                             option(context, false), //down
                           ],
-                          // ),
-                        ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                      ListTile(
-                          onTap: () => _cubit!.changeActive(
-                              true,
-                              currentPlug == PlugNumber.plug1
-                                  ? deviceStatus.plug1
-                                  : deviceStatus.plug2),
-                          title: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text('UP Active'),
+              Visibility(
+                visible: available,
+                child: Column(
+                        children: [
+                          ListTile(
+                              onTap: () => _cubit.changeActive(
+                                  true,
+                                  currentPlug == PlugNumber.plug1
+                                      ? deviceStatus.plug1
+                                      : deviceStatus.plug2),
+                              title: Container(
+                                alignment: Alignment.centerLeft,
+                                child: const Text('UP Active'),
+                              ),
+                              leading: NeumorphicSwitch(value: upActive)),
+                          const SizedBox(height: 10),
+                          ListTile(
+                            onTap: () => _cubit.changeActive(
+                                false,
+                                currentPlug == PlugNumber.plug1
+                                    ? deviceStatus.plug1
+                                    : deviceStatus.plug2),
+                            title: Container(
+                              alignment: Alignment.centerLeft,
+                              child: const Text('Down Active'),
+                            ),
+                            leading: NeumorphicSwitch(value: downActive),
                           ),
-                          leading: NeumorphicSwitch(value: upActive!)),
-                      SizedBox(height: 10),
+                        ],
+                      ),),
+
+                      const SizedBox(height: 10),
                       ListTile(
-                        onTap: () => _cubit!.changeActive(
-                            false,
-                            currentPlug == PlugNumber.plug1
-                                ? deviceStatus.plug1
-                                : deviceStatus.plug2),
+                        onTap: () => _cubit.addDevice(),
                         title: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('Down Active'),
-                        ),
-                        leading: NeumorphicSwitch(value: downActive!),
-                      ),
-                      SizedBox(height: 10),
-                      ListTile(
-                        onTap: () => _cubit!.addDevice(),
-                        title: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text('Add device'),
+                          child: const Text('Add device'),
                         ),
                         leading: NeumorphicButton(
-                          style: NeumorphicStyle(
+                          style: const NeumorphicStyle(
                               boxShape: NeumorphicBoxShape.circle()),
-                          child: Icon(
+                          child: const Icon(
                             Icons.add,
                             color: blue,
                           ),
-                          onPressed: () => _cubit!.addDevice(),
+                          onPressed: () => _cubit.addDevice(),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       ListTile(
-                        onTap: () => _cubit!.removeDevice(),
+                        onTap: () => _cubit.removeDevice(),
                         title: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('Remove device'),
+                          child: const Text('Remove device'),
                         ),
                         leading: NeumorphicButton(
-                          style: NeumorphicStyle(
+                          style: const NeumorphicStyle(
                               boxShape: NeumorphicBoxShape.circle()),
-                          child: Icon(
+                          child: const Icon(
                             Icons.clear,
                             color: blue,
                           ),
-                          onPressed: () => _cubit!.removeDevice(),
+                          onPressed: () => _cubit.removeDevice(),
                         ),
                       ),
                       // divider(),
@@ -221,8 +222,9 @@ class _OutletState extends State<Outlet> {
                   )),
             ),
           );
-        } else
+        } else {
           return Container();
+        }
       },
     );
   }
@@ -231,13 +233,13 @@ class _OutletState extends State<Outlet> {
 Widget option(context, bool isUp) {
   return StatefulBuilder(builder: (context, setState) {
     return Visibility(
-      visible: isUp ? upActive! : downActive!,
+      visible: isUp ? upActive: downActive,
       child: Column(
         children: [
           Column(
             children: [
               ListTile(
-                onTap: () => _cubit!.status(isUp, true),
+                onTap: () => _cubit.status(isUp, true),
                 title: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(isUp == true ? 'UP' : 'DOWN'),
@@ -246,19 +248,19 @@ Widget option(context, bool isUp) {
                   width: 100,
                   height: 100,
                   child: NeumorphicRadio(
-                      onChanged: (v) => _cubit!.status(isUp, true),
-                      style: NeumorphicRadioStyle(
+                      onChanged: (v) => _cubit.status(isUp, true),
+                      style: const NeumorphicRadioStyle(
                           boxShape: NeumorphicBoxShape.circle(),
                           selectedColor: blue),
                       groupValue: isUp == true ? isSwitchUP : isSwitchDOWN,
                       value: true),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ListTile(
-                onTap: () => _cubit!.status(isUp, false),
+                onTap: () => _cubit.status(isUp, false),
                 title: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text('Timing')),
@@ -266,9 +268,9 @@ Widget option(context, bool isUp) {
                   width: 100,
                   height: 100,
                   child: NeumorphicRadio(
-                      onChanged: (v) => _cubit!.status(isUp, false),
-                      style: NeumorphicRadioStyle(
-                          boxShape: const NeumorphicBoxShape.circle(),
+                      onChanged: (v) => _cubit.status(isUp, false),
+                      style: const NeumorphicRadioStyle(
+                          boxShape: NeumorphicBoxShape.circle(),
                           selectedColor: blue),
                       groupValue: isUp == true ? isSwitchUP : isSwitchDOWN,
                       value: false),
@@ -284,10 +286,10 @@ Widget option(context, bool isUp) {
               child: Column(children: [
                 relay.listItemSwitch(
                     'Timing Active',
-                    () => _cubit!.timerChangeStatus(isUp),
+                    () => _cubit.timerChangeStatus(isUp),
                     isUp ? timerUP : timerDown),
 
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
 
@@ -296,17 +298,18 @@ Widget option(context, bool isUp) {
                     Expanded(
                       child: Column(
                         children: [
-                          Text('end time'),
+                          const Text('end time'),
                           Directionality(
                             textDirection: TextDirection.ltr,
                             child: TimePickerSpinner(
                               is24HourMode: true,
                               isForce2Digits: true,
                               onTimeChange: (DateTime time) {
-                                if (isUp)
+                                if (isUp) {
                                   endUpTime = time;
-                                else
+                                } else {
                                   endDownTime = time;
+                                }
                               },
                               time: DateTime.now(),
                             ),
@@ -317,17 +320,18 @@ Widget option(context, bool isUp) {
                     Expanded(
                       child: Column(
                         children: [
-                          Text('start time'),
+                          const Text('start time'),
                           Directionality(
                             textDirection: TextDirection.ltr,
                             child: TimePickerSpinner(
                               is24HourMode: true,
                               isForce2Digits: true,
                               onTimeChange: (DateTime time) {
-                                if (isUp)
+                                if (isUp) {
                                   startUpTime = time;
-                                else
+                                } else {
                                   startDownTime = time;
+                                }
                                 print(startUpTime);
                               },
                               time: DateTime.now(),
@@ -340,17 +344,17 @@ Widget option(context, bool isUp) {
                 ),
 
                 ///selected dates
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
                         isUp ? selectedUpStartDate : selectedDownStartDate)),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Container(
                     alignment: Alignment.centerLeft,
                     child:
                         Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -359,13 +363,13 @@ Widget option(context, bool isUp) {
                           child: Center(
                         child: NeumorphicCheckbox(
                           value: isUp ? infinityUp : infinityDown,
-                          onChanged: (value) => _cubit!.loop(isUp),
+                          onChanged: (value) => _cubit.loop(isUp),
                         ),
                       )),
                       Expanded(
                         child: Center(
                           child: NeumorphicButton(
-                            padding: EdgeInsets.all(15),
+                            padding: const EdgeInsets.all(15),
                             onPressed: () async {
                               var output = await date.showPersianDatePicker(
                                   context: context,
@@ -394,8 +398,8 @@ Widget option(context, bool isUp) {
                                 }
                               });
                             },
-                            child: Center(
-                              child: const Text(
+                            child: const Center(
+                              child: Text(
                                 'select date',
                               ),
                             ),
@@ -405,11 +409,11 @@ Widget option(context, bool isUp) {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 NeumorphicButton(
-                  padding: EdgeInsets.all(20),
-                  child: Text('submit'),
-                  onPressed: () => _cubit!.saveChanges(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text('submit'),
+                  onPressed: () => _cubit.saveChanges(
                       isUp,
                       currentPlug == PlugNumber.plug1
                           ? deviceStatus.plug1
@@ -420,7 +424,7 @@ Widget option(context, bool isUp) {
             // duration: Duration(milliseconds: 600),
             visible: isUp ? isSwitchUP : isSwitchDOWN,
             child: relay.listItemSwitch('Plug: ON/OFF',
-                () => _cubit!.plugChangeStatus(isUp), isUp ? plugUP : plugDOWN),
+                () => _cubit.plugChangeStatus(isUp), isUp ? plugUP : plugDOWN),
           ),
           divider(),
         ],

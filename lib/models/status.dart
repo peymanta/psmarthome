@@ -552,6 +552,8 @@ class Charts {
   List<ChartData> coolers = [];
   @HiveField(12)
   List<ChartData> deviceResets = [];
+
+  set capVoltage(capVolt) => batteryVoltages = capVolt;
 }
 @HiveType(typeId: 7)
 class Log {

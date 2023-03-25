@@ -63,7 +63,6 @@ void main() async {
 
   chartsObject = chartsBox.get('object') ?? Charts();
 
-
   runApp(MaterialApp(
     home: MyApp(),
     debugShowCheckedModeBanner: false,

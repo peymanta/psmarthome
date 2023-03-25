@@ -286,9 +286,20 @@ class OutletCubit extends Cubit<OutletState> {
         onPressed: () {
       if (currentPlug == PlugNumber.plug1) {
         deviceStatus.getPublicReport.wirelessPlug1 = 'remove';
+        upActive = false;
+        downActive = false;
+        deviceStatus.getPLug1.setUPStatus = 'OFF';
+        deviceStatus.getPLug1.setDownStatus = 'OFF';
       } else {
         deviceStatus.getPublicReport.wirelessPlug2 = 'remove';
+        upActive = false;
+        downActive = false;
+        deviceStatus.getPlug2.setUPStatus = 'OFF';
+        deviceStatus.getPlug2.setDownStatus = 'OFF';
       }
+
+
+
       deviceBox.put('info', deviceStatus);
       available = false;
       emit(OutletInitial());
