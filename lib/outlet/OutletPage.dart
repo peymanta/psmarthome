@@ -420,7 +420,7 @@ Widget option(context, bool isUp) {
             // duration: Duration(milliseconds: 600),
             visible: isUp ? isSwitchUP : isSwitchDOWN,
             child: relay.listItemSwitch('Plug: ON/OFF',
-                () => _cubit!.plug(isUp), isUp ? plugUP : plugDOWN),
+                () => _cubit!.plugChangeStatus(isUp), isUp ? plugUP : plugDOWN),
           ),
           divider(),
         ],

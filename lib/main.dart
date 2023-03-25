@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
 import 'package:shome/models/status.dart';
@@ -40,7 +41,8 @@ late MainCubit mainController;
 SmsReceiver? smsReceiver;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
 
   Hive
     ..init((await getApplicationDocumentsDirectory()).path)
@@ -87,6 +89,7 @@ class _MyAppState extends State<MyApp> {
     smsReceiver = SmsReceiver();
 
     mainController.init();
+    FlutterNativeSplash.remove();
   }
 
 

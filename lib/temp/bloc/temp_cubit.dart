@@ -1,21 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:knob_widget/knob_widget.dart';
-import 'package:meta/meta.dart';
 import 'package:shamsi_date/shamsi_date.dart';
-
 import '../../colors.dart';
 import '../../compiling_sms.dart';
 import '../../main.dart';
 import '../temp_screen.dart';
-
 part 'temp_state.dart';
 
 class TempCubit extends Cubit<TempState> {
   TempCubit() : super(TempInitial());
 
   void init() async {
-    if (isCooler!) {
+    if (isCooler) {
       available = deviceStatus.getPublicReport.wirelessCooler == 'active';
       automatic = deviceStatus.getPublicReport.autoCooler == 'auto-active';
       infinity = deviceStatus.getCooler.startDate == '11/11/11';
@@ -23,7 +20,7 @@ class TempCubit extends Cubit<TempState> {
       endMin = 16;
       sv = int.parse(constants.get('tempMin') ?? '16');
       ev = int.parse(constants.get('tempMax') ?? '16');
-      if (deviceStatus.getCooler.startClock.contains(new RegExp(r'[0-9]'))) {
+      if (deviceStatus.getCooler.startClock.contains(RegExp(r'[0-9]'))) {
         startTime = Jalali(
             1234,
             2,
@@ -35,7 +32,7 @@ class TempCubit extends Cubit<TempState> {
       } else {
         startTime = Jalali.now();
       }
-      if (deviceStatus.getCooler.endClock.contains(new RegExp(r'[0-9]'))) {
+      if (deviceStatus.getCooler.endClock.contains(RegExp(r'[0-9]'))) {
         endTime = Jalali(
             1234,
             2,
@@ -92,21 +89,21 @@ class TempCubit extends Cubit<TempState> {
 
   submitTimer() {
     try {
-      if (isCooler!) {
+      if (isCooler) {
         deviceStatus.getCooler.startClock =
-            '${startTime!.hour}:${startTime!.minute}';
-        deviceStatus.getCooler.endClock = '${endTime!.hour}:${endTime!.minute}';
+            '${startTime.hour}:${startTime.minute}';
+        deviceStatus.getCooler.endClock = '${endTime.hour}:${endTime.minute}';
         if (infinity) {
           deviceStatus.getCooler.startDate = '11/11/11';
           deviceStatus.getCooler.endDate = '11/11/11';
           sendSMS(
-              'C/H:111111,${startTime!.hour.toString().padLeft(2, '0') + startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0') + endTime!.minute.toString().padLeft(2, '0')}#',
+              'C/H:111111,${startTime.hour.toString().padLeft(2, '0') + startTime.minute.toString().padLeft(2, '0')}-111111,${endTime.hour.toString().padLeft(2, '0') + endTime.minute.toString().padLeft(2, '0')}#',
               showDialog: false);
         } else {
           deviceStatus.getCooler.startDate =
-              '${startdate!.year}/${startdate!.month}/${startdate!.day}';
+              '${startdate.year}/${startdate.month}/${startdate.day}';
           deviceStatus.getCooler.endDate =
-              '${enddate!.year}/${enddate!.month}/${enddate!.day}';
+              '${enddate.year}/${enddate.month}/${enddate.day}';
 
           ///send sms
           var sdate = deviceStatus.getCooler.startDate
@@ -137,20 +134,20 @@ class TempCubit extends Cubit<TempState> {
         constants.put('tempMax', ev.toString());
 
         deviceStatus.getHeater.startClock =
-            '${startTime!.hour}:${startTime!.minute}';
-        deviceStatus.getHeater.endClock = '${endTime!.hour}:${endTime!.minute}';
+            '${startTime.hour}:${startTime.minute}';
+        deviceStatus.getHeater.endClock = '${endTime.hour}:${endTime.minute}';
         if (infinity) {
           deviceStatus.getHeater.startDate = '11/11/11';
           deviceStatus.getHeater.endDate = '11/11/11';
           sendSMS(
-              'C/H:111111,${startTime!.hour.toString().padLeft(2, '0') + startTime!.minute.toString().padLeft(2, '0')}-111111,${endTime!.hour.toString().padLeft(2, '0') + endTime!.minute.toString().padLeft(2, '0')}#',
+              'C/H:111111,${startTime.hour.toString().padLeft(2, '0') + startTime.minute.toString().padLeft(2, '0')}-111111,${endTime.hour.toString().padLeft(2, '0') + endTime.minute.toString().padLeft(2, '0')}#',
               showDialog: false);
-          sendSMS('T-min:$sv,max:$ev#');
+          // sendSMS('T-min:$sv,max:$ev#');
         } else {
           deviceStatus.getHeater.startDate =
-              '${startdate!.year}/${startdate!.month}/${startdate!.day}';
+              '${startdate.year}/${startdate.month}/${startdate.day}';
           deviceStatus.getHeater.endDate =
-              '${enddate!.year}/${enddate!.month}/${enddate!.day}';
+              '${enddate.year}/${enddate.month}/${enddate.day}';
 
           ///send sms
           var sdate = deviceStatus.getHeater.startDate
@@ -193,34 +190,46 @@ class TempCubit extends Cubit<TempState> {
   }
 
   void status() {
-    automatic = !automatic;
-    if (isCooler!) {
-      deviceStatus.getPublicReport.autoCooler =
-          automatic ? 'auto-active' : 'auto-deactive';
-      sendSMS('Cooler:${automatic ? 'a' : 'd'}#', showDialog: false);
-      sendSMS('Heater:${automatic ? 'd' : 'a'}#');
-    } else {
-      deviceStatus.getPublicReport.autoHeater =
-          automatic ? 'auto-active' : 'auto-deactive';
-      sendSMS('Heater:${automatic ? 'a' : 'd'}#', showDialog: false);
-      sendSMS('Cooler:${automatic ? 'd' : 'a'}#');
-    }
-    deviceBox.put('info', deviceStatus);
+    var automaticVar = !automatic;
+    if (isCooler) {
+      sendSMS('Cooler:${automatic ? 'a' : 'd'}#', onPressed: () {
+        automatic = automaticVar;
 
-    emit(TempInitial());
+        deviceStatus.getPublicReport.autoCooler =
+            automatic ? 'auto-active' : 'auto-deactive';
+        sendSMS('Heater:${automatic ? 'd' : 'a'}#', showDialog: false);
+
+        deviceBox.put('info', deviceStatus);
+        emit(TempInitial());
+      });
+    } else {
+      sendSMS('Heater:${automatic ? 'a' : 'd'}#', onPressed: () {
+        automatic = automaticVar;
+
+        deviceStatus.getPublicReport.autoHeater =
+            automatic ? 'auto-active' : 'auto-deactive';
+        sendSMS('Cooler:${automatic ? 'd' : 'a'}#', showDialog: false);
+
+        deviceBox.put('info', deviceStatus);
+        emit(TempInitial());
+      });
+    }
   }
 
   void changeRest() {
-    rest = !rest!;
-    if (isCooler!) {
-      deviceStatus.getPublicReport.coolerRest = rest! ? 'active' : 'deactive';
-    } else {
-      deviceStatus.getPublicReport.heaterRest = rest! ? 'active' : 'deactive';
-    }
-    deviceBox.put('info', deviceStatus);
+    var restVar = !rest;
 
-    sendSMS('C-H-${rest! ? 'Active' : 'Deactive'} Rest');
-    emit(TempInitial());
+    sendSMS('C-H-${restVar? 'Active' : 'Deactive'} Rest', onPressed: () {
+      rest = restVar;
+      if (isCooler) {
+        deviceStatus.getPublicReport.coolerRest = rest? 'active' : 'deactive';
+      } else {
+        deviceStatus.getPublicReport.heaterRest = rest? 'active' : 'deactive';
+      }
+
+      deviceBox.put('info', deviceStatus);
+      emit(TempInitial());
+    });
   }
 
   void loop() {
@@ -235,12 +244,8 @@ class TempCubit extends Cubit<TempState> {
     emit(TempInitial());
   }
 
-  addDevice() {
-    // if(!constants.values.toList().contains(isCooler!? 'cooler' : 'heater')) {
-    //   constants.add(isCooler!? 'cooler' : 'heater');
-    // }
-// if(deviceStatus.getPublicReport.wirelessCooler != 'active') {
-    if (isCooler!) {
+  addDeviceToDB() {
+    if (isCooler) {
       deviceStatus.getPublicReport.wirelessCooler = 'active';
       deviceStatus.getPublicReport.wirelessHeater = 'deactive'; /////
     } else {
@@ -248,26 +253,14 @@ class TempCubit extends Cubit<TempState> {
       deviceStatus.getPublicReport.wirelessCooler = 'deactive'; /////
     }
     deviceBox.put('info', deviceStatus);
-// }
-    if (isCooler!) {
-      sendSMS('Device,ADD,Cooler');
-    } else {
-      sendSMS('Device,ADD,Heater');
-    }
 
     available = true;
 
     emit(TempInitial());
   }
 
-  removeDevice() {
-    // for (int i = 0 ; i < constants.values.length; i++) {
-    //   if(constants.values.toList()[i]==(isCooler!? 'cooler' : 'heater')) {
-    //     constants.deleteAt(i);
-    //   }
-    // }
-    // if(deviceStatus.getPublicReport.wirelessCooler == 'active') {
-    if (isCooler!) {
+  removeDeviceFromDB() {
+    if (isCooler) {
       deviceStatus.getPublicReport.wirelessCooler = 'deactive';
       deviceStatus.getPublicReport.wirelessHeater = 'active'; /////
     } else {
@@ -275,17 +268,26 @@ class TempCubit extends Cubit<TempState> {
       deviceStatus.getPublicReport.wirelessCooler = 'active'; /////
     }
     deviceBox.put('info', deviceStatus);
-    // }
-
-    if (isCooler!) {
-      sendSMS('Device,RMV,Cooler');
-    } else {
-      sendSMS('Device,RMV,Heater');
-    }
 
     available = false;
 
     emit(TempInitial());
+  }
+
+  addDevice() {
+    if (isCooler) {
+      sendSMS('Device,ADD,Cooler', onPressed: () => addDeviceToDB());
+    } else {
+      sendSMS('Device,ADD,Heater', onPressed: () => addDeviceToDB());
+    }
+  }
+
+  removeDevice() {
+    if (isCooler) {
+      sendSMS('Device,RMV,Cooler', onPressed: () => removeDeviceFromDB());
+    } else {
+      sendSMS('Device,RMV,Heater', onPressed: () => removeDeviceFromDB());
+    }
   }
 
   knobDialog() {
@@ -312,10 +314,10 @@ class TempCubit extends Cubit<TempState> {
           sv = value.toInt();
           endMin = value <= 32 ? value : 32;
 
-          ev = endMin!.toInt(); //value.roundToDouble();
+          ev = endMin.toInt(); //value.roundToDouble();
         });
         end = KnobController(
-            minimum: endMin!, maximum: 32, initial: endMin!.clamp(endMin!, 32));
+            minimum: endMin, maximum: 32, initial: endMin.clamp(endMin, 32));
       });
 
       end!.addOnValueChangedListener((p) {
@@ -345,7 +347,7 @@ class TempCubit extends Cubit<TempState> {
       ]);
     }), () {
       submitTemp(isCooler);
-     Navigator.pop(buildContext);
+      Navigator.pop(buildContext);
     }).then((mount) {
       //on disposed
       start!.dispose();

@@ -7,11 +7,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:background_sms/background_sms.dart';
 
 
-sendSMS(sms, {showDialog = true}) async{
+sendSMS(sms, {showDialog = true,  onPressed }) async{
   await [Permission.sms].request(); //request permission
 
   if(await  Permission.sms.isGranted && showDialog) {
     dialog('Verify', Text('Do you agree with the operation?'), () {
+      if(onPressed!=null) onPressed();
       BackgroundSms.sendMessage(
           phoneNumber: constants.get('deviceNumber'), message: sms);
      showMessage('operation completed');

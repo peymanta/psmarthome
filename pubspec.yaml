@@ -54,6 +54,7 @@ dependencies:
   sms: ^0.2.4
   permission_handler: ^10.2.0
   benchmark_harness: ^2.2.1
+  flutter_native_splash: ^2.0.4
 
 
 dev_dependencies:

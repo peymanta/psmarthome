@@ -245,7 +245,7 @@ Widget Relays() {
                       title: Container(
                         height: 50,
                         alignment: Alignment.centerLeft,
-                        child: Text(currentPage == Page.Relay3 ? 'Humidity sensor' : 'Light'),
+                        child: Text(currentPage == Page.Relay3 ? 'Humidity sensor' : 'Light sensor'),
                       ),
                       leading: SizedBox(
                         width: 100,
@@ -470,7 +470,7 @@ Widget Relays() {
                                 ? relay3humidity() : currentPage == Page.Relay7 ? Column(
                               children: [
                                 listItemSwitch(
-                                    'Light status', () => relayCubit.lightStatus(), light),
+                                    'Sensor Act/Deact', () => relayCubit.lightStatus(), light),
                                 const SizedBox(height: 30),
                                 const Text('Set light'),
                                 const SizedBox(height: 20),
@@ -556,13 +556,6 @@ class Relay4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // AnimatedOpacity(
-        //   opacity: sw!? 1 : 0,
-        //   duration: const Duration(milliseconds: 600),
-        //   child: AnimatedContainer(
-        //     height: sw!? 400 : 0,
-        //     duration: const Duration(milliseconds: 600),
-        //     child:
         Stack(
           children: [
             Padding(
@@ -613,12 +606,12 @@ class Relay4 extends StatelessWidget {
           // ),
           // ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Column(
-            children: [divider(), listItemSwitch('Switch 4', () => relayCubit.switchMode(), sw)],
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.only(top: 30),
+        //   child: Column(
+        //     children: [divider(), listItemSwitch('Switch 4', () => relayCubit.switchMode(), sw)],
+        //   ),
+        // )
       ],
     );
   }

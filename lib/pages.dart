@@ -16,7 +16,6 @@ late List page1, page2;
 
 void getPages() {
   page1 = [
-
     HomeItem('assets/icons/outlet.png',
         bottomImage: constants.get('PLUG1B') ?? 'assets/selectable-icons/question.png',
         isBottomImageLeft: true,
@@ -93,8 +92,8 @@ void getPages() {
   ];
 
   page2 = [
-    HomeItem(constants.get('IR2') ?? 'assets/icons/question.png',
-        bottomImage: constants.get('IR2b') ?? 'assets/icons/question.png',
+    HomeItem(deviceStatus.getR3.humStatus=='active' ? 'assets/selectable-icons/fan.png' :constants.get('IR2') ?? 'assets/icons/question.png',
+        bottomImage: deviceStatus.getR3.humStatus=='active' ? 'assets/selectable-icons/humidity.png' : constants.get('IR2b') ?? 'assets/icons/question.png',
         icon: Icons.access_time_rounded,
         isBottomImageLeft: true, onPressed: () {
           relay.currentPage = relay.Page.Relay2;

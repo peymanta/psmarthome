@@ -1,6 +1,6 @@
 part of 'outlet_cubit.dart';
 
-@immutable
+// @immutable
 abstract class OutletState {}
 
 class OutletInitial extends OutletState {}

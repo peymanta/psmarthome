@@ -217,81 +217,114 @@ class RelayCubit extends Cubit<RelayState> {
   }
 
   switchMode() async {
-    sw = !sw;
+    var swVar = !sw;
 
-    newRelayState!.status = sw == true ? 'ON' : 'OFF';
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#');
-    await deviceBox.put('info', deviceStatus);
-    emit(RelayInitial());
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
+    onPressed: () async{
+          sw = swVar;
+      newRelayState!.status = sw == true ? 'ON' : 'OFF';
+      await deviceBox.put('info', deviceStatus);
+      emit(RelayInitial());});
   }
 
   relay() async{
-    relayStatus = !relayStatus;
+    var relayStatusVar = !relayStatus;
+    sendSMS(relayStatus == false ? '$pageNumber:off#' : '$pageNumber:on#', onPressed: () async{
+      relayStatus = relayStatusVar;
+      newRelayState!.relay = relayStatus == false ? 'deactive' : 'active';
+      await deviceBox.put('info', deviceStatus);
+      emit(RelayInitial());
+    });
 
-    newRelayState!.relay = relayStatus == false ? 'deactive' : 'active';
-    sendSMS(relayStatus == false ? '$pageNumber:off#' : '$pageNumber:on#');
-
-    await deviceBox.put('info', deviceStatus);
-    emit(RelayInitial());
   }
 
   ///just for relay 1 or 6 or 3
   currentSensor() async{
-    sensor = !sensor;
+    var sensorVar = !sensor;
 
-    var current = currentPage == Page.Relay1
-        ? deviceStatus.getPublicReport.currentSensor1
-        : currentPage == Page.Relay3
-            ? deviceStatus.getPublicReport.currentSensor3
-            : deviceStatus.getPublicReport.currentSensor6;
+    sendSMS(sensor? '$pageNumber:CA#' : '$pageNumber:CD#', onPressed: () async{
+      sensor = sensorVar;
 
-    current = sensor? 'active' : 'deactive';
+      var current = currentPage == Page.Relay1
+          ? deviceStatus.getPublicReport.currentSensor1
+          : currentPage == Page.Relay3
+          ? deviceStatus.getPublicReport.currentSensor3
+          : deviceStatus.getPublicReport.currentSensor6;
 
-    sensorState = current;
-    sendSMS(sensor? '$pageNumber:CA#' : '$pageNumber:CD#');
+      current = sensor? 'active' : 'deactive';
 
-    if(currentPage == Page.Relay1) deviceStatus.getPublicReport.currentSensor1 = current;
-    else if(currentPage == Page.Relay3) deviceStatus.getPublicReport.currentSensor3 = current;
-    else if(currentPage == Page.Relay6) deviceStatus.getPublicReport.currentSensor6 = current;
+      sensorState = current;
 
-    await deviceBox.put('info', deviceStatus);
-    emit(RelayInitial());
+      if(currentPage == Page.Relay1) deviceStatus.getPublicReport.currentSensor1 = current;
+      else if(currentPage == Page.Relay3) deviceStatus.getPublicReport.currentSensor3 = current;
+      else if(currentPage == Page.Relay6) deviceStatus.getPublicReport.currentSensor6 = current;
+
+      await deviceBox.put('info', deviceStatus);
+      emit(RelayInitial());
+    });
+
   }
 
   timerChangeStatus() {
-    timer = !timer;
+    var timerVar = !timer;
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#');
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'}${currentPage == Page.Relay7 ? ',lu:${light? 'a' : 'd'}' : currentPage == Page.Relay3 ? ',hu:${humidity? 'a' : 'd'}' : ''}#',
+    onPressed: () {
+          timer = timerVar;
+          newRelayState!.timer = timer? 'active' : 'deactive';
+          if (pageNumber == '1') {
+            deviceStatus.setR1 = newRelayState;
+          } else if (pageNumber == '6') {
+            deviceStatus.setR6 = newRelayState;
+          } else if (pageNumber == '3') {
+            deviceStatus.setR3 = newRelayState;
+          } else if (pageNumber == '7') {
+            deviceStatus.setR7 = newRelayState;
+          } else if (pageNumber == '2') {
+            deviceStatus.setR2 = newRelayState;
+          } else if (pageNumber == '5') {
+            deviceStatus.setR5 = newRelayState;
+          }
+          deviceBox.put('info', deviceStatus);
+      emit(RelayInitial());
+        });
 
-    emit(RelayInitial());
+
   }
 
   humidityStatus() {
-    humidity = !humidity;
-    newRelayState!.humStatus = humidity? 'active' : 'deactive';
+    var humidityVar = !humidity;
 
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity? 'a' : 'd'}#');
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},hu:${humidity? 'a' : 'd'}#', onPressed: (){
+          humidity = humidityVar;
+      newRelayState!.humStatus = humidity? 'active' : 'deactive';
 
-    deviceStatus.setR3 = newRelayState; ///because humidity only in relay 3
-    deviceBox.put('info', deviceStatus);
-    constants.put('IR2', humidity? 'assets/selectable-icons/fan.png' : 'assets/selectable-icons/question.png');
-    mainController.updateMain();
+      deviceStatus.setR3 = newRelayState; ///because humidity only in relay 3
+      deviceBox.put('info', deviceStatus);
+      constants.put('IR2', humidity? 'assets/selectable-icons/fan.png' : 'assets/selectable-icons/question.png');
+      mainController.updateMain();
 
-    emit(RelayInitial());
+      emit(RelayInitial());
+    });
+
   }
 
   lightStatus() async{
-    light = !light;
-    newRelayState!.light = light? 'active' : 'deactive';
+    var lightVar = !light;
 
     sendSMS(
-        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light? 'a' : 'd'}#');
+        '$pageNumber:rl:${sw == false ? 'd' : 'a'},time:${timer == false ? 'd' : 'a'},lu:${light? 'a' : 'd'}#', onPressed: () async{
+          light = lightVar;
 
-    deviceStatus.setR7 = newRelayState;
-    await deviceBox.put('info', deviceStatus);
-    emit(RelayInitial());
+      newRelayState!.light = light? 'active' : 'deactive';
+
+      deviceStatus.setR7 = newRelayState;
+      await deviceBox.put('info', deviceStatus);
+      emit(RelayInitial());
+    });
+
   }
 
   humudityAct(){
