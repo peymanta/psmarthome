@@ -30,7 +30,7 @@ print(sms);
 compile(String sms) async{
   var sms = '''Version : a400
 
-Cap Voltage ~ 17.50 V
+Cap Voltage ~ 13 V
 
 101/12/26 23:24:34''';
 //   var sms = '''1210 01:04
@@ -186,10 +186,18 @@ compilePublicReport(String sms) async{
   model.setHeaterRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setCoolerRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setWirelessPlug1 = lines[20][5] == 'C' ? 'connect' : lines[20][5] == 'D' ? 'disconnect' : 'remove';
+  if(model.wirelessPlug1 == 'remove') {
+    deviceStatus.getPLug1.setUPStatus = 'OFF';
+    deviceStatus.getPLug1.setDownStatus = 'OFF';
+  }
   //chart
   chartsObject.onePlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessPlug1 == 'connect'? 1.0 : 0.0)));
 
   model.setWirelessPlug2 = lines[20][9] == 'C' ? 'connect' : lines[20][9] == 'D' ? 'disconnect' : 'remove';
+  if(model.wirelessPlug2 == 'remove') {
+    deviceStatus.getPlug2.setUPStatus = 'OFF';
+    deviceStatus.getPlug2.setDownStatus = 'OFF';
+  }
   //chart
   chartsObject.twoPlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessPlug2 == 'connect'? 1.0 : 0.0)));
 
@@ -701,7 +709,7 @@ compileInteractiveSMS(String sms) async{
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
 
     chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', model.plug == 'connect'? 1 : 0));
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
     logBox.add(sms);
 
     if(sms.contains('Connect all of Power RLs')){
@@ -731,7 +739,7 @@ compileInteractiveSMS(String sms) async{
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
 
     chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', model.plug == 'connect'? 1 : 0));
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
     logBox.add(sms);
     chartsBox.put('charts', chartsObject);
     deviceBox.put('info', deviceStatus);
@@ -776,6 +784,8 @@ compileInteractiveSMS(String sms) async{
     }
     if(sms.contains('No Message Received - Packet Loss = 100')) {
       deviceStatus.getPublicReport.wirelessPlug1 = 'deactive';
+      deviceStatus.getPLug1.setUPStatus = 'OFF';
+      deviceStatus.getPLug1.setDownStatus = 'OFF';
     }
     logBox.add(sms);
     deviceBox.put('info', deviceStatus);
@@ -786,24 +796,24 @@ compileInteractiveSMS(String sms) async{
     }
     if(sms.contains('No Message Received - Packet Loss = 100')) {
       deviceStatus.getPublicReport.wirelessPlug2 = 'deactive';
+      deviceStatus.getPlug2.setUPStatus = 'OFF';
+      deviceStatus.getPlug2.setDownStatus = 'OFF';
     }
     logBox.add(sms);
     deviceBox.put('info', deviceStatus);
   }
   if(sms.contains('Version :')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
-    // dialog('version', Text(sms.split('\n')[0]), ()=>Navigator.pop(buildContext), removeCancel: true);
-
-    await constants.put('capvolt', constants.get('capvolt').add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt))));
+    dialog('version', Text(sms.split('\n')[0]), ()=>Navigator.pop(buildContext), removeCancel: true);
 
     logBox.add(sms);
 
   }
   if(sms.contains('LOW Battery')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     ///disable relays
     deviceStatus.getR1.status = 'OFF';
@@ -819,7 +829,7 @@ compileInteractiveSMS(String sms) async{
   }
   if(sms.contains('After LOW Battery')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     if(sms.contains('Normal Battery Voltage and Connect all of RLs')) {
       deviceStatus.getR1.status = 'ON';
@@ -864,7 +874,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text('1N5408 is Burnt'), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     chartsBox.put('charts', chartsObject);
     logBox.add(sms);
@@ -873,7 +883,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'backup';
     deviceBox.put('info', deviceStatus);
@@ -884,7 +894,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'short circuit';
     deviceBox.put('info', deviceStatus);
@@ -895,7 +905,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    chartsObject.batteryVoltages.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'short circuit in main board';
     deviceBox.put('info', deviceStatus);
@@ -1015,7 +1025,7 @@ compileInteractiveSMS(String sms) async{
   //   String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
   //
   //   chartsObject.electricalIssuses.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), model.plug == 'connect'? 1 : 0));
-  //   chartsObject.batteryVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
+  //   chartsObject.capVoltages.add(ChartData(Jalali.now().month.toString() + '/' + Jalali.now().day.toString(), double.parse(volt)));
   //   logBox.add(sms);
   //   deviceBox.put('info', deviceStatus);
   // }

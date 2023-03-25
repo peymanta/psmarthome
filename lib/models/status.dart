@@ -539,7 +539,7 @@ class Charts {
   @HiveField(5)
   List<ChartData> mobileSignals = [];
   @HiveField(6)
-  List<ChartData> batteryVoltages = [];
+  List<ChartData> capVoltages = [];
   @HiveField(7)
   List<ChartData> electricalIssuses = [];
   @HiveField(8)
@@ -553,7 +553,6 @@ class Charts {
   @HiveField(12)
   List<ChartData> deviceResets = [];
 
-  set capVoltage(capVolt) => batteryVoltages = capVolt;
 }
 @HiveType(typeId: 7)
 class Log {

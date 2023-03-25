@@ -34,7 +34,7 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 bool securityState = true;
 late DeviceStatus deviceStatus;
 late Charts chartsObject;
-late Box deviceBox, tempBox, constants, chartsBox, logBox;
+late Box deviceBox, tempBox, constants, chartsBox, logBox, capVoltBox;
 
 late BuildContext buildContext;
 late MainCubit mainController;
@@ -60,6 +60,7 @@ void main() async {
   constants = await Hive.openBox('const'); //vars
   chartsBox = await Hive.openBox('charts'); //charts of report page
   logBox = await Hive.openBox('log'); //log of report page
+  capVoltBox = await Hive.openBox('cap'); //log of report page
 
   chartsObject = chartsBox.get('object') ?? Charts();
 

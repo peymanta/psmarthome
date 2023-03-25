@@ -34,6 +34,7 @@ class _ReportState extends State<Report> {
   Widget build(BuildContext context) {   print(constants.get('capvolt'));
     // compile('');
 // Future.delayed(Duration(seconds: 2)).then((value) => print(capVoltages));
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: background,
@@ -92,7 +93,7 @@ Reset counts: ${deviceStatus.resetCount}
             listItemText('average mobile signal power'),
             chart(chartsObject.mobileSignals),
             listItemText('cap voltages'),
-            chart(constants.get('capvolt') ?? []),
+            chart((capVoltBox.values.toList()) ?? []),
             const SizedBox(
               height: 10,
             ),
@@ -111,7 +112,7 @@ Reset counts: ${deviceStatus.resetCount}
   }
 }
 
-Widget chart(List<ChartData> data, {isStep = false}) {
+Widget chart(List data, {isStep = false}) {
   if (data.isNotEmpty && !isStep) {
     return SizedBox(
       height: 220,
