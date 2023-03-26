@@ -19,22 +19,22 @@ class SecurityCubit extends Cubit<SecurityState> {
   }
 
   changeSecurityState () async{
-    securityState = !securityState;
+    var securityStateVar = !securityState;
 
-    pir1 = securityState;
-    pir2 = securityState;
+    sendSMS('Security ${securityStateVar ? 'on' : 'off'}', onPressed: () async{
+      securityState = securityStateVar;
+      pir1 = securityState;
+      pir2 = securityState;
 
-    deviceStatus.getPublicReport.securitySystem = securityState ? 'active' : 'deactive';
-    deviceBox.put('info', deviceStatus);
+      deviceStatus.getPublicReport.securitySystem = securityState ? 'active' : 'deactive';
+      deviceBox.put('info', deviceStatus);
 
-    // constants.put('pir1', securityState ? 'active' : 'deactive');
-    // constants.put('pir2', securityState ? 'active' : 'deactive');
-    await Hive.box('const').put('pir1', securityState ? 'active' : 'deactive');
-    await Hive.box('const').put('pir2', securityState ? 'active' : 'deactive');
+      await Hive.box('const').put('pir1', securityState ? 'active' : 'deactive');
+      await Hive.box('const').put('pir2', securityState ? 'active' : 'deactive');
 
-    sendSMS('Security ${securityState ? 'on' : 'off'}');
-    emit(SecurityInitial());
+      emit(SecurityInitial());
 
-    mainController.updateMain();
+      mainController.updateMain();
+    });
   }
 }

@@ -37,57 +37,72 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   setBuzzer() {
-    buzzer = !buzzer!;
-    deviceStatus.getPublicReport.setBuzzer = buzzer! ? 'active' : 'deactive';
-    deviceBox.put('info', deviceStatus);
+    var buzzerVar = !buzzer!;
 
-    sendSMS('Buzer ${buzzer! ? 'on' : 'off'}');
-    emit(SettingsInitial());
+    sendSMS('Buzer ${buzzerVar ? 'on' : 'off'}', onPressed: () {
+      buzzer = buzzerVar;
+      deviceStatus.getPublicReport.setBuzzer = buzzer! ? 'active' : 'deactive';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setRemoteControl() {
-    remoteControl = !remoteControl!;
-    deviceStatus.setRemote = remoteControl! ? 'active' : 'deactive';
-    deviceBox.put('info', deviceStatus);
+    var remoteControlVar = !remoteControl!;
 
-    sendSMS('remote:${remoteControl! ? 'a' : 'd'}');
-    emit(SettingsInitial());
+    sendSMS('remote:${remoteControlVar! ? 'a' : 'd'}', onPressed: (){
+      remoteControl = remoteControlVar;
+      deviceStatus.setRemote = remoteControl! ? 'active' : 'deactive';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setView() {
-    view = !view!;
-    deviceStatus.getPublicReport.setView = view! ? 'active' : 'deactive';
-    deviceBox.put('info', deviceStatus);
+    var viewVar = !view!;
 
-    sendSMS('View ${view! ? 'on' : 'off'}');
-    emit(SettingsInitial());
+    sendSMS('View ${viewVar ? 'on' : 'off'}', onPressed: () {
+      view = viewVar;
+      deviceStatus.getPublicReport.setView = view! ? 'active' : 'deactive';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setHome() {
-    task = TaskEnum.Home;
-    deviceStatus.getPublicReport.setExcuteTask = 'home';
-    deviceBox.put('info', deviceStatus);
 
-    sendSMS('Home:a');
-    emit(SettingsInitial());
+    sendSMS('Home:a', onPressed:(){
+      task = TaskEnum.Home;
+      deviceStatus.getPublicReport.setExcuteTask = 'home';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setSleep() {
-    task = TaskEnum.Sleep;
-    deviceStatus.getPublicReport.setExcuteTask = 'sleep';
-    deviceBox.put('info', deviceStatus);
 
-    sendSMS('Sleep');
-    emit(SettingsInitial());
+    sendSMS('Sleep', onPressed: (){
+      task = TaskEnum.Sleep;
+      deviceStatus.getPublicReport.setExcuteTask = 'sleep';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setResting() {
-    task = TaskEnum.Rest;
-    deviceStatus.getPublicReport.setExcuteTask = 'resting';
-    deviceBox.put('info', deviceStatus);
 
-    sendSMS('Resting');
-    emit(SettingsInitial());
+    sendSMS('Resting', onPressed: (){
+      task = TaskEnum.Rest;
+      deviceStatus.getPublicReport.setExcuteTask = 'resting';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
   }
 
   setDefaultSetting() {
@@ -101,23 +116,28 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   setPublicReport() {
-    publicReport = !publicReport!;
-    constants.put('publicreport', publicReport! ? 'on' : 'off');
+    var publicReportVar = !publicReport!;
 
-    sendSMS('Pu: ${publicReport! ? 'on' : 'off'}#');
-    emit(SettingsInitial());
+    sendSMS('Pu: ${publicReportVar ? 'on' : 'off'}#', onPressed: () {
+
+      publicReport = publicReportVar;
+      constants.put('publicreport', publicReport! ? 'on' : 'off');
+      emit(SettingsInitial());
+    });
+
   }
 
   submitClock() {
-    constants.put(
-        'publicreportTimer',
-        'P' +
-            selectedTime!.hour.toString().padLeft(2, '0') +
-            selectedTime!.minute.toString().padLeft(2, '0'));
 
     sendSMS(
-        'Pu:${selectedTime!.hour.toString().padLeft(2, '0') + selectedTime!.minute.toString().padLeft(2, '0')}#');
-    emit(SettingsInitial());
+        'Pu:${selectedTime!.hour.toString().padLeft(2, '0') + selectedTime!.minute.toString().padLeft(2, '0')}#',
+    onPressed: (){
+      constants.put(
+          'publicreportTimer',
+          'P${selectedTime!.hour.toString().padLeft(2, '0')}${selectedTime!.minute.toString().padLeft(2, '0')}');
+      emit(SettingsInitial());
+    });
+
   }
 
   setLog() {
@@ -154,11 +174,14 @@ class SettingsCubit extends Cubit<SettingsState> {
       }
 
       sendSMS(
-          'Number,$number,${number == 1 ? num1 : number == 2 ? num2 : num3}#');
+          'Number,$number,${number == 1 ? num1 : number == 2 ? num2 : num3}#', onPressed:(){
 
-      deviceBox.put('info', deviceStatus);
-      Navigator.pop(buildContext!);
-      emit(SettingsInitial());
+
+        deviceBox.put('info', deviceStatus);
+        Navigator.pop(buildContext!);
+        emit(SettingsInitial());
+          });
+
     });
   }
 

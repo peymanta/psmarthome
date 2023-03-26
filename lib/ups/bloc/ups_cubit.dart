@@ -28,22 +28,32 @@ class UpsCubit extends Cubit<UpsState> {
   }
 
   setCameraState() {
-    camera = !camera!;
-    sendSMS('hello');
-    emit(UpsInitial());
+    sendSMS('hello', onPressed: () {
+      camera = !camera!;
+
+      emit(UpsInitial());
+    });
   }
   setTelephoneState() {
-    telephone = !telephone!;
-    deviceStatus.upsTel = telephone! ? 'on' : 'off';
-    deviceBox.put('info', deviceStatus);
-    sendSMS('UPS:TELL:${telephone! ? 'on' : 'off'}');
-    emit(UpsInitial());
+    var telephoneVar = !telephone!;
+
+    sendSMS('UPS:TELL:${telephoneVar ? 'on' : 'off'}', onPressed: () {
+      telephone = telephoneVar;
+      deviceStatus.upsTel = telephone! ? 'on' : 'off';
+      deviceBox.put('info', deviceStatus);
+
+      emit(UpsInitial());
+    });
   }
   setModemState() {
-    modem = !modem!;
-    deviceStatus.upsModem = modem! ? 'on' : 'off';
-    deviceBox.put('info', deviceStatus);
-    sendSMS('UPS:MODM:${modem! ? 'on' : 'off'}');
-    emit(UpsInitial());
+    var modemVar = !modem!;
+
+    sendSMS('UPS:MODM:${modemVar ? 'on' : 'off'}', onPressed: () {
+      modem = modemVar;
+      deviceStatus.upsModem = modem! ? 'on' : 'off';
+      deviceBox.put('info', deviceStatus);
+
+      emit(UpsInitial());
+    });
   }
 }
