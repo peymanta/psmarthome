@@ -21,7 +21,7 @@ late Jalali endTime;
 late date.Jalali startdate;
 late date.Jalali enddate;
 String selectedStartDate = '';
-String selectedEndDate = '';
+// String selectedEndDate = '';
 
 late bool sw, sensor, timer, humidity, light;
 
@@ -366,9 +366,9 @@ Widget Relays() {
                                 alignment: Alignment.centerLeft,
                                 child: Text(selectedStartDate)),
                             const SizedBox(height: 5),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(selectedEndDate)),
+                            // Container(
+                            //     alignment: Alignment.centerLeft,
+                            //     child: Text(selectedEndDate)),
                             const SizedBox(height: 10),
                             Padding(
                               padding: const EdgeInsets.all(10),
@@ -414,12 +414,12 @@ Widget Relays() {
                                               firstDate: date.Jalali.now(),
                                               lastDate: date.Jalali(3099)))!;
                                           setState(() {
-                                            enddate = startdate.addDays(1);
+                                            enddate = startdate;
 
                                             selectedStartDate =
-                                              'Selected start date: ${startdate.year}/${startdate.month}/${startdate.day}';
-                                          setState(() => selectedEndDate =
-                                          'Selected end date: ${enddate.year}/${enddate.month}/${enddate.day}');
+                                              'Selected date: ${startdate.year}/${startdate.month}/${startdate.day}';
+                                          // setState(() => selectedEndDate =
+                                          // 'Selected end date: ${enddate.year}/${enddate.month}/${enddate.day}');
                                           });
                                         },
                                         child: const Center(

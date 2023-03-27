@@ -4,10 +4,32 @@ import 'package:flutter/material.dart' as widget;
 import '../colors.dart';
 
 class HomeItem {
-  var Image, Icon, iconColor, icEnabled, notif,
+  var Image,
+      Icon,
+      iconColor,
+      icEnabled,
+      notif,
       messageLength, //number of messages shows in notification
-  iWidth, iHeight, bottomImageVar, thirdImageVar, bILeft = false, clickable;
-  HomeItem(this.Image, {icon, icColor = primary, iconEnabled = true, notificationEnabled = false, msgLength = 0, imageWidth = 70.0, imageHeight = 70.0, bottomImage, thirdImage, isBottomImageLeft = false,  onPressed}) {
+      iWidth,
+      iHeight,
+      bottomImageVar,
+      secondaryBottomImageVar,
+      thirdImageVar,
+      bILeft = false,
+      clickable;
+  HomeItem(this.Image,
+      {icon,
+      icColor = primary,
+      iconEnabled = true,
+      notificationEnabled = false,
+      msgLength = 0,
+      imageWidth = 70.0,
+      imageHeight = 70.0,
+      bottomImage,
+      secondaryBottomImage,
+      thirdImage,
+      isBottomImageLeft = false,
+      onPressed}) {
     Icon = icon;
     iconColor = icColor;
     icEnabled = iconEnabled;
@@ -16,6 +38,7 @@ class HomeItem {
     iWidth = imageWidth;
     iHeight = imageHeight;
     bottomImageVar = bottomImage;
+    secondaryBottomImageVar = secondaryBottomImage;
     thirdImageVar = thirdImage;
     clickable = onPressed;
     bILeft = isBottomImageLeft;
@@ -24,6 +47,7 @@ class HomeItem {
   IconData get icon => Icon;
   String get image => Image;
   get bottomImage => bottomImageVar;
+  get secondaryBottomImage => secondaryBottomImageVar;
   get getIconColor => iconColor;
   get thirdImage => thirdImageVar;
   bool get isIconEnabled => icEnabled;
@@ -33,5 +57,4 @@ class HomeItem {
   double get getImageHeight => iHeight;
   get pressed => clickable;
   get isBottomImageLeft => bILeft;
-
 }

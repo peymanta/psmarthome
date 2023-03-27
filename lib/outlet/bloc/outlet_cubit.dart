@@ -42,17 +42,17 @@ class OutletCubit extends Cubit<OutletState> {
     infinityDown = plug.getDownStartDate == '11/11/11' &&
         plug.getDownEndDate == '11/11/11';
     selectedUpStartDate = infinityUp
-        ? ':Start & End date'
-        : 'selected up start date: ${plug.getUPStartDate}';
-    selectedUpEndDate = infinityUp
-        ? 'Repeat every day'
-        : 'selected up end date: ${plug.getUPEndDate}';
+        ? ':Start & End date\nRepeat every day'
+        : 'selected up date: ${plug.getUPStartDate}';
+    // selectedUpEndDate = infinityUp
+    //     ? 'Repeat every day'
+    //     : 'selected up end date: ${plug.getUPEndDate}';
     selectedDownStartDate = infinityDown
-        ? ':Start & End date'
+        ? ':Start & End date\nRepeat every day'
         : 'selected down start date: ${plug.getDownStartDate}';
-    selectedDownEndDate = infinityDown
-        ? 'Repeat every day'
-        : 'selected down end date: ${plug.getDownEndDate}';
+    // selectedDownEndDate = infinityDown
+    //     ? 'Repeat every day'
+    //     : 'selected down end date: ${plug.getDownEndDate}';
 
     startUpTime =
         null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
@@ -75,7 +75,7 @@ class OutletCubit extends Cubit<OutletState> {
           plug.setUPRelayStatus = plugUP ? 'active' : 'deactive';
           plug.setUPTimerStatus = timerUP ? 'active' : 'deactive';
 
-          if (timerUP) {
+          // if (timerUP) {
             plug.setUPStartClock =
                 '${startUpTime!.hour.toString().padLeft(2, '0')}:${startUpTime!.minute.toString().padLeft(2, '0')}';
             plug.setUPEndClock =
@@ -90,7 +90,7 @@ class OutletCubit extends Cubit<OutletState> {
             sendSMS(
                 'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}UP:${infinityUp ? '111111' : startUpDate.year.toString().substring(2) + startUpDate.month.toString().padLeft(2, '0') + startUpDate.day.toString().padLeft(2, '0')},${startUpTime!.hour.toString().padLeft(2, '0') + startUpTime!.minute.toString().padLeft(2, '0')}-${infinityUp ? '111111' : endUpDate.year.toString().substring(2) + endUpDate.month.toString().padLeft(2, '0') + endUpDate.day.toString().padLeft(2, '0')},${endUpTime!.hour.toString().padLeft(2, '0') + endUpTime!.minute.toString().padLeft(2, '0')}#',
                 showDialog: false);
-          }
+          // }
           ////////////
         } else {
           showMessage('up is not active');
@@ -100,7 +100,7 @@ class OutletCubit extends Cubit<OutletState> {
           plug.setDownRelayStatus = plugDOWN ? 'active' : 'inactive';
           plug.setDownTimerStatus = timerDown ? 'active' : 'deactive';
 
-          if (timerDown) {
+          // if (timerDown) {
             plug.setDownStartClock =
                 '${startDownTime!.hour.toString().padLeft(2, '0')}:${startDownTime!.minute.toString().padLeft(2, '0')}';
             plug.setDownEndClock =
@@ -115,7 +115,7 @@ class OutletCubit extends Cubit<OutletState> {
             sendSMS(
                 'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${infinityDown ? '111111' : startDownDate.year.toString().substring(2) + startDownDate.month.toString() + startDownDate.day.toString()},${startDownTime!.hour.toString().padLeft(2, '0') + startDownTime!.minute.toString().padLeft(2, '0')}-${infinityDown ? '111111' : endDownDate.year.toString().substring(2) + endDownDate.month.toString() + endDownDate.day.toString()},${endDownTime!.hour.toString().padLeft(2, '0') + endDownTime!.minute.toString().padLeft(2, '0')}#',
                 showDialog: false);
-          }
+          // }
           ///////
         } else {
           showMessage('down is not active');
@@ -149,11 +149,13 @@ class OutletCubit extends Cubit<OutletState> {
     }
 
     if (isUp && infinityUp) {
-      selectedUpStartDate = ':Start & End date';
-      selectedUpEndDate = 'Repeat every day';
+      selectedUpStartDate = ':Start & End date\nRepeat every day';
+      // selectedUpEndDate = 'Repeat every day';
     } else if (!isUp && infinityDown) {
-      selectedDownStartDate = ':Start & End date';
-      selectedDownEndDate = 'Repeat every day';
+      selectedDownStartDate = ':Start & End date\nRepeat every day';
+      // selectedDownEndDate = 'Repeat every day';
+    } else {
+      selectedUpStartDate = selectedDownStartDate = '';
     }
     emit(OutletInitial());
   }
@@ -321,11 +323,11 @@ class OutletCubit extends Cubit<OutletState> {
     emit(OutletInitial());
   }
 
-  icon() {
+  icon(bool isUp) {
     if (currentPlug == PlugNumber.plug1) {
-      iconKey = 'PLUG1B';
+      iconKey = 'PLUG1${isUp ? 'UP':'DN'}';
     } else {
-      iconKey = 'PLUG2B';
+      iconKey = 'PLUG2${isUp ? 'UP':'DN'}';
     }
 
     m.Navigator.push(

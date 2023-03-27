@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -20,9 +19,9 @@ DateTime? startUpTime = DateTime.now(),
     endDownTime = DateTime.now();
 late date.Jalali startUpDate, endUpDate, startDownDate, endDownDate;
 String selectedUpStartDate = '',
-    selectedUpEndDate = '',
-    selectedDownStartDate = '',
-    selectedDownEndDate = '';
+    // selectedUpEndDate = ''
+    selectedDownStartDate = '';
+    // selectedDownEndDate = '';
 late bool plugUP,
     plugDOWN,
 
@@ -90,12 +89,22 @@ class _OutletState extends State<Outlet> {
                     shrinkWrap: true,
                     children: [
                       MaterialButton(
-                        onPressed: () => _cubit.icon(),
+                        onPressed: () => _cubit.icon(true),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Row(children: [
-                            const Expanded(flex: 8, child: Center(child: Text('Change connected device icon'))),
-                            const Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
+                          child: Row(children: const [
+                            Expanded(flex: 8, child: Center(child: Text('Change connected device up icon'))),
+                            Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
+                          ]),
+                        ),
+                      ),
+                      MaterialButton(
+                        onPressed: () => _cubit.icon(false),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(children: const [
+                            Expanded(flex: 8, child: Center(child: Text('Change connected device down icon'))),
+                            Expanded(flex: 2, child: Icon(Icons.edit, color: primary))
                           ]),
                         ),
                       ),
@@ -332,7 +341,6 @@ Widget option(context, bool isUp) {
                                 } else {
                                   startDownTime = time;
                                 }
-                                print(startUpTime);
                               },
                               time: DateTime.now(),
                             ),
@@ -350,10 +358,10 @@ Widget option(context, bool isUp) {
                     child: Text(
                         isUp ? selectedUpStartDate : selectedDownStartDate)),
                 const SizedBox(height: 5),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    child:
-                        Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
+                // Container(
+                //     alignment: Alignment.centerLeft,
+                //     child:
+                        // Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -380,21 +388,20 @@ Widget option(context, bool isUp) {
                               setState(() {
                                 if (isUp) {
                                   startUpDate = output!;
-                                  endUpDate = startUpDate
-                                      .addDays(1); //end is tomorrow of start
+                                  endUpDate = startUpDate; //end is tomorrow of start
 
                                   selectedUpStartDate =
-                                      'Selected up start date: ${startUpDate.formatCompactDate()}';
-                                  selectedUpEndDate =
-                                      'Selected up end date: ${endUpDate.formatCompactDate()}';
+                                      'Selected up date: ${startUpDate.formatCompactDate()}';
+                                  // selectedUpEndDate =
+                                  //     'Selected up end date: ${endUpDate.formatCompactDate()}';
                                 } else {
                                   startDownDate = output!;
-                                  endDownDate = startDownDate.addDays(1);
+                                  endDownDate = startDownDate;
 
                                   selectedDownStartDate =
-                                      'Selected down start date: ${startDownDate.formatCompactDate()}';
-                                  selectedDownEndDate =
-                                      'Selected down end date: ${endDownDate.formatCompactDate()}';
+                                      'Selected down date: ${startDownDate.formatCompactDate()}';
+                                  // selectedDownEndDate =
+                                  //     'Selected down end date: ${endDownDate.formatCompactDate()}';
                                 }
                               });
                             },

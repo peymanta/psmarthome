@@ -17,7 +17,8 @@ late List page1, page2;
 void getPages() {
   page1 = [
     HomeItem('assets/icons/outlet.png',
-        bottomImage: constants.get('PLUG1B') ?? 'assets/selectable-icons/question.png',
+        bottomImage: constants.get('PLUG1UP') ?? 'assets/selectable-icons/question.png',
+        secondaryBottomImage: constants.get('PLUG1DN') ?? 'assets/selectable-icons/question.png',
         isBottomImageLeft: true,
         thirdImage: deviceStatus.getPublicReport.waterLeakagePlug1 == 'yes' ? 'assets/selectable-icons/leaking.png' : null,
         icon: Icons.wifi_rounded,
@@ -28,7 +29,8 @@ void getPages() {
               MaterialPageRoute(builder: (buildContext) => Outlet()));
         }),
     HomeItem('assets/icons/outlet.png', icon: Icons.wifi_rounded,
-        bottomImage: constants.get('PLUG2B') ?? 'assets/selectable-icons/question.png',
+        bottomImage: constants.get('PLUG2UP') ?? 'assets/selectable-icons/question.png',
+        secondaryBottomImage: constants.get('PLUG2DN') ?? 'assets/selectable-icons/question.png',
         isBottomImageLeft: true,
         thirdImage: deviceStatus.getPublicReport.waterLeakagePlug2 == 'yes' ? 'assets/selectable-icons/leaking.png' : null,
         onPressed: () {

@@ -31,7 +31,7 @@ class _SecurityState extends State<Security> {
       appBar: AppBar(
           backgroundColor: background,
           shadowColor: Colors.transparent,
-          iconTheme: IconThemeData(color: Colors.black)),
+          iconTheme: const IconThemeData(color: Colors.black)),
       body: BlocBuilder<SecurityCubit, SecurityState>(
         bloc: _cubit,
         builder: (context, state) {
@@ -69,14 +69,14 @@ class _SecurityState extends State<Security> {
                   children: [
                     divider(),
                     Row(children: [
-                      Expanded(child: Container(alignment: Alignment.centerLeft, child: Text('PIR 1'),),),
+                      Expanded(child: Container(alignment: Alignment.centerLeft, child: const Text('PIR 1'),),),
                       Expanded(child: Container(alignment: Alignment.center, child: SizedBox(
                           width: 30, height: 30,
                           child: Image.asset(pir1? 'assets/icons/led-on.png' : 'assets/icons/led.png')),),),
                     ],),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Row(children: [
-                      Expanded(child: Container(alignment: Alignment.centerLeft, child: Text('PIR 2'),),),
+                      Expanded(child: Container(alignment: Alignment.centerLeft, child: const Text('PIR 2'),),),
                       Expanded(child: Container(alignment: Alignment.center, child: SizedBox(
                           width: 30,
                           height: 30,

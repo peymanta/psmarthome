@@ -13,6 +13,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   init() {
     buzzer = deviceStatus.getPublicReport.buzzer == 'active';
+    increaseClock = deviceStatus.getPublicReport.increaseClock == 'active';
     view = deviceStatus.getPublicReport.view == 'active';
     publicReport = constants.get('publicreport') != 'off';
     task = deviceStatus.publicReport.excuteTask == 'home'
@@ -42,6 +43,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     sendSMS('Buzer ${buzzerVar ? 'on' : 'off'}', onPressed: () {
       buzzer = buzzerVar;
       deviceStatus.getPublicReport.setBuzzer = buzzer! ? 'active' : 'deactive';
+      deviceBox.put('info', deviceStatus);
+
+      emit(SettingsInitial());
+    });
+  }
+
+  setIncreaseClock() {
+    var increaseClockVar = !increaseClock!;
+
+    sendSMS('Increaseclock:${increaseClockVar ? 'on' : 'of'}', onPressed: () {
+      increaseClock = increaseClockVar;
+      deviceStatus.getPublicReport.setIncreaseClock = increaseClock! ? 'active' : 'deactive';
       deviceBox.put('info', deviceStatus);
 
       emit(SettingsInitial());

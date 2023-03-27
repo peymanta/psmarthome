@@ -28,7 +28,7 @@ class TempCubit extends Cubit<TempState> {
             int.parse(deviceStatus.getCooler.startClock.split(':')[0]),
             int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
         selectedStartDate =
-            'Selected start date: ${deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date' : deviceStatus.getCooler.startDate}';
+            deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getCooler.startDate}';
       } else {
         startTime = Jalali.now();
       }
@@ -39,8 +39,8 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getCooler.endClock.split(':')[0]),
             int.parse(deviceStatus.getCooler.endClock.split(':')[1]));
-        selectedEndDate =
-            'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'Repeat every day' : deviceStatus.getCooler.endDate}';
+        // selectedEndDate =
+        //     'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'Repeat every day' : deviceStatus.getCooler.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -65,7 +65,7 @@ class TempCubit extends Cubit<TempState> {
             int.parse(deviceStatus.getHeater.startClock.split(':')[0]),
             int.parse(deviceStatus.getHeater.startClock.split(':')[1]));
         selectedStartDate =
-            'Selected start date: ${(deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? 'loop' : deviceStatus.getHeater.startDate}';
+            (deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getHeater.startDate}';
       } else {
         startTime = Jalali.now();
       }
@@ -76,8 +76,8 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getHeater.endClock.split(':')[0]),
             int.parse(deviceStatus.getHeater.endClock.split(':')[1]));
-        selectedEndDate =
-            '${deviceStatus.getHeater.endDate == '11/11/11' ? '' : 'Selected end date: ' + deviceStatus.getHeater.endDate}';
+        // selectedEndDate =
+        //     '${deviceStatus.getHeater.endDate == '11/11/11' ? '' : 'Selected end date: ' + deviceStatus.getHeater.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -234,8 +234,8 @@ class TempCubit extends Cubit<TempState> {
 
   void loop() {
     infinity = !infinity;
-    selectedStartDate = infinity ? ':Start & End date' : '';
-    selectedEndDate = infinity ? 'Repeat every day' : '';
+    selectedStartDate = infinity ? ':Start & End date\nRepeat every day' : '';
+    // selectedEndDate = infinity ? 'Repeat every day' : '';
     emit(TempInitial());
   }
 

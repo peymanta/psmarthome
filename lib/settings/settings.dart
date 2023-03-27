@@ -12,7 +12,7 @@ enum TaskEnum { Home, Sleep, Rest }
 
 SettingsCubit? _cubit;
 TaskEnum? task = TaskEnum.Home; //example
-bool? buzzer, view, publicReport, shortSMS, remoteControl;
+bool? buzzer, view, publicReport, shortSMS, remoteControl, increaseClock;
 String? num1, num2, num3;
 DateTime? selectedTime;
 
@@ -38,7 +38,7 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(
         backgroundColor: background,
         shadowColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         bloc: _cubit,
@@ -56,6 +56,8 @@ class _SettingsState extends State<Settings> {
                     listItemText('Time'),
                     button(() => _cubit!.setTime(), 'Set Time (SMS)'),
                     button(() => _cubit!.setTimeNTP(), 'Set Time (NTP)'),
+                    listItemSwitch(
+                        'Increase Clock', () => _cubit!.setIncreaseClock(), increaseClock!),
                     divider(),
                     listItemSwitch(
                         'Buzzer', () => _cubit!.setBuzzer(), buzzer!),
@@ -68,7 +70,7 @@ class _SettingsState extends State<Settings> {
                     publicReport!
                         ? AnimatedContainer(
                             curve: Curves.easeInOut,
-                            duration: Duration(milliseconds: 600),
+                            duration: const Duration(milliseconds: 600),
                             height: publicReport! ? 250 : 0,
                             child: Column(
                               children: [
@@ -86,13 +88,13 @@ class _SettingsState extends State<Settings> {
                                     },
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Center(
                                     child: NeumorphicButton(
                                   padding:
                                       const EdgeInsets.fromLTRB(60, 10, 60, 10),
                                   onPressed: () => _cubit!.submitClock(),
-                                  child: Text('Send'),
+                                  child: const Text('Send'),
                                 )),
                               ],
                             ),
@@ -144,7 +146,7 @@ Widget button(onPressed, name) {
             child:
                 Container(alignment: Alignment.centerLeft, child: Text(name))),
       ),
-      SizedBox(height: 10)
+      const SizedBox(height: 10)
     ],
   );
 }
@@ -180,7 +182,7 @@ Widget listItemSwitch(name, onPressed, value) {
             ],
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
       ],
     ),
   );
@@ -195,9 +197,9 @@ Widget listItemText(text) {
               alignment: Alignment.centerLeft,
               child: Text(
                 text,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
               ))),
-      SizedBox(
+      const SizedBox(
         height: 20,
       )
     ],
@@ -223,7 +225,7 @@ Widget listItemPhone(subject, status, onPressed) {
           ),
         ),
       ),
-      SizedBox(height: 10)
+      const SizedBox(height: 10)
     ],
   );
 }

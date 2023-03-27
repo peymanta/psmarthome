@@ -300,13 +300,14 @@ class PublicReportAdapter extends TypeAdapter<PublicReport> {
       ..autoHeater = fields[38] as String
       ..wirelessCooler = fields[39] as String
       ..wirelessHeater = fields[40] as String
-      ..temp = fields[41] as String;
+      ..temp = fields[41] as String
+      ..increaseClock = fields[42] as String;
   }
 
   @override
   void write(BinaryWriter writer, PublicReport obj) {
     writer
-      ..writeByte(41)
+      ..writeByte(42)
       ..writeByte(1)
       ..write(obj.clock)
       ..writeByte(2)
@@ -388,7 +389,9 @@ class PublicReportAdapter extends TypeAdapter<PublicReport> {
       ..writeByte(40)
       ..write(obj.wirelessHeater)
       ..writeByte(41)
-      ..write(obj.temp);
+      ..write(obj.temp)
+      ..writeByte(42)
+      ..write(obj.increaseClock);
   }
 
   @override

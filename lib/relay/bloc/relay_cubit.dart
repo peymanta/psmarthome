@@ -31,7 +31,7 @@ class RelayCubit extends Cubit<RelayState> {
       // startdate = null;
       // enddate = null;
       selectedStartDate = '';
-      selectedEndDate = '';
+      // selectedEndDate = '';
 
       switch(currentPage){
         case Page.Relay1:
@@ -130,11 +130,11 @@ class RelayCubit extends Cubit<RelayState> {
       }
 
       if(infinity) {
-        selectedStartDate = ':Start & End date';
-        selectedEndDate = 'Repeat every day';
+        selectedStartDate = ':Start & End date\nRepeat every day';
+        // selectedEndDate = 'Repeat every day';
       } else {
-        selectedStartDate = 'selected start date: ${startdate.formatCompactDate()}';
-        selectedEndDate = 'selected end date: ${enddate.formatCompactDate()}';
+        selectedStartDate = 'Selected date: ${startdate.formatCompactDate()}';
+        // selectedEndDate = 'selected end date: ${enddate.formatCompactDate()}';
       }
     } catch (e) {
       dialog(
@@ -159,7 +159,7 @@ class RelayCubit extends Cubit<RelayState> {
     ///timer status
     newRelayState!.timer = timer == false ? 'deactive' : 'active';
     try {
-      if (timer) {
+      // if (timer) {
         //in r1 else = timer
         newRelayState!.startClock = '${startTime.hour}:${startTime.minute}';
         newRelayState!.endClock = '${endTime.hour}:${endTime.minute}';
@@ -190,7 +190,7 @@ class RelayCubit extends Cubit<RelayState> {
 
         ///set timer status
         newRelayState!.timer = timer == false ? 'deactive' : 'active';
-      }
+      // }
     } catch (e) {
       dialog(
           'Please set date',
@@ -351,11 +351,11 @@ class RelayCubit extends Cubit<RelayState> {
     emit(RelayInitial());
 
     if (infinity) {
-      selectedStartDate = ':Start & End date';
-      selectedEndDate = 'Repeat every day';
+      selectedStartDate = ':Start & End date\nRepeat every day';
+      // selectedEndDate = 'Repeat every day';
     } else {
       selectedStartDate = '';
-      selectedEndDate = '';
+      // selectedEndDate = '';
     }
   }
 

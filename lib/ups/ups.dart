@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/colors.dart';
 import 'package:shome/ups/bloc/ups_cubit.dart';
@@ -33,11 +30,11 @@ class _UPSState extends State<UPS> {
         appBar: AppBar(
           backgroundColor: background,
           shadowColor: Colors.transparent,
-          title: Text(
+          title: const Text(
             'UPS',
             style: TextStyle(color: Colors.black),
           ),
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         body: BlocBuilder<UpsCubit, UpsState>(
           bloc: upsCubit,
@@ -59,7 +56,7 @@ class _UPSState extends State<UPS> {
                             Expanded(
                                 child: MaterialButton(
                               child: Column(
-                                children: [
+                                children: const [
                                   Icon(Icons.edit, color: primary),
                                   Text(
                                     'Icon 1',
@@ -71,7 +68,7 @@ class _UPSState extends State<UPS> {
                             )),Expanded(
                                 child: MaterialButton(
                               child: Column(
-                                children: [
+                                children: const [
                                   Icon(Icons.edit, color: primary),
                                   Text(
                                     'Icon 2',
@@ -83,7 +80,7 @@ class _UPSState extends State<UPS> {
                             )),Expanded(
                                 child: MaterialButton(
                               child: Column(
-                                children: [
+                                children: const [
                                   Icon(Icons.edit, color: primary),
                                   Text(
                                     'Icon 3',

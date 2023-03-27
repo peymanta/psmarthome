@@ -459,10 +459,13 @@ class PublicReport {
   var wirelessHeater = '';
   @HiveField(41)
   var temp = '';
+  @HiveField(42)
+  var increaseClock = '';
 
   PublicReport();
 
   set setClock(clock) => this.clock = clock;
+  set setIncreaseClock(increaseClock) => this.increaseClock = increaseClock;
   set setDate(date) => this.date = date;
   set setShortReport(shortReport) => this.shortReport = shortReport;
   set setMotionSensor(motionSensor) => this.motionSensor = motionSensor;

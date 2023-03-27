@@ -28,11 +28,11 @@ sendSMS(sms, {showDialog = true,  onPressed }) async{
 print(sms);
 }
 compile(String sms) async{
-  var sms = '''Version : a400
-
-Cap Voltage ~ 13 V
-
-101/12/26 23:24:34''';
+//   var sms = '''Version : a400
+//
+// Cap Voltage ~ 13 V
+//
+// 101/12/26 23:24:34''';
 //   var sms = '''1210 01:04
 // s:A
 // U:A
@@ -146,6 +146,7 @@ compilePublicReport(String sms) async{
   List<String> lines = sms.split('\n');
 
   model.setClock = lines[0].split(' ')[1];
+  model.setIncreaseClock = lines[0].split(' ')[1].contains('a') ? 'active' : 'deactive';
   model.setDate = lines[0].split(' ')[0];
   model.setShortReport = lines[1].contains('A') ? 'active' : 'deactive';
   model.setBuzzer = lines[2].contains('A') ? 'active' : 'deactive';

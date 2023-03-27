@@ -32,7 +32,6 @@ Jalali endTime = Jalali.now();
 late date.Jalali startdate;
 late date.Jalali enddate;
 String selectedStartDate = '';
-String selectedEndDate = '';
 
 bool pads = false, hub = false;
 
@@ -123,38 +122,11 @@ class Actulator extends StatelessWidget {
                     Container(
                         alignment: Alignment.centerLeft,
                         child: Text(selectedStartDate)),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(selectedEndDate)),
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Row(
                         children: [
-                          // Expanded(
-                          //   child: Center(
-                          //     child: NeumorphicButton(
-                          //       padding: EdgeInsets.all(15),
-                          //       onPressed: () async {
-                          //         enddate = (await date.showPersianDatePicker(
-                          //             context: context,
-                          //             initialDate: date.Jalali.now(),
-                          //             firstDate: date.Jalali.now(),
-                          //             lastDate: date.Jalali(3099)))!;
-                          //         setState(() => selectedEndDate =
-                          //         'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                          //       },
-                          //       child: Center(
-                          //         child: const Text(
-                          //           'select end date',
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           Expanded(
                               child: Center(
                             child: NeumorphicCheckbox(
@@ -173,12 +145,11 @@ class Actulator extends StatelessWidget {
                                       firstDate: date.Jalali.now(),
                                       lastDate: date.Jalali(3099)))!;
                                   setState(() {
-                                    enddate = startdate.addDays(1);
+                                    enddate = startdate;
 
                                     selectedStartDate =
-                                        'Selected start date: ${startdate.year}/${startdate.month}/${startdate.day}';
-                                    selectedEndDate =
-                                        'Selected end date: ${enddate.year}/${enddate.month}/${enddate.day}';
+                                        'Selected date: ${startdate.year}/${startdate.month}/${startdate.day}';
+
                                   });
                                 },
                                 child: const Center(
