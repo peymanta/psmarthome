@@ -178,10 +178,16 @@ class Actulator extends StatelessWidget {
                     const SizedBox(
                       height: 60,
                     ),
+                    const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(':set temp')),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     NeumorphicButton(
                       padding: const EdgeInsets.all(20),
                       onPressed: () => cubit.knobDialog(),
-                      child: const Text('show temp volumes'),
+                      child: const Text('set temp volumes'),
                     )
                   ],
                   // ),

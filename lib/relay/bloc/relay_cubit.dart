@@ -354,7 +354,8 @@ class RelayCubit extends Cubit<RelayState> {
       selectedStartDate = ':Start & End date\nRepeat every day';
       // selectedEndDate = 'Repeat every day';
     } else {
-      selectedStartDate = '';
+      selectedStartDate = startdate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startdate.formatCompactDate()}';
+      // selectedStartDate = '';
       // selectedEndDate = '';
     }
   }

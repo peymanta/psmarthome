@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' as m;
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:shome/compiling_sms.dart';
 import 'package:shome/icon/icon.dart';
 import 'package:shome/main.dart';
@@ -44,12 +45,14 @@ class OutletCubit extends Cubit<OutletState> {
     selectedUpStartDate = infinityUp
         ? ':Start & End date\nRepeat every day'
         : 'selected up date: ${plug.getUPStartDate}';
+    startUpDate = Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
     // selectedUpEndDate = infinityUp
     //     ? 'Repeat every day'
     //     : 'selected up end date: ${plug.getUPEndDate}';
     selectedDownStartDate = infinityDown
         ? ':Start & End date\nRepeat every day'
         : 'selected down start date: ${plug.getDownStartDate}';
+    startDownDate = Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
     // selectedDownEndDate = infinityDown
     //     ? 'Repeat every day'
     //     : 'selected down end date: ${plug.getDownEndDate}';
@@ -155,7 +158,12 @@ class OutletCubit extends Cubit<OutletState> {
       selectedDownStartDate = ':Start & End date\nRepeat every day';
       // selectedDownEndDate = 'Repeat every day';
     } else {
-      selectedUpStartDate = selectedDownStartDate = '';
+      if(isUp) {
+        selectedUpStartDate = startUpDate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startUpDate.formatCompactDate()}';
+      } else {
+        selectedDownStartDate = startDownDate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startDownDate.formatCompactDate()}';
+      }
+
     }
     emit(OutletInitial());
   }

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:knob_widget/knob_widget.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import '../../colors.dart';
 import '../../compiling_sms.dart';
 import '../../main.dart';
@@ -27,6 +28,7 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getCooler.startClock.split(':')[0]),
             int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
+        startdate = date.Jalali(int.parse(deviceStatus.getCooler.startDate.split('/')[0]), int.parse(deviceStatus.getCooler.startDate.split('/')[1]), int.parse(deviceStatus.getCooler.startDate.split('/')[2]));
         selectedStartDate =
             deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getCooler.startDate}';
       } else {
@@ -64,6 +66,7 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getHeater.startClock.split(':')[0]),
             int.parse(deviceStatus.getHeater.startClock.split(':')[1]));
+        startdate = date.Jalali(int.parse(deviceStatus.getHeater.startDate.split('/')[0]), int.parse(deviceStatus.getHeater.startDate.split('/')[1]), int.parse(deviceStatus.getHeater.startDate.split('/')[2]));
         selectedStartDate =
             (deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getHeater.startDate}';
       } else {
@@ -197,7 +200,7 @@ class TempCubit extends Cubit<TempState> {
 
         deviceStatus.getPublicReport.autoCooler =
             automatic ? 'auto-active' : 'auto-deactive';
-        sendSMS('Heater:${automaticVar ? 'd' : 'a'}#', showDialog: false);
+        // sendSMS('Heater:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
         emit(TempInitial());
@@ -208,7 +211,7 @@ class TempCubit extends Cubit<TempState> {
 
         deviceStatus.getPublicReport.autoHeater =
             automatic ? 'auto-active' : 'auto-deactive';
-        sendSMS('Cooler:${automaticVar ? 'd' : 'a'}#', showDialog: false);
+        // sendSMS('Cooler:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
         emit(TempInitial());
@@ -234,7 +237,11 @@ class TempCubit extends Cubit<TempState> {
 
   void loop() {
     infinity = !infinity;
-    selectedStartDate = infinity ? ':Start & End date\nRepeat every day' : '';
+    if(infinity) {
+      selectedStartDate = ':Start & End date\nRepeat every day';
+    } else {
+      selectedStartDate = startdate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startdate.formatCompactDate()}';
+    }
     // selectedEndDate = infinity ? 'Repeat every day' : '';
     emit(TempInitial());
   }
@@ -312,7 +319,7 @@ class TempCubit extends Cubit<TempState> {
       start!.addOnValueChangedListener((double value) {
         setState(() {
           sv = value.toInt();
-          endMin = value <= 32 ? value : 32;
+          endMin = value <= 32 ? value+4 : 32;
 
           ev = endMin.toInt(); //value.roundToDouble();
         });
