@@ -28,49 +28,59 @@ sendSMS(sms, {showDialog = true,  onPressed }) async{
 print(sms);
 }
 compile(String sms) async{
-//   var sms = '''Version : a400
+  ///SMS SIMULATION
+//   var sms = '''Cooler:
+// 11/11/11-00:06
+// 11/11/11-23:56
+// TEMP SET:20~25
 //
-// Cap Voltage ~ 13 V
+// WP1UP: OF,Rd,Ta
+// 02/01/06-17:17
+// 02/01/07-17:17
 //
-// 101/12/26 23:24:34''';
-//   var sms = '''1210 01:04
-// s:A
-// U:A
-// M:N
-// Ti:42
-// TO:27,10
-// HO:26
-// B:N
-// 12EN
-// 5RN
-// 4GN
-// 5MN
-// D1N
-// S:A
-// L1n2n
-// L:Ni
-// d:N
-// E:H
-// P:C
-// r:A
-// WP#1:C-2:R
-// CU:1:DA,3:DA,6:DA
-// V:D
-// Ti#38
-// TO#26
-// H#27
-// i#16
-// F:0
-// C:a
-// 30min
-// WC:D.''';
+// WP1DN: ON,Ra,Ta
+// 11/11/11-16:00
+// 11/11/11-17:00
+// ''';
+
+  var sms = '''1210 01:04
+s:A
+U:A
+M:N
+Ti:323
+TO:271,101
+HO:261
+B:N
+12EN
+5RN
+4GN
+5MN
+D1N
+S:A
+L1n2n
+L:Ni
+d:N
+E:H
+P:C
+r:A
+WP#1:C-2:R
+CU:1:DA,3:DA,6:DA
+V:D
+Ti#45
+TO#226
+H#133
+i#16
+F:0
+C:a
+30min
+WC:D.''';
 
 // var sms = '''Cooler:
 // 11/11/11-00:06
 // 11/11/18-23:56
 // TEMP SET:20~25
 //
-// WP1UP: ON,Rd,Ta
+// WP1UP: OFF,Rd,Ta
 // 11/11/11-16:30
 // 11/11/11-23:55
 //
@@ -79,38 +89,38 @@ compile(String sms) async{
 // 11/11/11-23:55''';
 
 // var sms = '''R1:
-// OFF,Rd,Td,
+// ON,Ra,Td,
 // 11/11/11-00:01
 // 11/11/11-23:55
 //
 // R2:
-// ON ,Rd,Td
+// ON ,Ra,Td
 // 96/01/01-00:00
 // 96/01/01-00:00
 //
 // R5:
-// OFF,Rd,Td
+// ON,Ra,Td
 // 96/01/01-00:00
 // 96/01/01-00:00''';
 
 // var sms = '''R3:
-// OFF,Rd,Td,HU d
+// ON,Ra,Td,HU d
 // 11/11/11-10:00
 // 11/11/11-23:57
 // HUM SET:15~70
 //
 // R6:
-// OF,Rd,Td
+// ON,Ra,Td
 // 11/11/11-18:15
 // 11/11/11-23:55
 //
 // R7:
-// OF,Rd,Td,LU d
+// ON,Ra,Td,LU d
 // 11/11/11-00:01
 // 11/11/11-01:20
 // LU35''';
 
-// var sms = '''WP2UP: ON,Rd,Ta
+// var sms = '''WP2UP: OFF,Rd,Ta
 // 11/11/11-00:00
 // 11/11/11-23:55
 //
@@ -152,17 +162,17 @@ compilePublicReport(String sms) async{
   model.setBuzzer = lines[2].contains('A') ? 'active' : 'deactive';
   model.setMotionSensor = lines[3].contains('A') ? 'alarm' : 'normal';
   model.setInboxTemp = lines[4].substring(3);
-  //chart
-  chartsObject.inBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[4].substring(3))));
+  // //chart
+  // chartsObject.inBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[4].substring(3))));
 
   model.setOutBoxTemp = lines[5].substring(3).split(',')[0];
-  //chart
-  chartsObject.outBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[5].substring(3).split(',')[0])));
+  // //chart
+  // chartsObject.outBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[5].substring(3).split(',')[0])));
 
   model.setTemp = lines[5].substring(3).split(',')[1];
   model.setOutBoxHumidity = lines[6].substring(3);
-  //chart
-  chartsObject.outBoxHumiditys.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[6].substring(3))));
+  // //chart
+  // chartsObject.outBoxHumiditys.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[6].substring(3))));
 
   model.setBattery = lines[7].contains('L')? 'low' : 'normal';
   model.setPower = lines[8].contains('N') ? 'normal' : lines[8].contains('B') ? 'burnt' : lines[8].contains('b') ? 'backup' : lines[8].contains('S') ? 'short circuit': 'short circuit in main board';
@@ -178,7 +188,7 @@ compilePublicReport(String sms) async{
   model.setWaterLeakagePlug1 = lines[14][2]=='n'? 'dry' : lines[14][2]=='d'? 'disconnect connector' : lines[14][2]=='y'? 'yes' : lines[14][2]=='D'? 'deactived by key' : 'no info';
   model.setWaterLeakagePlug2 = lines[14][4]=='n'? 'dry' : lines[14][4]=='d'? 'disconnect connector' : lines[14][4]=='y'? 'yes' : lines[14][4]=='D'? 'deactived by key' : 'no info';
   model.setDayNight = lines[15].contains('Dy') ? 'day':'night';
-  model.setCaseDoor = lines[16].contains('C') ? 'close' : 'open';
+  model.setCaseDoor = lines[16].contains('L') ? 'close' : 'open';
   model.setExcuteTask = lines[17].contains('H') ? 'home' : lines[17].contains('R') ? 'resting' : 'sleep';
   model.setPlug = lines[18].contains('C') ? 'connect' : 'disconnect';
   //chart
@@ -210,11 +220,18 @@ compilePublicReport(String sms) async{
   model.setOutboxTempFromFirstDay = lines[24].substring(3);
   model.setOutboxHumidityFromFirstDay = lines[25].substring(2);
   model.gsmSignalPower = lines[26].substring(2);
-  //chart
+  //inbox temps #
+  chartsObject.inBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[23].substring(3))));
+ //outbox temps #
+  chartsObject.outBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[24].substring(3))));
+ //outboxHumiditys #
+  chartsObject.outBoxHumiditys.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[25].substring(2))));
+
+  //gsm signal power
   chartsObject.mobileSignals.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[26].substring(2))));
 
   model.fanCount = lines[27].substring(2);
-  //chart
+  //fan counts
   chartsObject.fanCounts.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[27].substring(2))));
 
 
@@ -266,13 +283,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[1].contains('OFF')) {
+    if (list[1].contains('Rd')) {
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[1].contains('Rd')) {
+    if (list[1].contains('OFF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -298,13 +315,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[6].contains('OFF')) {
+    if (list[6].contains('Rd')) {
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[6].contains('Rd')) {
+    if (list[6].contains('OFF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -330,13 +347,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[11].contains('OFF')) {
+    if (list[11].contains('Rd')) {
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[11].contains('Rd')) {
+    if (list[11].contains('OFF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -363,13 +380,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[1].contains('OFF')) {
+    if (list[1].contains('Rd')) {
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[1].contains('Rd')) {
+    if (list[1].contains('OFF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -411,13 +428,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[7].contains('OF')) { //OF is correct
+    if (list[7].contains('Rd')) { //OF is correct
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[7].contains('Rd')) {
+    if (list[7].contains('OF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -443,13 +460,13 @@ compileSms(sms) {
     Relay relay = Relay();
     List<String> list = sms.split('\n');
 
-    if (list[12].contains('OF')) { //OF is correct
+    if (list[12].contains('Rd')) { //OF is correct
       relay.status = 'OFF';
     } else {
       relay.status = 'ON';
     }
 
-    if (list[12].contains('Rd')) {
+    if (list[12].contains('OF')) {
       relay.relay = 'deactive';
     } else {
       relay.relay = 'active';
@@ -520,28 +537,28 @@ compileSms(sms) {
     Plug plug = Plug();
     List<String> list = sms.split('\n');
 
-    if (list[5].contains('ON')) {
+    if (list[5].contains('Ra')) {
       plug.setUPStatus = 'ON';
     } else {
       plug.setUPStatus = 'OFF';
     }
     //down
-    if (list[9].contains('ON')) {
+    if (list[9].contains('Ra')) {
       plug.setDownStatus = 'ON';
     } else {
       plug.setDownStatus = 'OFF';
     }
 
-    if (list[5].contains('Rd')) {
-      plug.setUPRelayStatus = 'deactive';
-    } else {
+    if (list[5].contains('ON')) {
       plug.setUPRelayStatus = 'active';
+    } else {
+      plug.setUPRelayStatus = 'deactive';
     }
     //down
-    if (list[9].contains('Rd')) {
-      plug.setDownRelayStatus = 'deactive';
-    } else {
+    if (list[9].contains('ON')) {
       plug.setDownRelayStatus = 'active';
+    } else {
+      plug.setDownRelayStatus = 'deactive';
     }
 
     if (list[5].contains('Td')) {
@@ -578,28 +595,28 @@ compileSms(sms) {
     Plug plug = Plug();
     List<String> list = sms.split('\n');
 
-    if (list[0].contains('ON')) {
+    if (list[0].contains('Ra')) {
       plug.setUPStatus = 'ON';
     } else {
       plug.setUPStatus = 'OFF';
     }
     //down
-    if (list[4].contains('ON')) {
+    if (list[4].contains('Ra')) {
       plug.setDownStatus = 'ON';
     } else {
       plug.setDownStatus = 'OFF';
     }
 
-    if (list[0].contains('Rd')) {
-      plug.setUPRelayStatus = 'deactive';
-    } else {
+    if (list[0].contains('ON')) {
       plug.setUPRelayStatus = 'active';
+    } else {
+      plug.setUPRelayStatus = 'deactive';
     }
     //down
-    if (list[4].contains('Rd')) {
-      plug.setDownRelayStatus = 'deactive';
-    } else {
+    if (list[4].contains('ON')) {
       plug.setDownRelayStatus = 'active';
+    } else {
+      plug.setDownRelayStatus = 'deactive';
     }
 
     if (list[0].contains('Td')) {

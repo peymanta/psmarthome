@@ -57,7 +57,9 @@ Widget homePage(List items) {
                                     ? 0
                                     : null,
                                 child: SizedBox(
-                                  width: 50,
+                                  width: items[index].isBottomImageLeft
+                                      ? 50
+                                      : 150,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -66,7 +68,7 @@ Widget homePage(List items) {
                                                 items[index].bottomImage,
                                                 width:
                                                     items[index].isBottomImageLeft
-                                                        ? 50
+                                                        ? 40
                                                         : 150,
                                                 height: 30,
                                                 // color: Color(0xff838fa3),
@@ -79,7 +81,7 @@ Widget homePage(List items) {
                                                   items[index].secondaryBottomImage,
                                                   width:
                                                       items[index].isBottomImageLeft
-                                                          ? 50
+                                                          ? 40
                                                           : 150,
                                                   height: 30,
                                                   // color: Color(0xff838fa3),

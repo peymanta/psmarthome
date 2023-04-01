@@ -1,3 +1,5 @@
+library relay.globalss;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -9,6 +11,7 @@ import 'package:shome/outlet/OutletPage.dart';
 import '../main.dart';
 import 'bloc/relay_cubit.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+
 
 late RelayCubit relayCubit;
 Status statusOfRelay = Status.sw;
@@ -58,6 +61,7 @@ class _RelayState extends State<Relay> {
 
     relayCubit.initRelay();
 
+
     pageNumber = currentPage == Page.Relay1
         ? '1'
         : currentPage == Page.Relay2
@@ -79,6 +83,9 @@ class _RelayState extends State<Relay> {
       bloc: relayCubit,
       builder: (context, state) {
         if (state is RelayInitial) {
+          return Center(child: CircularProgressIndicator());
+        }
+        else {
           return Scaffold(
             backgroundColor: NeumorphicColors.background,
             appBar: AppBar(
@@ -100,10 +107,8 @@ class _RelayState extends State<Relay> {
               ),
             ),
           );
-        } else {
-          return Container();
         }
-      },
+        }
     );
   }
 }
@@ -165,8 +170,8 @@ Widget Relays() {
     //   });
     }
     return ListView(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
+      // shrinkWrap: true,
+      // physics: const ClampingScrollPhysics(),
       children: [
         Directionality(
             textDirection: TextDirection.ltr,
@@ -187,6 +192,8 @@ Widget Relays() {
           //   child:
             Column(
               children: [
+                currentPage == Page.Relay1 || currentPage == Page.Relay3 || currentPage == Page.Relay6 ?
+                listItemText(':Current sensor status', sensorState) : Container(),
                 Container(
                     alignment: Alignment.center,
                     height: 50,
@@ -297,16 +304,18 @@ Widget Relays() {
                   child:
                       Visibility(
                         visible: statusOfRelay == Status.sw,
-                        child: ListTile(
-                          onTap: () => relayCubit.relay(),
-                          title: Align(
-                              alignment: Alignment.centerLeft, child: Text(':Switch $pageNumber ON/OFF')),
-                          leading: NeumorphicSwitch(
-                              onChanged: (v) => relayCubit.relay(), value: relayStatus),
+                        child:
+                        listItemSwitch(':Switch $pageNumber ON/OFF', () => relayCubit.relay(), relayStatus)
+    // ListTile(
+    //                       onTap: () => relayCubit.relay(),
+    //                       title: Align(
+    //                           alignment: Alignment.centerLeft, child: Text(':Switch $pageNumber ON/OFF')),
+    //                       leading: NeumorphicSwitch(
+    //                           onChanged: (v) => relayCubit.relay(), value: relayStatus),
                     //   ),
-                    // ),
-                  ),
-                      ),
+                    ),
+                  // ),
+
                 ),
 
                 ///timer
@@ -457,7 +466,6 @@ Widget Relays() {
                           children: [
                             listItemSwitch(
                                 'Sensor Act/Deact', () => relayCubit.currentSensor(), sensor),
-                            listItemText('Status', sensorState),
                           ],
                         // ),
                     // )
@@ -622,11 +630,10 @@ Widget relay3humidity() {
   return Column(children: [
     listItemSwitch('Sensor Act/Deact',
             () => relayCubit.humidityStatus(), humidity),
-    const SizedBox(height: 20,),
-    const Center(
-        child: Text('Set Humidity',
-            style: TextStyle(fontSize: 15),
-            textDirection: TextDirection.ltr)),
+    const SizedBox(height: 30,),
+    const  Text('Set Humidity',
+            style: TextStyle(fontSize: 14),
+            textDirection: TextDirection.ltr),
     const SizedBox(
       height: 30,
     ),

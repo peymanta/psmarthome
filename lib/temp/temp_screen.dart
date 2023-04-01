@@ -178,11 +178,9 @@ class Actulator extends StatelessWidget {
                     const SizedBox(
                       height: 60,
                     ),
-                    const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(':set temp')),
+                    const Text('Set Temp'),
                     const SizedBox(
-                      height: 10,
+                      height: 30,
                     ),
                     NeumorphicButton(
                       padding: const EdgeInsets.all(20),

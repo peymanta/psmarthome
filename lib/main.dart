@@ -97,12 +97,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     buildContext = context;
-
+    // compile('');
     return Scaffold(
         appBar: AppBar(
             shadowColor: Colors.transparent,
             backgroundColor: background,
-            title: Text('Smart Home V4.5',
+            title: Text('mini Smart Home V4.5',
                 style: TextStyle(color: Colors.black))),
         body: BlocBuilder<MainCubit, MainState>(
           bloc: mainController,

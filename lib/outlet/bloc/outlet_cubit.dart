@@ -20,8 +20,8 @@ class OutletCubit extends Cubit<OutletState> {
         'remove';
 
     ///switch status
-    upActive = plug.getUPStatus == 'ON' ? true : false;
-    downActive = plug.getDownStatus == 'ON' ? true : false;
+    upActive = plug.getUPStatus == 'ON' ;
+    downActive = plug.getDownStatus == 'ON' ;
 
     ///relay status
     plugUP = plug.getUPRelayStatus == 'active';
@@ -57,18 +57,20 @@ class OutletCubit extends Cubit<OutletState> {
     //     ? 'Repeat every day'
     //     : 'selected down end date: ${plug.getDownEndDate}';
 
-    startUpTime =
-        null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
-    // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
-    // startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
-    startDownTime =
-        null; // DateTime(1111, 1, 1, int.parse(plug.getDownStartClock.split(':')[0]), int.parse(plug.getDownStartClock.split(':')[1])); //
-    endUpTime =
-        null; // DateTime(1111, 1, 1, int.parse(plug.getUPEndClock.split(':')[0]), int.parse(plug.getUPEndClock.split(':')[1]));//plug.getUPEndClock; //
-    // endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
-    // endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
-    endDownTime =
+    // startUpTime =
+    //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
+    // // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
+    // // startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
+    // startDownTime =
+    //     null; // DateTime(1111, 1, 1, int.parse(plug.getDownStartClock.split(':')[0]), int.parse(plug.getDownStartClock.split(':')[1])); //
+    // endUpTime =
+    //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPEndClock.split(':')[0]), int.parse(plug.getUPEndClock.split(':')[1]));//plug.getUPEndClock; //
+    // // endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
+    // // endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
+    // endDownTime =
         null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
+
+    emit(OutletData());
   }
 
   saveChanges(isUp, Plug plug) {
@@ -141,7 +143,7 @@ class OutletCubit extends Cubit<OutletState> {
     } else {
       isSwitchDOWN = switchStatus;
     }
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   void loop(isUp) {
@@ -165,12 +167,12 @@ class OutletCubit extends Cubit<OutletState> {
       }
 
     }
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   void update(datetime) {
     // endTime = datetime;
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   ///this function only called when timerChangeStatus(isUp) is running
@@ -188,7 +190,7 @@ class OutletCubit extends Cubit<OutletState> {
     }
     deviceBox.put('info', deviceStatus);
 
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   timerChangeStatus(isUp) {
@@ -225,7 +227,7 @@ class OutletCubit extends Cubit<OutletState> {
     }
     deviceBox.put('info', deviceStatus);
 
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   plugChangeStatus(isUp) {
@@ -258,7 +260,7 @@ class OutletCubit extends Cubit<OutletState> {
         upActive = upActiveVar;
         plug.setUPStatus = upActive ? 'ON' : 'OFF';
         deviceBox.put('info', deviceStatus);
-        emit(OutletInitial());
+        emit(OutletData());
       });
     } else {
       var downActiveVar = !downActive;
@@ -268,7 +270,7 @@ class OutletCubit extends Cubit<OutletState> {
         downActive = downActiveVar;
         plug.setDownStatus = downActive ? 'ON' : 'OFF';
         deviceBox.put('info', deviceStatus);
-        emit(OutletInitial());
+        emit(OutletData());
       });
     }
   }
@@ -286,7 +288,7 @@ class OutletCubit extends Cubit<OutletState> {
         }
         deviceBox.put('info', deviceStatus);
         available = true;
-        emit(OutletInitial());
+        emit(OutletData());
       });
     }
   }
@@ -312,7 +314,7 @@ class OutletCubit extends Cubit<OutletState> {
 
       deviceBox.put('info', deviceStatus);
       available = false;
-      emit(OutletInitial());
+      emit(OutletData());
     });
   }
 
@@ -328,7 +330,7 @@ class OutletCubit extends Cubit<OutletState> {
     }
     deviceBox.put('info', deviceStatus);
 
-    emit(OutletInitial());
+    emit(OutletData());
   }
 
   icon(bool isUp) {

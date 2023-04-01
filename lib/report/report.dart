@@ -32,7 +32,7 @@ class _ReportState extends State<Report> {
 
   @override
   Widget build(BuildContext context) {   print(constants.get('capvolt'));
-    // compile('');
+    compile('');
 // Future.delayed(Duration(seconds: 2)).then((value) => print(capVoltages));
 
     return Scaffold(
@@ -55,10 +55,12 @@ class _ReportState extends State<Report> {
 
             divider(),
             listItemText('Device'),
-            listItemText('''Outbox temp: ${deviceStatus.getPublicReport.outBoxTemp}
+            listItemText('''Inbox temp: ${deviceStatus.getPublicReport.inBoxTemp}
+Outbox temp: ${deviceStatus.getPublicReport.outBoxTemp}
 Outbox humidity: ${deviceStatus.getPublicReport.outBoxHumidity}
 Room temp: ${deviceStatus.getPublicReport.temp}
 Case door: ${deviceStatus.getPublicReport.caseDoor}
+Execute task mode: ${deviceStatus.getPublicReport.excuteTask}
 Buzzer: ${deviceStatus.getPublicReport.buzzer}
 Fan: ${deviceStatus.getPublicReport.fanCount}
 5 volt relays: ${deviceStatus.getPublicReport.power5}

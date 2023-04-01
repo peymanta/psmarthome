@@ -68,7 +68,7 @@ class _OutletState extends State<Outlet> {
     return BlocBuilder<OutletCubit, OutletState>(
       bloc: _cubit,
       builder: (context, state) {
-        if (state is OutletInitial) {
+        if (state is OutletData) {
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -232,7 +232,7 @@ class _OutletState extends State<Outlet> {
             ),
           );
         } else {
-          return Container();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

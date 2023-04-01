@@ -4,3 +4,4 @@ part of 'outlet_cubit.dart';
 abstract class OutletState {}
 
 class OutletInitial extends OutletState {}
+class OutletData extends OutletState {}

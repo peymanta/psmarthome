@@ -7,6 +7,7 @@ import 'package:shome/relay/relay.dart' as r;
 import 'package:sms/sms.dart';
 
 import '../main.dart';
+import '../relay/relay.dart';
 
 part 'main_state.dart';
 
@@ -55,7 +56,8 @@ Please enter the SIM card number in your device'''),
       }
     });
     // Future.delayed(Duration.zero).then((value) => showDialog(context: buildContext, builder: (context)=>AlertDialog(title: Text('test'), content: Text('نسخه تستی ارسال شده توسط فریلنسر جهت تایید کارفرما'),)));
-    // compile('');
+  relayCubit = RelayCubit();
+  relayCubit.initRelay();
   }
 
   updateMain() {
