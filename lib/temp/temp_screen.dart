@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -9,6 +11,7 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../compiling_sms.dart';
 import '../main.dart';
+import '../pages.dart';
 import 'bloc/temp_cubit.dart';
 
 late TempCubit _cubit;
@@ -149,7 +152,6 @@ class Actulator extends StatelessWidget {
 
                                     selectedStartDate =
                                         'Selected date: ${startdate.year}/${startdate.month}/${startdate.day}';
-
                                   });
                                 },
                                 child: const Center(
@@ -222,15 +224,15 @@ class Actulator extends StatelessWidget {
 
         ListTile(
           onTap: () {
-
-              if (!isCooler) {
-                if (hub) {
-                  sendSMS('Static Routing for Remote Devices:H', onPressed: ()=>setState(() => hub = !hub));
-                } else {
-                  sendSMS('Static Routing for Remote Devices:m', onPressed: ()=>setState(() => hub = !hub));
-                }
+            if (!isCooler) {
+              if (hub) {
+                sendSMS('Static Routing for Remote Devices:H',
+                    onPressed: () => setState(() => hub = !hub));
+              } else {
+                sendSMS('Static Routing for Remote Devices:m',
+                    onPressed: () => setState(() => hub = !hub));
               }
-
+            }
           },
           title: Container(
             alignment: Alignment.centerLeft,
@@ -292,35 +294,38 @@ class _CoolerScreenState extends State<CoolerScreen> {
     _cubit = TempCubit();
     _tooltip = TooltipBehavior();
 
-    _cubit.init();
+    Future.delayed(const Duration(milliseconds: 100))
+        .then((value) => _cubit.init());
+
   }
 
   @override
   Widget build(BuildContext context) {
+    // buildContext = context;
+    // showMessage('please wait');
     // return MyApp();
-    return BlocBuilder<TempCubit, TempState>(
-      bloc: _cubit,
-      builder: (context, state) {
-        if (state is TempInitial) {
-          return Scaffold(
-            appBar: AppBar(
-                shadowColor: Colors.transparent,
-                backgroundColor: NeumorphicColors.background,
-                iconTheme: const IconThemeData(color: Colors.black)),
+    return Scaffold(
+        appBar: AppBar(
+            shadowColor: Colors.transparent,
             backgroundColor: NeumorphicColors.background,
-            body: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: Actulator(_cubit, context, true),
-              ),
-            ),
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
+            iconTheme: const IconThemeData(color: Colors.black)),
+        backgroundColor: NeumorphicColors.background,
+        body: BlocBuilder<TempCubit, TempState>(
+          bloc: _cubit,
+          builder: (context, state) {
+            if (state is TempData) {
+              return Directionality(
+                textDirection: TextDirection.rtl,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Actulator(_cubit, context, true),
+                ),
+              );
+            } else {
+              return const Shimmer();
+            }
+          },
+        ));
   }
 }
 
@@ -339,35 +344,36 @@ class _HeaterScreenState extends State<HeaterScreen> {
     _cubit = TempCubit();
     _tooltip = TooltipBehavior();
 
-    _cubit.init();
+    Future.delayed(const Duration(milliseconds: 100))
+        .then((value) => _cubit.init());
+
   }
 
   @override
   Widget build(BuildContext context) {
     // return MyApp();
-    return BlocBuilder<TempCubit, TempState>(
+    return Scaffold(
+        appBar: AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: NeumorphicColors.background,
+        iconTheme: const IconThemeData(color: Colors.black)),
+    backgroundColor: NeumorphicColors.background,
+    body: BlocBuilder<TempCubit, TempState>(
       bloc: _cubit,
       builder: (context, state) {
-        if (state is TempInitial) {
-          return Scaffold(
-            appBar: AppBar(
-                shadowColor: Colors.transparent,
-                backgroundColor: NeumorphicColors.background,
-                iconTheme: const IconThemeData(color: Colors.black)),
-            backgroundColor: NeumorphicColors.background,
-            body: Directionality(
+        if (state is TempData) {
+          return Directionality(
               textDirection: TextDirection.rtl,
               child: Container(
                 padding: const EdgeInsets.all(20),
                 child: Actulator(_cubit, context, false),
               ),
-            ),
           );
         } else {
-          return Container();
+          return const Shimmer();
         }
       },
-    );
+    ));
   }
 }
 

@@ -9,6 +9,7 @@ import 'package:shome/colors.dart';
 import 'package:shome/outlet/OutletPage.dart';
 
 import '../main.dart';
+import '../pages.dart';
 import 'bloc/relay_cubit.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
@@ -59,7 +60,9 @@ class _RelayState extends State<Relay> {
     super.initState();
     relayCubit = RelayCubit();
 
-    relayCubit.initRelay();
+
+    Future.delayed(const Duration(milliseconds: 100))
+        .then((value) => relayCubit.initRelay());
 
 
     pageNumber = currentPage == Page.Relay1
@@ -79,24 +82,24 @@ class _RelayState extends State<Relay> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RelayCubit, RelayState>(
+    return Scaffold(
+        backgroundColor: NeumorphicColors.background,
+        appBar: AppBar(
+        backgroundColor: NeumorphicColors.background,
+        shadowColor: Colors.transparent,
+        title: Text(
+        pageNumber,
+        style: const TextStyle(color: Colors.black),
+    ),
+    iconTheme: const IconThemeData(color: Colors.black)),
+    body: BlocBuilder<RelayCubit, RelayState>(
       bloc: relayCubit,
       builder: (context, state) {
         if (state is RelayInitial) {
-          return Center(child: CircularProgressIndicator());
+          return const Shimmer();
         }
         else {
-          return Scaffold(
-            backgroundColor: NeumorphicColors.background,
-            appBar: AppBar(
-                backgroundColor: NeumorphicColors.background,
-                shadowColor: Colors.transparent,
-                title: Text(
-                  pageNumber,
-                  style: const TextStyle(color: Colors.black),
-                ),
-                iconTheme: const IconThemeData(color: Colors.black)),
-            body: Directionality(
+          return Directionality(
               textDirection: TextDirection.rtl,
               child: Container(
                 color: NeumorphicColors.background,
@@ -105,11 +108,10 @@ class _RelayState extends State<Relay> {
                         ? const Relay4()
                         :  Relays(),
               ),
-            ),
           );
         }
         }
-    );
+    ));
   }
 }
 
@@ -564,55 +566,56 @@ class Relay4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 150),
-              child: Center(
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: NeumorphicButton(
-                      onPressed: () => relayCubit.relay4Switch(),
-                      child: const Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,)),
-                      style: const NeumorphicStyle(
-                          boxShape: NeumorphicBoxShape.circle(),
-                          shape: NeumorphicShape.convex)),
+        Expanded(
+          child: Stack(
+            children: [
+              Center(
+                child: Center(
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: NeumorphicButton(
+                        onPressed: () => relayCubit.relay4Switch(),
+                        style: const NeumorphicStyle(
+                            boxShape: NeumorphicBoxShape.circle(),
+                            shape: NeumorphicShape.convex),
+                        child: const Center(child: Icon(Icons.power_settings_new_rounded, color: blue, size: 40,))),
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              right: 10,
-              child: SizedBox(
-                width: 220,
-                height: 110,
-                child: MaterialButton(
-                  onPressed: () => relayCubit.icon(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: blue)),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(13),
-                          child: Image.asset(constants.get('IR4') ?? _4Image),
-                        ),
-                        Expanded(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: const Text(
-                                  'you can change this icon now'),
-                            )),
-                      ],
+              Positioned(
+                right: 10,
+                child: SizedBox(
+                  width: 220,
+                  height: 110,
+                  child: MaterialButton(
+                    onPressed: () => relayCubit.icon(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: blue)),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(13),
+                            child: Image.asset(constants.get('IR4') ?? _4Image),
+                          ),
+                          Expanded(
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                    'you can change this icon now'),
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-          // ),
-          // ),
+            ],
+            // ),
+            // ),
+          ),
         ),
         // Padding(
         //   padding: const EdgeInsets.only(top: 30),

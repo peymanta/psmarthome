@@ -26,8 +26,8 @@ class OutletCubit extends Cubit<OutletState> {
     ///relay status
     plugUP = plug.getUPRelayStatus == 'active';
     plugDOWN = plug.getDownRelayStatus == 'active';
-
-    ///timer status
+    //
+    // ///timer status
     timerUP = plug.getUPTimerStatus == 'active';
     timerDown = plug.getDownTimerStatus == 'active';
 
@@ -38,37 +38,6 @@ class OutletCubit extends Cubit<OutletState> {
     }
     isSwitchUP = true;
     isSwitchDOWN = true;
-    infinityUp =
-        plug.getUPStartDate == '11/11/11' && plug.getUPEndDate == '11/11/11';
-    infinityDown = plug.getDownStartDate == '11/11/11' &&
-        plug.getDownEndDate == '11/11/11';
-    selectedUpStartDate = infinityUp
-        ? ':Start & End date\nRepeat every day'
-        : 'selected up date: ${plug.getUPStartDate}';
-    startUpDate = Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
-    // selectedUpEndDate = infinityUp
-    //     ? 'Repeat every day'
-    //     : 'selected up end date: ${plug.getUPEndDate}';
-    selectedDownStartDate = infinityDown
-        ? ':Start & End date\nRepeat every day'
-        : 'selected down start date: ${plug.getDownStartDate}';
-    startDownDate = Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
-    // selectedDownEndDate = infinityDown
-    //     ? 'Repeat every day'
-    //     : 'selected down end date: ${plug.getDownEndDate}';
-
-    // startUpTime =
-    //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
-    // // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
-    // // startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
-    // startDownTime =
-    //     null; // DateTime(1111, 1, 1, int.parse(plug.getDownStartClock.split(':')[0]), int.parse(plug.getDownStartClock.split(':')[1])); //
-    // endUpTime =
-    //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPEndClock.split(':')[0]), int.parse(plug.getUPEndClock.split(':')[1]));//plug.getUPEndClock; //
-    // // endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
-    // // endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
-    // endDownTime =
-        null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
 
     emit(OutletData());
   }
@@ -137,7 +106,41 @@ class OutletCubit extends Cubit<OutletState> {
     }
   }
 
-  void status(bool isUp, switchStatus) {
+  void status(plug, bool isUp, switchStatus) {
+    if(!switchStatus) {
+      infinityUp =
+          plug.getUPStartDate == '11/11/11' && plug.getUPEndDate == '11/11/11';
+      infinityDown = plug.getDownStartDate == '11/11/11' &&
+          plug.getDownEndDate == '11/11/11';
+      selectedUpStartDate = infinityUp
+          ? ':Start & End date\nRepeat every day'
+          : 'selected up date: ${plug.getUPStartDate}';
+      startUpDate = Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
+      // selectedUpEndDate = infinityUp
+      //     ? 'Repeat every day'
+      //     : 'selected up end date: ${plug.getUPEndDate}';
+      selectedDownStartDate = infinityDown
+          ? ':Start & End date\nRepeat every day'
+          : 'selected down start date: ${plug.getDownStartDate}';
+      startDownDate = Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
+      // selectedDownEndDate = infinityDown
+      //     ? 'Repeat every day'
+      //     : 'selected down end date: ${plug.getDownEndDate}';
+
+      // startUpTime =
+      //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
+      // // startUpDate = null; // Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
+      // // startDownDate = null; // Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
+      // startDownTime =
+      //     null; // DateTime(1111, 1, 1, int.parse(plug.getDownStartClock.split(':')[0]), int.parse(plug.getDownStartClock.split(':')[1])); //
+      // endUpTime =
+      //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPEndClock.split(':')[0]), int.parse(plug.getUPEndClock.split(':')[1]));//plug.getUPEndClock; //
+      // // endUpDate = null; // Jalali(int.parse(plug.getUPEndDate.split('/')[0]),int.parse(plug.getUPEndDate.split('/')[1]),int.parse(plug.getUPEndDate.split('/')[2]));
+      // // endDownDate = null; // Jalali(int.parse(plug.getDownEndDate.split('/')[0]),int.parse(plug.getDownEndDate.split('/')[1]),int.parse(plug.getDownEndDate.split('/')[2]));
+      // endDownTime =
+      null; // DateTime(1111, 1, 1, int.parse(plug.getDownEndClock.split(':')[0]), int.parse(plug.getDownEndClock.split(':')[1]));//plug.getDownEndClock; //
+
+    }
     if (isUp) {
       isSwitchUP = switchStatus;
     } else {

@@ -9,7 +9,7 @@ part 'notification_state.dart';
 class NotificationCubit extends Cubit<NotificationState> {
   NotificationCubit() : super(NotificationInitial());
   init(){
-    notifications = logBox.values.toList();
+    notifications = logBox.values.toList().reversed.toList();
     constants.put('notifBadge', notifications.length);
 
     mainController.updateMain(); //for delete badge

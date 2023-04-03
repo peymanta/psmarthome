@@ -87,7 +87,7 @@ class TempCubit extends Cubit<TempState> {
 
       rest = deviceStatus.getPublicReport.heaterRest == 'active';
     }
-    emit(TempInitial());
+    emit(TempData());
   }
 
   submitTimer() {
@@ -183,7 +183,7 @@ class TempCubit extends Cubit<TempState> {
           removeCancel: true);
     }
     deviceBox.put('info', deviceStatus);
-    emit(TempInitial());
+    emit(TempData());
   }
 
   submitTemp(isCooler) {
@@ -203,7 +203,7 @@ class TempCubit extends Cubit<TempState> {
         // sendSMS('Heater:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
-        emit(TempInitial());
+        emit(TempData());
       });
     } else {
       sendSMS('Heater:${automaticVar ? 'a' : 'd'}#', onPressed: () {
@@ -214,7 +214,7 @@ class TempCubit extends Cubit<TempState> {
         // sendSMS('Cooler:${automaticVar ? 'd' : 'a'}#', showDialog: false);
 
         deviceBox.put('info', deviceStatus);
-        emit(TempInitial());
+        emit(TempData());
       });
     }
   }
@@ -231,7 +231,7 @@ class TempCubit extends Cubit<TempState> {
       }
 
       deviceBox.put('info', deviceStatus);
-      emit(TempInitial());
+      emit(TempData());
     });
   }
 
@@ -243,12 +243,12 @@ class TempCubit extends Cubit<TempState> {
       selectedStartDate = startdate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startdate.formatCompactDate()}';
     }
     // selectedEndDate = infinity ? 'Repeat every day' : '';
-    emit(TempInitial());
+    emit(TempData());
   }
 
   void update(datetime) {
     // endTime = datetime;
-    emit(TempInitial());
+    emit(TempData());
   }
 
   addDeviceToDB() {
@@ -263,7 +263,7 @@ class TempCubit extends Cubit<TempState> {
 
     available = true;
 
-    emit(TempInitial());
+    emit(TempData());
   }
 
   removeDeviceFromDB() {
@@ -278,7 +278,7 @@ class TempCubit extends Cubit<TempState> {
 
     available = false;
 
-    emit(TempInitial());
+    emit(TempData());
   }
 
   addDevice() {

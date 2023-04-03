@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 const Color primary = Color(0XFF838FA3);
+Color shimmer = const Color(0XFF838FA3).withOpacity(.6);
 const Color background = Color(0xffeceef7);
 const Color green = Color(0XFF00B894);
 const Color red = Color(0xFFD63030);

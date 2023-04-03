@@ -4,6 +4,7 @@ import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import '../colors.dart';
 import '../main.dart';
+import '../pages.dart';
 import '../relay/relay.dart' as relay;
 import 'package:persian_datetime_picker/persian_datetime_picker.dart' as date;
 import 'bloc/outlet_cubit.dart';
@@ -58,28 +59,31 @@ class _OutletState extends State<Outlet> {
     super.initState();
     _cubit = OutletCubit();
 
-    _cubit.init(currentPlug == PlugNumber.plug1
+
+    Future.delayed(const Duration(milliseconds: 100))
+        .then((value) => _cubit.init(currentPlug == PlugNumber.plug1
         ? deviceStatus.getPLug1
-        : deviceStatus.getPlug2);
+        : deviceStatus.getPlug2));
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OutletCubit, OutletState>(
+    return Scaffold(
+        appBar: AppBar(
+        title: Text(
+        'Plug ${currentPlug == PlugNumber.plug1 ? '1' : '2'}',
+        style: const TextStyle(color: Colors.black),
+    ),
+    backgroundColor: background,
+    shadowColor: Colors.transparent,
+    iconTheme: const IconThemeData(color: Colors.black),
+    ),
+    body: BlocBuilder<OutletCubit, OutletState>(
       bloc: _cubit,
       builder: (context, state) {
         if (state is OutletData) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                'Plug ${currentPlug == PlugNumber.plug1 ? '1' : '2'}',
-                style: const TextStyle(color: Colors.black),
-              ),
-              backgroundColor: background,
-              shadowColor: Colors.transparent,
-              iconTheme: const IconThemeData(color: Colors.black),
-            ),
-            body: Container(
+          return Container(
               color: background,
               height: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -229,13 +233,12 @@ class _OutletState extends State<Outlet> {
                       // SizedBox(height: 20),
                     ],
                   )),
-            ),
           );
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return Container(color: background,child: const Shimmer());
         }
       },
-    );
+    ));
   }
 }
 
@@ -248,7 +251,9 @@ Widget option(context, bool isUp) {
           Column(
             children: [
               ListTile(
-                onTap: () => _cubit.status(isUp, true),
+                onTap: () => _cubit.status(currentPlug == PlugNumber.plug1
+                    ? deviceStatus.getPLug1
+                    : deviceStatus.getPlug2,isUp, true),
                 title: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(isUp == true ? 'UP' : 'DOWN'),
@@ -257,7 +262,9 @@ Widget option(context, bool isUp) {
                   width: 100,
                   height: 100,
                   child: NeumorphicRadio(
-                      onChanged: (v) => _cubit.status(isUp, true),
+                      onChanged: (v) => _cubit.status(currentPlug == PlugNumber.plug1
+                          ? deviceStatus.getPLug1
+                          : deviceStatus.getPlug2,isUp, true),
                       style: const NeumorphicRadioStyle(
                           boxShape: NeumorphicBoxShape.circle(),
                           selectedColor: blue),
@@ -269,7 +276,9 @@ Widget option(context, bool isUp) {
                 height: 10,
               ),
               ListTile(
-                onTap: () => _cubit.status(isUp, false),
+                onTap: () => _cubit.status(currentPlug == PlugNumber.plug1
+                    ? deviceStatus.getPLug1
+                    : deviceStatus.getPlug2, isUp, false),
                 title: Container(
                     alignment: Alignment.centerLeft,
                     child: const Text('Timing')),
@@ -277,7 +286,9 @@ Widget option(context, bool isUp) {
                   width: 100,
                   height: 100,
                   child: NeumorphicRadio(
-                      onChanged: (v) => _cubit.status(isUp, false),
+                      onChanged: (v) => _cubit.status(currentPlug == PlugNumber.plug1
+                          ? deviceStatus.getPLug1
+                          : deviceStatus.getPlug2,isUp, false),
                       style: const NeumorphicRadioStyle(
                           boxShape: NeumorphicBoxShape.circle(),
                           selectedColor: blue),

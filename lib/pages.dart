@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shome/ups/ups.dart';
 import 'package:shome/relay/bloc/relay_cubit.dart';
 import 'package:shome/relay/relay.dart' as relay;
@@ -152,4 +155,96 @@ void getPages() {
                 buildContext,
                 MaterialPageRoute(builder: (buildContext) => Settings()))),
   ];
+}
+
+class Shimmer extends StatelessWidget {
+  const Shimmer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      padding: const EdgeInsets.all(20),
+      child: Stack(
+        children: [
+          ListView(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 40),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 60),
+                        width: 120,
+                        height: 140,
+                        decoration: BoxDecoration(
+                            color: shimmer,
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 60),
+                        width: 120,
+                        height: 140,
+                        decoration: BoxDecoration(
+                            color: shimmer,
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 40),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+            ],
+          ),
+          Center(child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: const Text('Please wait')),)
+        ],
+      ),
+    );
+  }
 }

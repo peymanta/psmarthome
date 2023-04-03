@@ -4,3 +4,4 @@ part of 'temp_cubit.dart';
 abstract class TempState {}
 
 class TempInitial extends TempState {}
+class TempData extends TempState {}
