@@ -1,6 +1,6 @@
 flutter_native_splash:
-  color: "#eceef7"
-  image: assets/selectable-icons/question.png
+  color: "#f9f9f9"
+  image: assets/images/splash.png
   android_12:
-    image: assets/selectable-icons/question.png
-    image_dark: assets/selectable-icons/question.png
+    image: assets/images/splash.png
+    image_dark: assets/images/splash.png

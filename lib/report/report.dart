@@ -55,29 +55,31 @@ class _ReportState extends State<Report> {
 
             divider(),
             listItemText('Device'),
-            listItemText('''Inbox temp: ${deviceStatus.getPublicReport.inBoxTemp}
+            listItemText('''
+Public report: ${constants.get('publicreportTimer') == 'off' ? 'OFF' : 'Sms sending time at ${constants.get('publicreportTimer').toString().substring(1,3) + ':' + constants.get('publicreportTimer').toString().substring(3)}'}
+Inbox temp: ${deviceStatus.getPublicReport.inBoxTemp}
 Outbox temp: ${deviceStatus.getPublicReport.outBoxTemp}
 Outbox humidity: ${deviceStatus.getPublicReport.outBoxHumidity}
 Room temp: ${deviceStatus.getPublicReport.temp}
+Plug: ${deviceStatus.getPublicReport.plug}
+Light: ${deviceStatus.getPublicReport.daynight}
+GSM Power signal: ${deviceStatus.getPublicReport.gsmSignalPower}
+Security: ${deviceStatus.getPublicReport.securitySystem}
+Motion sensor: ${deviceStatus.getPublicReport.motionSensor}
 Case door: ${deviceStatus.getPublicReport.caseDoor}
-Execute task mode: ${deviceStatus.getPublicReport.excuteTask}
 Buzzer: ${deviceStatus.getPublicReport.buzzer}
 Fan: ${deviceStatus.getPublicReport.fanCount}
+Short sms: ${deviceStatus.getPublicReport.shortReport}
+View: ${deviceStatus.getPublicReport.view}
+Reset counts: ${deviceStatus.resetCount}
 5 volt relays: ${deviceStatus.getPublicReport.power5}
 5 volt micro controller: ${deviceStatus.getPublicReport.microPower}
-Security: ${deviceStatus.getPublicReport.securitySystem}
+Battery State: ${deviceStatus.getPublicReport.battery}
+Extention Voltage: ${deviceStatus.getPublicReport.power}
+Execute task mode: ${deviceStatus.getPublicReport.excuteTask}
 Water leak 1: ${deviceStatus.getPublicReport.waterLeakagePlug1}
 Water leak 2: ${deviceStatus.getPublicReport.waterLeakagePlug2}
 Cooler rest: ${deviceStatus.getPublicReport.coolerRest}
-Short sms: ${deviceStatus.getPublicReport.shortReport}
-View: ${deviceStatus.getPublicReport.view}
-Plug: ${deviceStatus.getPublicReport.plug}
-Light: ${deviceStatus.getPublicReport.daynight}
-Battery State: ${deviceStatus.getPublicReport.battery}
-Extention Voltage: ${deviceStatus.getPublicReport.power}
-GSM Power signal: ${deviceStatus.getPublicReport.gsmSignalPower}
-Motion sensor: ${deviceStatus.getPublicReport.motionSensor}
-Reset counts: ${deviceStatus.resetCount}
 '''),
             divider(),
             listItemText('Graph'),

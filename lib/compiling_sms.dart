@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:shome/report/report.dart';
 import 'package:telephony/telephony.dart';
+import 'package:shamsi_date/shamsi_date.dart' as shamsi_date;
 import 'main.dart';
 import 'models/status.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -42,38 +43,44 @@ compile(String sms) async{
 // 11/11/11-16:00
 // 11/11/11-17:00
 // ''';
-
-  var sms = '''1210 01:04
-s:A
-U:A
-M:N
-Ti:323
-TO:271,101
-HO:261
-B:N
-12EN
-5RN
-4GN
-5MN
-D1N
-S:A
-L1n2n
-L:Ni
-d:N
-E:H
-P:C
-r:A
-WP#1:C-2:R
-CU:1:DA,3:DA,6:DA
-V:D
-Ti#45
-TO#226
-H#133
-i#16
-F:0
-C:a
-30min
-WC:D.''';
+// var sms = '''Electricity has been Cut Off or The Fuse is Burnt
+//
+// Cap Voltage ~ 144.40 V
+//
+// Disconnect all of POW RLs
+// //
+// // 101/12/13 3:11:17''';
+//   var sms = '''1210 01:04
+// s:A
+// U:A
+// M:N
+// Ti:323
+// TO:271,101
+// HO:261
+// B:N
+// 12EN
+// 5RN
+// 4GN
+// 5MN
+// D1N
+// S:A
+// L1n2n
+// L:Ni
+// d:N
+// E:H
+// P:C
+// r:A
+// WP#1:C-2:R
+// CU:1:DA,3:DA,6:DA
+// V:D
+// Ti#45
+// TO#226
+// H#133
+// i#16
+// F:0
+// C:a
+// 30min
+// WC:D.''';
 
 // var sms = '''Cooler:
 // 11/11/11-00:06
@@ -131,7 +138,7 @@ WC:D.''';
 // RM:A
 // SR:m
 // R:2
-// P2000
+// P1356
 // 9120232465
 // 2144168346
 // TFMN''';
@@ -184,6 +191,9 @@ compilePublicReport(String sms) async{
   if(lines[13].contains('A')) { ///setting pir values
     constants.put('pir1', 'active');
     constants.put('pir2', 'active');
+  } else {
+    constants.put('pir1', 'deactive');
+    constants.put('pir2', 'deactive');
   }
   model.setWaterLeakagePlug1 = lines[14][2]=='n'? 'dry' : lines[14][2]=='d'? 'disconnect connector' : lines[14][2]=='y'? 'yes' : lines[14][2]=='D'? 'deactived by key' : 'no info';
   model.setWaterLeakagePlug2 = lines[14][4]=='n'? 'dry' : lines[14][4]=='d'? 'disconnect connector' : lines[14][4]=='y'? 'yes' : lines[14][4]=='D'? 'deactived by key' : 'no info';
@@ -192,7 +202,7 @@ compilePublicReport(String sms) async{
   model.setExcuteTask = lines[17].contains('H') ? 'home' : lines[17].contains('R') ? 'resting' : 'sleep';
   model.setPlug = lines[18].contains('C') ? 'connect' : 'disconnect';
   //chart
-  chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', model.plug == 'connect'? 1 : 0));
+  chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', model.plug == 'connect'? 1 : 0));
 
   model.setHeaterRest = lines[19].contains('A') ? 'active' : 'deactive';
   model.setCoolerRest = lines[19].contains('A') ? 'active' : 'deactive';
@@ -202,7 +212,7 @@ compilePublicReport(String sms) async{
     deviceStatus.getPLug1.setDownStatus = 'OFF';
   }
   //chart
-  chartsObject.onePlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessPlug1 == 'connect'? 1.0 : 0.0)));
+  chartsObject.onePlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', (model.wirelessPlug1 == 'connect'? 1.0 : 0.0)));
 
   model.setWirelessPlug2 = lines[20][9] == 'C' ? 'connect' : lines[20][9] == 'D' ? 'disconnect' : 'remove';
   if(model.wirelessPlug2 == 'remove') {
@@ -210,7 +220,7 @@ compilePublicReport(String sms) async{
     deviceStatus.getPlug2.setDownStatus = 'OFF';
   }
   //chart
-  chartsObject.twoPlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessPlug2 == 'connect'? 1.0 : 0.0)));
+  chartsObject.twoPlugs.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', (model.wirelessPlug2 == 'connect'? 1.0 : 0.0)));
 
   model.setCurrentSensor1 = lines[21].substring(5, 7) == 'DA'? 'deactive' : lines[21].substring(5, 7) == 'AC'? 'active' : lines[21].substring(5, 7) == 'NO'? 'normal' : lines[21].substring(5, 7) == 'ND'? 'no device' : lines[21].substring(5, 7) == 'OF'? 'off' : 'overload';
   model.setCurrentSensor3 = lines[21].substring(10, 12) == 'DA'? 'deactive' : lines[21].substring(10, 12) == 'AC'? 'active' : lines[21].substring(10, 12) == 'NO'? 'normal' : lines[21].substring(10, 12) == 'ND'? 'no device' : lines[21].substring(10, 12) == 'OF'? 'off' : 'overload';
@@ -221,18 +231,18 @@ compilePublicReport(String sms) async{
   model.setOutboxHumidityFromFirstDay = lines[25].substring(2);
   model.gsmSignalPower = lines[26].substring(2);
   //inbox temps #
-  chartsObject.inBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[23].substring(3))));
+  chartsObject.inBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(lines[23].substring(3))));
  //outbox temps #
-  chartsObject.outBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[24].substring(3))));
+  chartsObject.outBoxTemps.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(lines[24].substring(3))));
  //outboxHumiditys #
-  chartsObject.outBoxHumiditys.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[25].substring(2))));
+  chartsObject.outBoxHumiditys.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(lines[25].substring(2))));
 
   //gsm signal power
-  chartsObject.mobileSignals.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[26].substring(2))));
+  chartsObject.mobileSignals.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(lines[26].substring(2))));
 
   model.fanCount = lines[27].substring(2);
   //fan counts
-  chartsObject.fanCounts.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(lines[27].substring(2))));
+  chartsObject.fanCounts.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(lines[27].substring(2))));
 
 
   if(sms.contains('C:a')) model.setAutoCooler = 'auto-active';
@@ -261,13 +271,13 @@ compilePublicReport(String sms) async{
   if(sms.contains('WC:D')) model.wirelessCooler = 'deactive';
   if(sms.contains('WC:C')) model.wirelessCooler = 'active';
   //chart
-  chartsObject.coolers.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessCooler=='active' ? 1.0 : 0.0)));
+  chartsObject.coolers.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', (model.wirelessCooler=='active' ? 1.0 : 0.0)));
 
   if(sms.contains('WH:D')) model.wirelessHeater = 'deactive';
   if(sms.contains('WH:C')) model.wirelessHeater = 'active';
   print(model.wirelessHeater=='active');
 //chart
-  chartsObject.heaters.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', (model.wirelessHeater=='active' ? 1.0 : 0.0)));
+  chartsObject.heaters.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', (model.wirelessHeater=='active' ? 1.0 : 0.0)));
   
   
   ///saving data
@@ -665,15 +675,15 @@ compileSms(sms) {
       var resetCounts = sms.split('\n')[10].split(':')[1];
       deviceStatus.setResetCount = resetCounts;
       //chart
-      chartsObject.deviceResets.add(ChartData('12/28', 12));
-      chartsObject.deviceResets.add(ChartData('12/30', 14));
-      chartsObject.deviceResets.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(resetCounts)));
+      // chartsObject.deviceResets.add(ChartData('12/28', 12));
+      // chartsObject.deviceResets.add(ChartData('12/30', 14));
+      chartsObject.deviceResets.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(resetCounts)));
       chartsBox.put('object', chartsObject);
     }
     //public report
     if(sms.contains('PR OF')) {
       // deviceStatus.setPublicReport = 'off';
-      constants.put('publicreport', 'off');
+      constants.put('publicreportTimer', 'off');
     } else {
       // deviceStatus.setPublicReport = sms.split('\n')[11].substring(1);
       constants.put('publicreportTimer', sms.split('\n')[11].toString());
@@ -726,8 +736,8 @@ compileInteractiveSMS(String sms) async{
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
 
-    chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', model.plug == 'connect'? 1 : 0));
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', model.plug == 'connect'? 1 : 0));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
     logBox.add(sms);
 
     if(sms.contains('Connect all of Power RLs')){
@@ -756,8 +766,8 @@ compileInteractiveSMS(String sms) async{
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
 
-    chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', model.plug == 'connect'? 1 : 0));
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    chartsObject.electricalIssuses.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', model.plug == 'connect'? 1 : 0));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
     logBox.add(sms);
     chartsBox.put('charts', chartsObject);
     deviceBox.put('info', deviceStatus);
@@ -822,7 +832,7 @@ compileInteractiveSMS(String sms) async{
   }
   if(sms.contains('Version :')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     dialog('version', Text(sms.split('\n')[0]), ()=>Navigator.pop(buildContext), removeCancel: true);
 
@@ -831,7 +841,7 @@ compileInteractiveSMS(String sms) async{
   }
   if(sms.contains('LOW Battery')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     ///disable relays
     deviceStatus.getR1.status = 'OFF';
@@ -847,7 +857,7 @@ compileInteractiveSMS(String sms) async{
   }
   if(sms.contains('After LOW Battery')) {
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     if(sms.contains('Normal Battery Voltage and Connect all of RLs')) {
       deviceStatus.getR1.status = 'ON';
@@ -892,7 +902,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text('1N5408 is Burnt'), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     chartsBox.put('charts', chartsObject);
     logBox.add(sms);
@@ -901,7 +911,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'backup';
     deviceBox.put('info', deviceStatus);
@@ -912,7 +922,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'short circuit';
     deviceBox.put('info', deviceStatus);
@@ -923,7 +933,7 @@ compileInteractiveSMS(String sms) async{
     dialog('', Text(sms), ()=> Navigator.pop(buildContext), removeCancel: true);
 
     String volt = sms.split('\n')[2].split('~')[1].substring(0, sms.split('\n')[2].split('~')[1].indexOf('V')).trim();
-    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}', double.parse(volt)));
+    capVoltBox.add(ChartData('${Jalali.now().month}/${Jalali.now().day}\n${shamsi_date.Jalali.now().hour}:${shamsi_date.Jalali.now().minute}', double.parse(volt)));
 
     deviceStatus.getPublicReport.setPower = 'short circuit in main board';
     deviceBox.put('info', deviceStatus);

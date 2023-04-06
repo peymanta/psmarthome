@@ -109,6 +109,7 @@ class _SettingsState extends State<Settings> {
                     listItemSwitch('Rest', () => _cubit!.setResting(),
                         task! == TaskEnum.Rest),
                     divider(),
+                    listItemText('Important Comnands'),
                     button(
                         () => _cubit!.setDefaultSetting(), 'Default Setting'),
                     button(() => _cubit!.setResting(), 'Rest Device'),
@@ -117,6 +118,7 @@ class _SettingsState extends State<Settings> {
                     listItemSwitch('Remote Control',
                         () => _cubit!.setRemoteControl(), remoteControl),
                     divider(),
+                    listItemText('Phone number Change'),
                     listItemPhone('Phone number 1', num1 ?? '0912XXXXXXX',
                         () => _cubit!.getNumber(1)),
                     listItemPhone('Phone number 2', num2 ?? '0912XXXXXXX',
