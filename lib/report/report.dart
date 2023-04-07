@@ -32,7 +32,7 @@ class _ReportState extends State<Report> {
 
   @override
   Widget build(BuildContext context) {   print(constants.get('capvolt'));
-    compile('');
+    // compile('');
 // Future.delayed(Duration(seconds: 2)).then((value) => print(capVoltages));
 
     return Scaffold(

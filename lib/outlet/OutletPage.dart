@@ -20,9 +20,9 @@ DateTime? startUpTime = DateTime.now(),
     endDownTime = DateTime.now();
 late date.Jalali startUpDate, endUpDate, startDownDate, endDownDate;
 String selectedUpStartDate = '',
-    // selectedUpEndDate = ''
-    selectedDownStartDate = '';
-    // selectedDownEndDate = '';
+    selectedUpEndDate = '',
+    selectedDownStartDate = '',
+    selectedDownEndDate = '';
 late bool plugUP,
     plugDOWN,
 
@@ -369,15 +369,48 @@ Widget option(context, bool isUp) {
                     child: Text(
                         isUp ? selectedUpStartDate : selectedDownStartDate)),
                 const SizedBox(height: 5),
-                // Container(
-                //     alignment: Alignment.centerLeft,
-                //     child:
-                        // Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child:
+                        Text(isUp ? selectedUpEndDate : selectedDownEndDate)),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Row(
                     children: [
+                      Expanded(
+                        child: Center(
+                          child: NeumorphicButton(
+                            padding: const EdgeInsets.all(15),
+                            onPressed: () async {
+                              var output = await date.showPersianDatePicker(
+                                  context: context,
+                                  initialDate: date.Jalali.now(),
+                                  firstDate: date.Jalali.now(),
+                                  lastDate: date.Jalali(3099));
+
+                              setState(() {
+                                if (isUp) {
+                                  endUpDate = output!;
+
+                                  selectedUpEndDate =
+                                      'Selected up end date: ${endUpDate.formatCompactDate()}';
+                                } else {
+                                  endDownDate = output!;
+
+                                  selectedDownEndDate =
+                                      'Selected down end date: ${endDownDate.formatCompactDate()}';
+                                }
+                              });
+                            },
+                            child: const Center(
+                              child: Text(
+                                'select end date',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       Expanded(
                           child: Center(
                         child: NeumorphicCheckbox(
@@ -399,18 +432,18 @@ Widget option(context, bool isUp) {
                               setState(() {
                                 if (isUp) {
                                   startUpDate = output!;
-                                  endUpDate = startUpDate; //end is tomorrow of start
+                                  // endUpDate = startUpDate; //end is tomorrow of start
 
                                   selectedUpStartDate =
-                                      'Selected up date: ${startUpDate.formatCompactDate()}';
+                                      'Selected up start date: ${startUpDate.formatCompactDate()}';
                                   // selectedUpEndDate =
                                   //     'Selected up end date: ${endUpDate.formatCompactDate()}';
                                 } else {
                                   startDownDate = output!;
-                                  endDownDate = startDownDate;
+                                  // endDownDate = startDownDate;
 
                                   selectedDownStartDate =
-                                      'Selected down date: ${startDownDate.formatCompactDate()}';
+                                      'Selected down start date: ${startDownDate.formatCompactDate()}';
                                   // selectedDownEndDate =
                                   //     'Selected down end date: ${endDownDate.formatCompactDate()}';
                                 }
@@ -418,7 +451,7 @@ Widget option(context, bool isUp) {
                             },
                             child: const Center(
                               child: Text(
-                                'select date',
+                                'select start date',
                               ),
                             ),
                           ),

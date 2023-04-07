@@ -159,8 +159,10 @@ class RelayCubit extends Cubit<RelayState> {
 
       if (infinity) {
         selectedStartDate = ':Start & End date\nRepeat every day';
+        selectedEndDate = '';
       } else {
-        selectedStartDate = 'Selected date: ${startdate.formatCompactDate()}';
+        selectedStartDate = 'Selected start date: ${startdate.formatCompactDate()}';
+        selectedEndDate = 'Selected end date: ${enddate.formatCompactDate()}';
       }
     } catch (e) {
       print(e.toString());
@@ -385,12 +387,15 @@ class RelayCubit extends Cubit<RelayState> {
     emit(RelayData());
 
     if (infinity) {
-      selectedStartDate = ':Start & End date\nRepeat every day';
-      // selectedEndDate = 'Repeat every day';
+      selectedStartDate = ':Start & End date';
+      selectedEndDate = 'Repeat every day';
     } else {
       selectedStartDate = startdate.formatCompactDate().contains('0011/')
           ? ''
-          : 'Selected date: ${startdate.formatCompactDate()}';
+          : 'Selected start date: ${startdate.formatCompactDate()}';
+      selectedEndDate = enddate.formatCompactDate().contains('0011/')
+          ? ''
+          : 'Selected end date: ${enddate.formatCompactDate()}';
       // selectedStartDate = '';
       // selectedEndDate = '';
     }

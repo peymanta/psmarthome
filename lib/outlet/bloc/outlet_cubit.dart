@@ -87,7 +87,7 @@ class OutletCubit extends Cubit<OutletState> {
                 : '11/11/11';
 
             sendSMS(
-                'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${infinityDown ? '111111' : startDownDate.year.toString().substring(2) + startDownDate.month.toString() + startDownDate.day.toString()},${startDownTime!.hour.toString().padLeft(2, '0') + startDownTime!.minute.toString().padLeft(2, '0')}-${infinityDown ? '111111' : endDownDate.year.toString().substring(2) + endDownDate.month.toString() + endDownDate.day.toString()},${endDownTime!.hour.toString().padLeft(2, '0') + endDownTime!.minute.toString().padLeft(2, '0')}#',
+                'P${currentPlug == PlugNumber.plug1 ? '1' : '2'}DN:${infinityDown ? '111111' : startDownDate.year.toString().substring(2).padLeft(2, '0') + startDownDate.month.toString().padLeft(2, '0') + startDownDate.day.toString().padLeft(2, '0')},${startDownTime!.hour.toString().padLeft(2, '0') + startDownTime!.minute.toString().padLeft(2, '0')}-${infinityDown ? '111111' : endDownDate.year.toString().substring(2).padLeft(2, '0') + endDownDate.month.toString().padLeft(2, '0') + endDownDate.day.toString().padLeft(2, '0')},${endDownTime!.hour.toString().padLeft(2, '0') + endDownTime!.minute.toString().padLeft(2, '0')}#',
                 showDialog: false);
           // }
           ///////
@@ -113,19 +113,21 @@ class OutletCubit extends Cubit<OutletState> {
       infinityDown = plug.getDownStartDate == '11/11/11' &&
           plug.getDownEndDate == '11/11/11';
       selectedUpStartDate = infinityUp
-          ? ':Start & End date\nRepeat every day'
-          : 'selected up date: ${plug.getUPStartDate}';
+          ? ':Start & End date'
+          : 'selected up start date: ${plug.getUPStartDate}';
       startUpDate = Jalali(int.parse(plug.getUPStartDate.split('/')[0]), int.parse(plug.getUPStartDate.split('/')[1]), int.parse(plug.getUPStartDate.split('/')[2]));
-      // selectedUpEndDate = infinityUp
-      //     ? 'Repeat every day'
-      //     : 'selected up end date: ${plug.getUPEndDate}';
+      endUpDate = Jalali(int.parse(plug.getUPEndDate.split('/')[0]), int.parse(plug.getUPEndDate.split('/')[1]), int.parse(plug.getUPEndDate.split('/')[2]));
+      selectedUpEndDate = infinityUp
+          ? 'Repeat every day'
+          : 'selected up end date: ${plug.getUPEndDate}';
       selectedDownStartDate = infinityDown
-          ? ':Start & End date\nRepeat every day'
+          ? ':Start & End date'
           : 'selected down start date: ${plug.getDownStartDate}';
       startDownDate = Jalali(int.parse(plug.getDownStartDate.split('/')[0]), int.parse(plug.getDownStartDate.split('/')[1]), int.parse(plug.getDownStartDate.split('/')[2]));
-      // selectedDownEndDate = infinityDown
-      //     ? 'Repeat every day'
-      //     : 'selected down end date: ${plug.getDownEndDate}';
+      endDownDate = Jalali(int.parse(plug.getDownEndDate.split('/')[0]), int.parse(plug.getDownEndDate.split('/')[1]), int.parse(plug.getDownEndDate.split('/')[2]));
+      selectedDownEndDate = infinityDown
+          ? 'Repeat every day'
+          : 'selected down end date: ${plug.getDownEndDate}';
 
       // startUpTime =
       //     null; // DateTime(1111, 1, 1, int.parse(plug.getUPStartClock.split(':')[0]), int.parse(plug.getUPStartClock.split(':')[1]));//plug.getUPStartClock; //
@@ -157,16 +159,18 @@ class OutletCubit extends Cubit<OutletState> {
     }
 
     if (isUp && infinityUp) {
-      selectedUpStartDate = ':Start & End date\nRepeat every day';
-      // selectedUpEndDate = 'Repeat every day';
+      selectedUpStartDate = ':Start & End date';
+      selectedUpEndDate = 'Repeat every day';
     } else if (!isUp && infinityDown) {
-      selectedDownStartDate = ':Start & End date\nRepeat every day';
-      // selectedDownEndDate = 'Repeat every day';
+      selectedDownStartDate = ':Start & End date';
+      selectedDownEndDate = 'Repeat every day';
     } else {
       if(isUp) {
-        selectedUpStartDate = startUpDate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startUpDate.formatCompactDate()}';
+        selectedUpStartDate = startUpDate.formatCompactDate().contains('0011/')? '' : 'Selected up start date: ${startUpDate.formatCompactDate()}';
+        selectedUpEndDate = endUpDate.formatCompactDate().contains('0011/')? '' : 'Selected up end date: ${endUpDate.formatCompactDate()}';
       } else {
-        selectedDownStartDate = startDownDate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startDownDate.formatCompactDate()}';
+        selectedDownStartDate = startDownDate.formatCompactDate().contains('0011/')? '' : 'Selected down start date: ${startDownDate.formatCompactDate()}';
+        selectedDownEndDate = endDownDate.formatCompactDate().contains('0011/')? '' : 'Selected down start date: ${endDownDate.formatCompactDate()}';
       }
 
     }

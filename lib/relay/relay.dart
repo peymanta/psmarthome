@@ -25,7 +25,7 @@ late Jalali endTime;
 late date.Jalali startdate;
 late date.Jalali enddate;
 String selectedStartDate = '';
-// String selectedEndDate = '';
+String selectedEndDate = '';
 
 late bool sw, sensor, timer, humidity, light;
 
@@ -377,35 +377,35 @@ Widget Relays() {
                                 alignment: Alignment.centerLeft,
                                 child: Text(selectedStartDate)),
                             const SizedBox(height: 5),
-                            // Container(
-                            //     alignment: Alignment.centerLeft,
-                            //     child: Text(selectedEndDate)),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(selectedEndDate)),
                             const SizedBox(height: 10),
                             Padding(
                               padding: const EdgeInsets.all(10),
                               child: Row(
                                 children: [
-                                  // Expanded(
-                                  //   child: Center(
-                                  //     child: NeumorphicButton(
-                                  //       padding: const EdgeInsets.all(15),
-                                  //       onPressed: () async {
-                                  //         enddate = (await date.showPersianDatePicker(
-                                  //             context: context,
-                                  //             initialDate: date.Jalali.now(),
-                                  //             firstDate: date.Jalali.now(),
-                                  //             lastDate: date.Jalali(3099)))!;
-                                  //         setState(() => selectedEndDate =
-                                  //             'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
-                                  //       },
-                                  //       child: const Center(
-                                  //         child: Text(
-                                  //           'select end date',
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
+                                  Expanded(
+                                    child: Center(
+                                      child: NeumorphicButton(
+                                        padding: const EdgeInsets.all(15),
+                                        onPressed: () async {
+                                          enddate = (await date.showPersianDatePicker(
+                                              context: context,
+                                              initialDate: date.Jalali.now(),
+                                              firstDate: date.Jalali.now(),
+                                              lastDate: date.Jalali(3099)))!;
+                                          setState(() => selectedEndDate =
+                                              'Selected end date: ${enddate!.year}/${enddate!.month}/${enddate!.day}');
+                                        },
+                                        child: const Center(
+                                          child: Text(
+                                            'select end date',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
 
                                   Expanded(
                                       child: Center(
@@ -425,17 +425,17 @@ Widget Relays() {
                                               firstDate: date.Jalali.now(),
                                               lastDate: date.Jalali(3099)))!;
                                           setState(() {
-                                            enddate = startdate;
+                                            // enddate = startdate;
 
                                             selectedStartDate =
-                                              'Selected date: ${startdate.year}/${startdate.month}/${startdate.day}';
+                                              'Selected start date: ${startdate.year}/${startdate.month}/${startdate.day}';
                                           // setState(() => selectedEndDate =
                                           // 'Selected end date: ${enddate.year}/${enddate.month}/${enddate.day}');
                                           });
                                         },
                                         child: const Center(
                                           child: Text(
-                                            'select date',
+                                            'select start date',
                                           ),
                                         ),
                                       ),

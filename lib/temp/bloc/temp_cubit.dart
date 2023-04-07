@@ -29,8 +29,9 @@ class TempCubit extends Cubit<TempState> {
             int.parse(deviceStatus.getCooler.startClock.split(':')[0]),
             int.parse(deviceStatus.getCooler.startClock.split(':')[1]));
         startdate = date.Jalali(int.parse(deviceStatus.getCooler.startDate.split('/')[0]), int.parse(deviceStatus.getCooler.startDate.split('/')[1]), int.parse(deviceStatus.getCooler.startDate.split('/')[2]));
+        enddate = date.Jalali(int.parse(deviceStatus.getCooler.endDate.split('/')[0]), int.parse(deviceStatus.getCooler.endDate.split('/')[1]), int.parse(deviceStatus.getCooler.endDate.split('/')[2]));
         selectedStartDate =
-            deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getCooler.startDate}';
+            deviceStatus.getCooler.startDate == '11/11/11' ? ':Start & End date' : 'Selected start date: ${deviceStatus.getCooler.startDate}';
       } else {
         startTime = Jalali.now();
       }
@@ -41,8 +42,8 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getCooler.endClock.split(':')[0]),
             int.parse(deviceStatus.getCooler.endClock.split(':')[1]));
-        // selectedEndDate =
-        //     'Selected end date: ${deviceStatus.getCooler.endDate == '11/11/11' ? 'Repeat every day' : deviceStatus.getCooler.endDate}';
+        selectedEndDate =
+            deviceStatus.getCooler.endDate == '11/11/11' ? 'Repeat every day' : 'Selected end date: ${deviceStatus.getCooler.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -67,8 +68,9 @@ class TempCubit extends Cubit<TempState> {
             int.parse(deviceStatus.getHeater.startClock.split(':')[0]),
             int.parse(deviceStatus.getHeater.startClock.split(':')[1]));
         startdate = date.Jalali(int.parse(deviceStatus.getHeater.startDate.split('/')[0]), int.parse(deviceStatus.getHeater.startDate.split('/')[1]), int.parse(deviceStatus.getHeater.startDate.split('/')[2]));
+        enddate = date.Jalali(int.parse(deviceStatus.getHeater.endDate.split('/')[0]), int.parse(deviceStatus.getHeater.endDate.split('/')[1]), int.parse(deviceStatus.getHeater.endDate.split('/')[2]));
         selectedStartDate =
-            (deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? ':Start & End date\nRepeat every day' : 'Selected date: ${deviceStatus.getHeater.startDate}';
+            (deviceStatus.getHeater.startDate == '11/11/11' && deviceStatus.getHeater.endDate == '11/11/11') ? ':Start & End date' : 'Selected start date: ${deviceStatus.getHeater.startDate}';
       } else {
         startTime = Jalali.now();
       }
@@ -79,8 +81,8 @@ class TempCubit extends Cubit<TempState> {
             2,
             int.parse(deviceStatus.getHeater.endClock.split(':')[0]),
             int.parse(deviceStatus.getHeater.endClock.split(':')[1]));
-        // selectedEndDate =
-        //     '${deviceStatus.getHeater.endDate == '11/11/11' ? '' : 'Selected end date: ' + deviceStatus.getHeater.endDate}';
+        selectedEndDate =
+            '${deviceStatus.getHeater.endDate == '11/11/11' ? 'Repeat every day' : 'Selected end date: ' + deviceStatus.getHeater.endDate}';
       } else {
         endTime = Jalali.now();
       }
@@ -238,9 +240,11 @@ class TempCubit extends Cubit<TempState> {
   void loop() {
     infinity = !infinity;
     if(infinity) {
-      selectedStartDate = ':Start & End date\nRepeat every day';
+      selectedStartDate = ':Start & End date';
+      selectedEndDate = 'Repeat every day';
     } else {
-      selectedStartDate = startdate.formatCompactDate().contains('0011/')? '' : 'Selected date: ${startdate.formatCompactDate()}';
+      selectedStartDate = startdate.formatCompactDate().contains('0011/')? '' : 'Selected start date: ${startdate.formatCompactDate()}';
+      selectedEndDate = enddate.formatCompactDate().contains('0011/')? '' : 'Selected end date: ${enddate.formatCompactDate()}';
     }
     // selectedEndDate = infinity ? 'Repeat every day' : '';
     emit(TempData());
